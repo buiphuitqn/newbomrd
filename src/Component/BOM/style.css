@@ -1,0 +1,26 @@
+@media screen and (max-width: 1920px){
+    .tbmodifybom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 41vh !important
+    }
+}
+@media screen and (max-width: 1366px){
+    .tbmodifybom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 32vh !important
+    }
+}
+@media screen and (min-width: 1920px){
+    .tbmodifybom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 67vh !important
+    }
+}
+.red {
+    color: red;
+
+}
+
+.green {
+    color: green;
+}

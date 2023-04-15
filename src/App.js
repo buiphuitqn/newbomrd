@@ -1,24 +1,39 @@
-import logo from './logo.svg';
+import { Routes, Route, useNavigate } from "react-router-dom";
+import ContextProvider from './Data/ContextProvider';
 import './App.css';
+import Login from './Component/Login';
+import Statedata from './Data/Statedata';
+import React from 'react';
+import HomePage from './Component/Homepage';
+import BOM from './Component/BOM';
+import Ebom from './Component/EBom';
+import MBomExport from './Component/MBomexport';
+import ViewEbom from './Component/ViewEbom';
+import MBom from "./Component/MBom";
+import Member from "./Component/Member";
+import Material from "./Component/Material";
+import Functionlist from "./Component/Functionlist";
 
-function App() {
+function App({ history }) {
+  const { initState } = Statedata()
+  let navigate = useNavigate();
+  React.useEffect(() => {
+    initState.username[0] ? navigate("/BOMManager") : localStorage.clear()
+    initState.selectkey == null && navigate("/BOMManager")
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ContextProvider value={initState}>
+      <Routes>
+        <Route path='/' element={<Login />}></Route>
+        <Route path='/BOMManager' element={<HomePage />}></Route>
+        <Route path='/BOMManager/BOM' element={<MBom />}></Route>
+        <Route path='/BOMManager/BOM/ennovia' element={<BOM/>}></Route>
+        <Route path='/BOMManager/he-thong/quan-ly-nhan-su' element={<Member />}></Route>
+        <Route path='/BOMManager/Quan-ly-vat-tu' element={<Material />}></Route>
+        <Route path='/BOMManager/he-thong/chuc-nang' element={<Functionlist />}></Route>
+        <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlist />}></Route>
+      </Routes>
+    </ContextProvider>
   );
 }
 
