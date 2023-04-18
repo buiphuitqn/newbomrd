@@ -29,7 +29,7 @@ const initialState = () => {
 
 const initialData = () => {
   var data2 = [];
-  var url = "http://113.174.246.52:7978/api/material";
+  var url = "https://10.40.12.4:7978/api/material";
   axios
     .post(url)
     .then((res) => {
@@ -61,6 +61,7 @@ const initialData = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể tải dữ liệu",
+          duration:2
         });
       }
     })
@@ -68,6 +69,7 @@ const initialData = () => {
       notification["error"]({
         message: "Thông báo",
         description: "Không thể truy cập máy chủ",
+        duration:2
       });
     });
   return data2;
@@ -104,7 +106,7 @@ const iconrender = (icon) => {
 }
 const initUnit = () => {
   var data2 = [];
-  var url = "http://113.174.246.52:7978/api/Bomchild";
+  var url = "https://10.40.12.4:7978/api/Bomchild";
   axios
     .post(url)
     .then((res) => {
@@ -122,6 +124,7 @@ const initUnit = () => {
       notification["error"]({
         message: "Thông báo",
         description: "Không thể truy cập máy chủ",
+        duration:2
       });
     });
   return data2;
@@ -129,7 +132,7 @@ const initUnit = () => {
 
 const initMenu = () => {
   var data2 = [];
-  var url = "http://113.174.246.52:7978/api/menulist";
+  var url = "https://10.40.12.4:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -150,6 +153,7 @@ const initMenu = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể tải dữ liệu",
+          duration:2
         });
       }
     })
@@ -158,6 +162,7 @@ const initMenu = () => {
       notification["error"]({
         message: "Thông báo",
         description: "Không thể truy cập máy chủ",
+        duration:2
       });
     });
   return data2
@@ -165,7 +170,7 @@ const initMenu = () => {
 
 const initMenuall = () => {
   var data2 = [];
-  var url = "http://113.174.246.52:7978/api/menulist";
+  var url = "https://10.40.12.4:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -186,6 +191,7 @@ const initMenuall = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể tải dữ liệu",
+          duration:2
         });
       }
     })
@@ -194,6 +200,7 @@ const initMenuall = () => {
       notification["error"]({
         message: "Thông báo",
         description: "Không thể truy cập máy chủ",
+        duration:2
       });
     });
   return data2
@@ -212,6 +219,7 @@ export default function () {
   const [keymenu, setKeymenu] = React.useState("");
   const [enovia, setEnovia] = React.useState([]);
   const [stateModalbom, setStateModalbom] = React.useState(false);
+  const [stateModalmention, setStateModalmention] = React.useState(false);
   const [listBom, setListBom] = React.useState([]);
   const [dataebom, setDataebom] = React.useState([]);
   const [datachild, setDatachild] = React.useState([]);
@@ -219,7 +227,7 @@ export default function () {
   const [changepass, setChangepass] = React.useState(false);
   const [openkey,setOpenkey] = React.useState(null)
   const [selectkey,setSelectkey] = React.useState(null)
-  
+  const [loading, setLoading] = React.useState(true);
   const initState = {
     login,
     setLogin,
@@ -256,7 +264,9 @@ export default function () {
     allmenu,setAllmenu,
     iconrender,
     openkey,setOpenkey,
-    selectkey,setSelectkey
+    selectkey,setSelectkey,
+    stateModalmention, setStateModalmention,
+    loading, setLoading
   };
   return { initState };
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { DeleteOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Input,
@@ -27,27 +27,33 @@ import ExportExcel from "./ExportExcel";
 import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
+import Modalmentions from "./Modalmentions.js";
+import Loadding from "../Loadding";
 const { Content } = Layout
 const MBom = () => {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
   const searchInput = React.useRef(null);
   const {
     dataSource,
     setBom,
     setStateModalbom,
+    setStateModalmention,
     listBom,
     setListBom,
     username,
     datachild,
     keymenu,
     setParentbom,
+    loading,
+    setLoading,
+    bom
   } = React.useContext(Context);
   let navigate = useNavigate();
   React.useEffect(() => {
+    setLoading(true)
     setListBom([]);
-    var url = "http://113.174.246.52:7978/api/Bom";
+    var url = "https://10.40.12.4:7978/api/Bom";
     axios
       .post(url)
       .then((res) => {
@@ -58,13 +64,13 @@ const MBom = () => {
             return { ...da, key: index }
           })
           setListBom(data)
-          setLoading(false)
         }
       })
       .catch((error) => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   }, [keymenu]);
@@ -80,7 +86,7 @@ const MBom = () => {
   };
 
   const handleDelete = (record) => {
-    var url = "http://113.174.246.52:7978/api/DeleteBom";
+    var url = "https://10.40.12.4:7978/api/DeleteBom";
     axios
       .post(url, {
         NoBom: record.NoBom,
@@ -90,6 +96,7 @@ const MBom = () => {
         notification["success"]({
           message: "Thông báo",
           description: `Xóa BOM thành công`,
+          duration:2
         });
         const newData = listBom.filter((item) => item.NoBom !== record.NoBom);
         setListBom(newData);
@@ -98,6 +105,7 @@ const MBom = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   };
@@ -200,6 +208,7 @@ const MBom = () => {
 
 
   const expandedRowRender = (record) => {
+    const { Namebom, NoBom, TimeCreate, IDunit } = record;
     const innerColumns = [
       {
         title: "STT",
@@ -224,6 +233,74 @@ const MBom = () => {
               Chưa cập nhật Enovia
             </span>
           )
+      }, {
+        title: "Chức năng",
+        render: (recordin) =>
+          recordin.child.length != 0 ? (
+            <Space size="middle">
+              <a onClick={() => {
+                setBom({
+                  Namebom: Namebom,
+                  NoBom: NoBom,
+                  TimeCreate: TimeCreate,
+                  IDunit: IDunit,
+                  ...recordin,
+                })
+                navigate("/BOMManager/BOM/ennovia");
+              }
+              }>
+                <Tooltip title="Xem dư liệu">
+                  <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
+              <a onClick={() => {
+                setBom({
+                  Namebom: Namebom,
+                  NoBom: NoBom,
+                  TimeCreate: TimeCreate,
+                  IDunit: IDunit,
+                  ...recordin,
+                })
+                setStateModalmention(true)
+              }}>
+                <Tooltip title="Phân quyền">
+                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
+            </Space>
+          ) : (
+            <Space size="middle">
+              <a  onClick={() => {
+                setBom({
+                  Namebom: Namebom,
+                  NoBom: NoBom,
+                  TimeCreate: TimeCreate,
+                  IDunit: IDunit,
+                  ...recordin,
+                })
+                navigate("/BOMManager/BOM/ennovia");
+              }
+              }>
+                <Tooltip title="Cập nhật dữ liệu">
+                  <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
+              <a onClick={() => {
+                setBom({
+                  Namebom: Namebom,
+                  NoBom: NoBom,
+                  TimeCreate: TimeCreate,
+                  IDunit: IDunit,
+                  ...recordin,
+                })
+                setStateModalmention(true)
+              }}>
+                <Tooltip title="Phân quyền">
+                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
+            </Space>
+          )
       }
     ];
 
@@ -233,7 +310,7 @@ const MBom = () => {
           title: "TT",
           dataIndex: "tt",
           key: "name"
-        },{
+        }, {
           title: "Tên cụm",
           dataIndex: "name",
           key: "name"
@@ -244,7 +321,10 @@ const MBom = () => {
           render: (record) =>
           (
             <Space size="middle">
-              <a>
+              <a onClick={()=>{
+                setBom(record)
+                navigate("/BOMManager/BOM/Ebom")
+              }}>
                 <Tooltip title="Nhập dữ liệu">
                   <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
@@ -273,12 +353,13 @@ const MBom = () => {
         }
       ];
       const datasourceinnerInner = innerRecord.child.map((da, index) => {
-        return { ...da, key: index,tt:(index+1) }
+        return { ...da, key: index, tt: (index + 1) }
       })
       return (
         <Table
           columns={innerInnerColumns}
           dataSource={datasourceinnerInner}
+          bordered
           pagination={false}
           rowKey="key"
         />
@@ -291,6 +372,7 @@ const MBom = () => {
       <Table
         columns={innerColumns}
         dataSource={datasourceinner}
+        bordered
         expandedRowRender={innerExpandedRowRender}
         pagination={false}
         rowKey="key"
@@ -384,7 +466,6 @@ const MBom = () => {
         >
           <div
             style={{
-              height: "65vh",
               fontFamily: "Tahoma",
               width: "100%",
             }}
@@ -405,7 +486,6 @@ const MBom = () => {
             <Table
               className="tblistbom"
               style={{
-                height: "65vh",
                 fontFamily: "Tahoma",
                 width: "inherit",
               }}
@@ -422,31 +502,12 @@ const MBom = () => {
               rowKey="key"
             />
             <Modalbom />
-            {loading && (
-              <div
-                style={{
-                  zIndex: 2,
-                  position: "absolute",
-                  width: "-webkit-fill-available",
-                  height: "-webkit-fill-available",
-                  display: "-webkit-inline-box",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    margin: "auto",
-                  }}
-                >
-                  <Spin tip="Đang tải dữ liệu..." size="large"></Spin>
-                </div>
-              </div>
-            )}
+            <Modalmentions />
           </div>
         </Content>
         <Footerpage />
       </Layout>
+      {loading&&<Loadding/>}
     </Layout>
 
   );

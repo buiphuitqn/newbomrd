@@ -18,8 +18,12 @@ function App({ history }) {
   const { initState } = Statedata()
   let navigate = useNavigate();
   React.useEffect(() => {
-    initState.username[0] ? navigate("/BOMManager") : localStorage.clear()
+    if(initState.username.length!=0)
     initState.selectkey == null && navigate("/BOMManager")
+    else {
+      localStorage.clear()
+      navigate("/")
+    }
   }, [])
   return (
     <ContextProvider value={initState}>
@@ -32,6 +36,7 @@ function App({ history }) {
         <Route path='/BOMManager/Quan-ly-vat-tu' element={<Material />}></Route>
         <Route path='/BOMManager/he-thong/chuc-nang' element={<Functionlist />}></Route>
         <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlist />}></Route>
+        <Route path='/BOMManager/BOM/Ebom' element={<Ebom/>}></Route>
       </Routes>
     </ContextProvider>
   );

@@ -6,13 +6,16 @@ import Footerpage from "../Footerpage";
 import Highlighter from "react-highlight-words";
 import Context from "../../Data/Context";
 import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import Loadding from "../Loadding";
 
 const { Content } = Layout
 
 const Functionlist = () => {
     const {
         allmenu,
-        iconrender
+        iconrender,
+        loading,
+        setLoading
       } = React.useContext(Context);
       const [datasource,setDatasource] = React.useState([])
     const columns = [
@@ -43,6 +46,7 @@ const Functionlist = () => {
         },
     ];
     React.useEffect(()=>{
+        setLoading(true)
         setTimeout(()=>{
             allmenu.map((da,index)=>{
                 setDatasource(datasource=>[...datasource,{
@@ -113,6 +117,7 @@ const Functionlist = () => {
                 </Content>
                 <Footerpage />
             </Layout>
+            {loading&&<Loadding/>}
         </Layout>
 
     )

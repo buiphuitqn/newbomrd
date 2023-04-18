@@ -52,7 +52,7 @@ const Headerpage = () => {
                         fontSize: 15,
                     }}
                 >
-                    {username[0].FullName}
+                    {username.length!=0&&username[0].FullName}
                 </p>
                 <a
                     className="logout"

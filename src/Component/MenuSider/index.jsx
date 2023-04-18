@@ -20,7 +20,8 @@ const MenuSider = () => {
         setOpenkey,
         selectkey,
         setSelectkey,
-        allmenu
+        allmenu,
+        setLoading
     } =
         React.useContext(Context);
     const [items, Setitems] = React.useState([])
@@ -42,7 +43,8 @@ const MenuSider = () => {
     }
     React.useEffect(() => {
         setTimeout(() => {
-            Setitems(convertToTree(menu))
+            menu.length!=0&&Setitems(convertToTree(menu))
+            setLoading(false)
         }, 500);
     }, [menu]);
     return (

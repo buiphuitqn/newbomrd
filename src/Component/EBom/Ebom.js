@@ -56,7 +56,7 @@ const exportLevel = (level) => {
   var newLevel = [];
   level.map((item) => {
     var ar = [];
-    for (var i = 1; i <= 7; i++) {
+    for (var i = 2; i <= 7; i++) {
       if (i == item) ar.push(1);
       else ar.push(0);
     }
@@ -90,7 +90,7 @@ const exportSLxe = (level, slcum) => {
   var newLevel = [];
   level.map((item) => {
     var ar = [];
-    for (var i = 1; i <= 7; i++) {
+    for (var i = 2; i <= 7; i++) {
       if (i == item) ar.push(1);
       else ar.push(0);
     }
@@ -145,7 +145,7 @@ export default function Ebomexport() {
   const [showfinish, setShowfinish] = React.useState(false);
   let navigate = useNavigate();
   React.useEffect(() => {
-    var url = "http://113.174.246.52:7978/api/LoadEbomtemp";
+    var url = "https://10.40.12.4:7978/api/LoadEbomtemp";
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -159,6 +159,7 @@ export default function Ebomexport() {
             data.map((en) => en.Slxe)
           );
           data.map((item, index) => {
+            console.log(item)
             setDataebom((dataebom) => [
               ...dataebom,
               {
@@ -194,28 +195,24 @@ export default function Ebomexport() {
               description:
                 "Chưa nhập dữ liệu tạm cho Ebom. Vui lòng kiểm tra lại",
             });
-          var url = "http://113.174.246.52:7978/api/Enovia";
+          var url = "https://10.40.12.4:7978/api/Enoviachild";
           var id = bom.id;
           axios
             .post(url, { id: id })
             .then((res2) => {
               setDataebom([]);
+              console.log(res2)
               if (res2.data.length != 0) {
                 var data = res2.data;
-                var member = [];
-                const list = data.reduce((acc, obj) => {
-                  if (member.includes(obj.IDMember) == false)
-                    member = [...member, obj.IDMember];
-                  return member;
-                }, {});
                 var lever = exportLevel(
-                  softdata(data, list).map((en) => en.level)
+                  data.map((en) => en.level)
                 );
+                console.log(lever)
                 var Slxe = exportSLxe(
-                  softdata(data, list).map((en) => en.level),
-                  softdata(data, list).map((en) => en.Amount)
+                  data.map((en) => en.level),
+                  data.map((en) => en.Amount)
                 );
-                softdata(data, list).map((en, index) => {
+                data.map((en, index) => {
                   if (
                     res.data.filter((da) => da.idenovia == en.id).length != 0
                   ) {
@@ -395,6 +392,7 @@ export default function Ebomexport() {
               notification["error"]({
                 message: "Thông báo",
                 description: "Không thể truy cập máy chủ",
+                duration:2
               });
             });
         }
@@ -403,6 +401,7 @@ export default function Ebomexport() {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   }, []);
@@ -523,7 +522,7 @@ export default function Ebomexport() {
   };
 
   const handleExportMBom = () => {
-    var url = "http://113.174.246.52:7978/api/DoneEbom";
+    var url = "https://10.40.12.4:7978/api/DoneEbom";
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -537,6 +536,7 @@ export default function Ebomexport() {
           notification["success"]({
             message: "Thông báo",
             description: "Lưu thành công",
+            duration:2
           });
         }
       })
@@ -544,6 +544,7 @@ export default function Ebomexport() {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   };
@@ -561,7 +562,7 @@ export default function Ebomexport() {
         newArray.indexOf(newArray.filter((da) => da.id == bom.id)[0])
       ].status = 1;
       setDatachild(newArray);
-      var url = "http://113.174.246.52:7978/api/Insertebomtemp";
+      var url = "https://10.40.12.4:7978/api/Insertebomtemp";
       var id = bom.id;
       var data = dataebom;
       axios
@@ -576,11 +577,13 @@ export default function Ebomexport() {
           notification["error"]({
             message: "Thông báo",
             description: "Không thể truy cập máy chủ",
+            duration:2
           });
         });
       notification["success"]({
         message: "Thông báo",
         description: "Dữ liệu đã được lưu vào bảng tạm",
+        duration:2
       });
     }
   };
@@ -751,31 +754,32 @@ export default function Ebomexport() {
               Edit
             </Typography.Link>
           );
-        } else {
-          if (username.filter((da) => da.idunit == bom.IDunit)[0].level > 6)
-            return editable ? (
-              <span>
-                <Typography.Link
-                  onClick={() => save(record.key)}
-                  style={{
-                    marginRight: 8,
-                  }}
-                >
-                  Save
-                </Typography.Link>
-                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                  <a>Cancel</a>
-                </Popconfirm>
-              </span>
-            ) : (
-              <Typography.Link
-                disabled={editingKey !== ""}
-                onClick={() => edit(record)}
-              >
-                Edit
-              </Typography.Link>
-            );
-        }
+          }
+        // } else {
+        //   if (username.filter((da) => da.idunit == bom.IDunit)[0].level > 6)
+        //     return editable ? (
+        //       <span>
+        //         <Typography.Link
+        //           onClick={() => save(record.key)}
+        //           style={{
+        //             marginRight: 8,
+        //           }}
+        //         >
+        //           Save
+        //         </Typography.Link>
+        //         <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+        //           <a>Cancel</a>
+        //         </Popconfirm>
+        //       </span>
+        //     ) : (
+        //       <Typography.Link
+        //         disabled={editingKey !== ""}
+        //         onClick={() => edit(record)}
+        //       >
+        //         Edit
+        //       </Typography.Link>
+        //     );
+        // }
       },
     },
   ];
@@ -833,7 +837,7 @@ export default function Ebomexport() {
         </Col>
         <Col span={6}>
           <Divider orientation="right">
-            {username.filter((da) => da.idunit == bom.IDunit)[0].level == 2 ? (
+            {/* {username.filter((da) => da.idunit == bom.IDunit)[0].level == 2 ? (
               showfinish && (
                 <Button onClick={handleExportMBom} type="primary">
                   Xác nhận Ebom
@@ -843,7 +847,10 @@ export default function Ebomexport() {
               <Button onClick={handleSaveEbom} type="primary">
                 Lưu E-BOM
               </Button>
-            )}
+            )} */}
+            <Button onClick={handleSaveEbom} type="primary">
+                Lưu E-BOM
+              </Button>
           </Divider>
         </Col>
       </Row>
@@ -872,9 +879,10 @@ export default function Ebomexport() {
         <Col span={24}>
           <Form form={form} component={false}>
             <Table
-              className="tbebom"
+              className="tbebomchild"
               style={{
                 fontFamily: "Tahoma",
+                fontSize:14
               }}
               components={{
                 body: {

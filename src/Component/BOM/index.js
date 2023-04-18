@@ -29,20 +29,21 @@ import { useNavigate } from "react-router-dom";
 import Headerpage from "../Headerpage";
 import MenuSider from "../MenuSider";
 import Footerpage from "../Footerpage";
+import Loadding from "../Loadding";
 const { Content } = Layout;
 const { Dragger } = Upload;
 const BOM = () => {
   const { } =
     React.useContext(Context);
   let navigate = useNavigate();
-  const { bom, dataSource, enovia, setEnovia, username } =
+  const { bom, dataSource, enovia, setEnovia, username,loading,setLoading } =
     React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef(null);
   React.useEffect(() => {
-    console.log('data')
-    var url = "http://113.174.246.52:7978/api/Enovia";
+    setLoading(true)
+    var url = "https://10.40.12.4:7978/api/Enovia";
     var id = bom.id;
     var idmember = username[0].IDMember;
     axios
@@ -62,6 +63,7 @@ const BOM = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   }, []);
@@ -96,7 +98,7 @@ const BOM = () => {
     });
   };
   const exportEbom = () => {
-    var url = "http://113.174.246.52:7978/api/Insertenovia";
+    var url = "https://10.40.12.4:7978/api/Insertenovia";
     var id = bom.id;
     var idmember = username[0].IDMember;
     var data = enovia;
@@ -117,6 +119,7 @@ const BOM = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   };
@@ -133,7 +136,7 @@ const BOM = () => {
   };
 
   const handleDelete = (record) => {
-    var url = "http://113.174.246.52:7978/api/Deleteenovia";
+    var url = "https://10.40.12.4:7978/api/Deleteenovia";
     var id = bom.id;
     var idmaterial = record.ID;
     axios
@@ -153,6 +156,7 @@ const BOM = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   };
@@ -469,6 +473,7 @@ const BOM = () => {
         </Content>
         <Footerpage />
       </Layout>
+      {loading&&<Loadding/>}
     </Layout>
   );
 };

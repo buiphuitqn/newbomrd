@@ -44,7 +44,7 @@ export default function Modalbom() {
 
   const listunit = username.map((en) => en.idunit);
   React.useEffect(() => {
-    var url = "http://113.174.246.52:7978/api/Loadunit";
+    var url = "https://10.40.12.4:7978/api/Loadunit";
     axios
       .post(url)
       .then((res) => {
@@ -58,6 +58,7 @@ export default function Modalbom() {
           notification["error"]({
             message: "Thông báo",
             description: "Không thể tải dữ liệu",
+            duration:2
           });
         }
       })
@@ -65,13 +66,14 @@ export default function Modalbom() {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   }, []);
   const onFinish = (values) => {
     const check = listBom.filter((da) => da.NoBom == values.no);
     if (check.length == 0) {
-      var url = "http://113.174.246.52:7978/api/CreateBom";
+      var url = "https://10.40.12.4:7978/api/CreateBom";
       axios
         .post(url, {
           IDMember: username[0].IDMember,
@@ -86,7 +88,7 @@ export default function Modalbom() {
             description: `Tạo BOM thành công. Mã số Bom ${insertId}`,
           });
           setListBom([]);
-          var url = "http://113.174.246.52:7978/api/Bom";
+          var url = "https://10.40.12.4:7978/api/Bom";
           axios
             .post(url)
             .then((res) => {
@@ -105,6 +107,7 @@ export default function Modalbom() {
                 notification["error"]({
                   message: "Thông báo",
                   description: "Không thể tải dữ liệu",
+                  duration:2
                 });
               }
             })
@@ -112,10 +115,11 @@ export default function Modalbom() {
               notification["error"]({
                 message: "Thông báo",
                 description: "Không thể truy cập máy chủ",
+                duration:2
               });
             });
           setDatachild([]);
-          var url = "http://113.174.246.52:7978/api/LoadBomchild";
+          var url = "https://10.40.12.4:7978/api/LoadBomchild";
           axios
             .post(url)
             .then((res) => {
@@ -141,7 +145,8 @@ export default function Modalbom() {
             .catch((error) => {
               notification["error"]({
                 message: "Thông báo",
-                description: "Không thể truy cập máy chủ",
+                description: "",
+                duration:2
               });
             });
           setStateModalbom(false);
@@ -150,12 +155,14 @@ export default function Modalbom() {
           notification["error"]({
             message: "Thông báo",
             description: "Không thể truy cập máy chủ",
+            duration:2
           });
         });
     } else
       notification["error"]({
         message: "Thông báo",
         description: "Số BOM đã tồn tại. Vui lòng kiểm tra lại",
+        duration:2
       });
   };
 

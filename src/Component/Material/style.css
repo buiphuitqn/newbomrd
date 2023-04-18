@@ -15,7 +15,7 @@ table thead tr th{
 @media screen and (max-width: 1920px){
     .ant-table-body{
         height: -webkit-fill-available;
-        max-height: 54vh !important
+        max-height: 50vh !important
     }
 }
 @media screen and (max-width: 1366px){

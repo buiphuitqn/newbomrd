@@ -5,9 +5,13 @@ import bg from "../../Library/images/BG.jpg";
 import MenuSider from '../MenuSider'
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
+import Loadding from "../Loadding";
+import Context from "../../Data/Context";
 const { Content } = Layout;
 
 const HomePage = () => {
+  const { loading } =
+  React.useContext(Context);
   return (
     <Layout className="homelayout">
       <MenuSider />
@@ -36,9 +40,12 @@ const HomePage = () => {
             >Chức năng đang phát triển</p>
             <img style={{ width: "100%", height: "100%", position: 'absolute', objectFit: 'cover' }} src={bg} alt="Background" />
           </div>
+          
         </Content>
         <Footerpage />
       </Layout>
+      {loading&&<Loadding/>}
+      
     </Layout>
   );
 };

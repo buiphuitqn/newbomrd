@@ -17,11 +17,12 @@ import "./style.css";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import MenuSider from "../MenuSider";
+import Loadding from "../Loadding";
 const { Text } = Typography;
 const { Content } = Layout
 const Material = () => {
-  const { dataSource, setDatasource } = React.useContext(Context);
-  const [loading, setLoading] = React.useState(false);
+  const { dataSource, loading,setLoading } = React.useContext(Context);
+  
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const [dataMaterial, setDataMaterial] = React.useState([]);
@@ -128,8 +129,10 @@ const Material = () => {
       ),
   });
   React.useEffect(() => {
+    setLoading(true);
     setTimeout(()=>{
       setDataMaterial(dataSource);
+      setLoading(false)
     },2000)
     
   }, []);
@@ -297,32 +300,12 @@ const Material = () => {
                   defaultPageSize: 100,
                 }}
               />
-              {loading && (
-                <div
-                  style={{
-                    zIndex: 2,
-                    position: "absolute",
-                    width: "-webkit-fill-available",
-                    height: "-webkit-fill-available",
-                    display: "-webkit-inline-box",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      margin: "auto",
-                    }}
-                  >
-                    <Spin tip="Đang tải dữ liệu..." size="large"></Spin>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </Content>
         <Footerpage />
       </Layout>
+      {loading&&<Loadding/>}
     </Layout>
   );
 };

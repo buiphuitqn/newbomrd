@@ -4,7 +4,9 @@ import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Highlighter from "react-highlight-words";
+import Context from "../../Data/Context";
 import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import Loadding from "../Loadding";
 
 const { Content } = Layout
 
@@ -12,6 +14,10 @@ const Member = () => {
     const searchInput = React.useRef(null);
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
+    const {loading,setLoading} = React.useContext(Context)
+    React.useEffect(()=>{
+        setLoading(true)
+    },[])
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -227,6 +233,7 @@ const Member = () => {
                 </Content>
                 <Footerpage />
             </Layout>
+            {loading&&<Loadding/>}
         </Layout>
 
     )

@@ -147,7 +147,7 @@ export default function View() {
   const [showfinish, setShowfinish] = React.useState(false);
   let navigate = useNavigate();
   React.useEffect(() => {
-    var url = "http://113.174.246.52:7978/api/LoadAllebom";
+    var url = "https://10.40.12.4:7978/api/LoadAllebom";
     var id = parentbom.id;
     axios
       .post(url, { id: id })
@@ -200,12 +200,14 @@ export default function View() {
           notification["error"]({
             message: "Thông báo",
             description: "Chưa có dữ liệu",
+            duration:2
           });
       })
       .catch((error) => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
+          duration:2
         });
       });
   }, []);
@@ -330,7 +332,7 @@ export default function View() {
       datachild.filter((da) => da.idbom == parentbom.id && da.status == 2)
         .length == 8
     ) {
-      var url = "http://113.174.246.52:7978/api/DoneEbomall";
+      var url = "https://10.40.12.4:7978/api/DoneEbomall";
       var id = parentbom.id;
       axios
         .post(url, { id: id })
@@ -339,6 +341,7 @@ export default function View() {
             notification["success"]({
               message: "Thông báo",
               description: "Lưu thành công",
+              duration:2
             });
           }
         })
@@ -346,6 +349,7 @@ export default function View() {
           notification["error"]({
             message: "Thông báo",
             description: "Không thể truy cập máy chủ",
+            duration:2
           });
         });
       console.log(listBom, parentbom);
@@ -371,7 +375,7 @@ export default function View() {
         description: "Bạn chưa nhập đầy đủ thông tin",
       });
     } else {
-      var url = "http://113.174.246.52:7978/api/Insertebomtemp";
+      var url = "https://10.40.12.4:7978/api/Insertebomtemp";
       var id = parentbom.id;
       var data = dataebom;
       axios
@@ -386,11 +390,13 @@ export default function View() {
           notification["error"]({
             message: "Thông báo",
             description: "Không thể truy cập máy chủ",
+            duration:2
           });
         });
       notification["success"]({
         message: "Thông báo",
         description: "Dữ liệu đã được lưu vào bảng tạm",
+        duration:2
       });
     }
   };

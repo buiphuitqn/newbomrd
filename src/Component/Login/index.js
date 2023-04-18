@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Tooltip, message,Button } from "antd";
+import { Col, Form, Input, Row, Tooltip, notification,Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import banner from "../../Library/images/RD.png";
 import React from "react";
@@ -15,17 +15,22 @@ import {
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import Modalpass from "./ModalPass";
+import Loadding from "../Loadding";
 
 const Login = () => {
   const [form] = Form.useForm();
-  const { username, setUsername, changepass, setChangepass } =
+  const { username, setUsername, changepass, setChangepass,loading,setLoading } =
     React.useContext(Context);
   let navigate = useNavigate();
+  React.useEffect(()=>{
+    setLoading(false)
+  },[])
   const handleLogin = (values) => {
+    setLoading(true)
     let user = values.username;
     let pass = values.password;
     let keycode = values.keycode;
-    var url = "http://113.174.246.52:7978/api/Login";
+    var url = "https://10.40.12.4:7978/api/Login";
     axios
       .post(url, {
         user: user,
@@ -45,11 +50,19 @@ const Login = () => {
             setUsername(data);
           }
         } else {
-          message.error("Thông tin đăng nhập không đúng");
+          notification["error"]({
+            message: "Thông báo",
+            description: "Thông tin đăng nhập không đúng",
+            duration:2
+          });
         }
       })
       .catch((error) => {
-        message.error("Không thể truy cập máy chủ");
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration:2
+        });
       });
   };
   return (
@@ -100,6 +113,7 @@ const Login = () => {
           </Form.Item>
         </Form>
       </div>
+      {loading&&<Loadding/>}
     </div>
   );
 };

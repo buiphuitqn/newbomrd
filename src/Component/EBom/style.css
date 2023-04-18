@@ -5,6 +5,7 @@
 .ebomtitle {
     border: 1px solid black;
     font-family: 'Tahoma';
+    font-size: 14px;
     display: flex !important;
 }
 
@@ -36,21 +37,21 @@ p {
 }
 
 @media screen and (max-width: 1920px) {
-    .tbebom .ant-table-body {
+    .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 34vh !important
+        max-height: 39vh !important
     }
 }
 
 @media screen and (max-width: 1366px) {
-    .tbebom .ant-table-body {
+    .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 24vh !important
+        max-height: 29vh !important
     }
 }
 
 @media screen and (min-width: 1920px) {
-    .tbebom .ant-table-body {
+    .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
         max-height: 65vh !important
     }
