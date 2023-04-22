@@ -15,12 +15,17 @@ import Ebomexport from "./Ebom";
 import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
+import Loadding from "../Loadding";
 const { Header, Sider, Content } = Layout;
 const Ebom = () => {
+  const {collapsed,loading,setLoading} = React.useContext(Context);
+  React.useEffect(()=>{
+    setLoading(true)
+  },[])
   return (
     <Layout className="homelayout">
       <MenuSider/>
-      <Layout className="site-layout">
+      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
         <Headerpage/>
         <Content
           className="site-layout-background"
@@ -34,6 +39,7 @@ const Ebom = () => {
         </Content>
         <Footerpage/>
       </Layout>
+      {loading&&<Loadding/>}
     </Layout>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../../Library/images/LOGO THACO AUTO.png";
 import Context from "../../Data/Context";
 import axios from "axios";
-import { SearchOutlined } from "@ant-design/icons";
+import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Divider,
   Button,
@@ -145,7 +145,7 @@ export default function Ebomexport() {
   const [showfinish, setShowfinish] = React.useState(false);
   let navigate = useNavigate();
   React.useEffect(() => {
-    var url = "https://10.40.12.4:7978/api/LoadEbomtemp";
+    var url = "https://localhost:7978/api/LoadEbomtemp";
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -195,7 +195,7 @@ export default function Ebomexport() {
               description:
                 "Chưa nhập dữ liệu tạm cho Ebom. Vui lòng kiểm tra lại",
             });
-          var url = "https://10.40.12.4:7978/api/Enoviachild";
+          var url = "https://localhost:7978/api/Enoviachild";
           var id = bom.id;
           axios
             .post(url, { id: id })
@@ -522,7 +522,7 @@ export default function Ebomexport() {
   };
 
   const handleExportMBom = () => {
-    var url = "https://10.40.12.4:7978/api/DoneEbom";
+    var url = "https://localhost:7978/api/DoneEbom";
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -562,7 +562,7 @@ export default function Ebomexport() {
         newArray.indexOf(newArray.filter((da) => da.id == bom.id)[0])
       ].status = 1;
       setDatachild(newArray);
-      var url = "https://10.40.12.4:7978/api/Insertebomtemp";
+      var url = "https://localhost:7978/api/Insertebomtemp";
       var id = bom.id;
       var data = dataebom;
       axios
@@ -613,125 +613,123 @@ export default function Ebomexport() {
       title: "STT",
       dataIndex: "no",
       key: "id",
+      fixed: 'left',
     },
     {
       title: "Phân cấp",
       dataIndex: "level",
       key: "id",
+      fixed: 'left',
       ...getColumnSearchProps("level"),
-    },
-    {
-      title: "Tình trạng sửa đổi",
-      children: [
-        {
-          title: "Số lượng",
-          dataIndex: "Amount",
+    },{
+      title:'Thông tin linh kiện',
+      children:[{
+        title: "Mã hàng hóa",
+        dataIndex: "ID",
+        key: "name",
+        ...getColumnSearchProps("ID"),
+      },{
+        title:"Tên hàng hoá",
+        children:[{
+          title: "Tên hàng hóa (VN)",
+          dataIndex: "Name",
           key: "member",
           editable: true,
+          ...getColumnSearchProps("Name"),
         },
         {
-          title: "Thông tin kỹ thuật",
-          dataIndex: "info",
+          title: "Tên hàng hóa (EN)",
           key: "member",
           editable: true,
+        }]
+      },
+      {
+        title: "Vật liệu",
+        dataIndex: "vatlieu",
+        key: "vatlieu",
+        editable: true,
+      },
+      {
+        title: "Xuất xứ",
+        dataIndex: "xuatxu",
+        key: "xuatxu",
+        editable: true,
+        ...getColumnSearchProps("xuatxu"),
+      },
+      {
+        title: "Nơi gia công thành phẩm",
+        dataIndex: "xuatxu",
+        key: "xuatxu",
+        editable: true,
+        ...getColumnSearchProps("xuatxu"),
+      },{
+        title:'Thông tin kỹ thuật',
+        children:[{
+          title:'Bản vẽ'
         },
-      ],
-    },
-    {
-      title: "Tên hàng hóa",
-      dataIndex: "Name",
-      key: "member",
-      editable: true,
-      ...getColumnSearchProps("Name"),
-    },
-    {
-      title: "Mã hàng hóa",
-      dataIndex: "ID",
-      key: "name",
-      ...getColumnSearchProps("ID"),
-    },
-    {
-      title: "Hình ảnh",
-      dataIndex: "img",
-      key: "img",
-      editable: true,
-    },
-    {
-      title: "Vật liệu",
-      dataIndex: "vatlieu",
-      key: "vatlieu",
-      editable: true,
-    },
-    {
-      title: "Xuất xứ",
-      dataIndex: "xuatxu",
-      key: "xuatxu",
-      editable: true,
-      ...getColumnSearchProps("xuatxu"),
-    },
-    {
-      title: "Thông số kỹ thuật",
-      dataIndex: "info2",
-      key: "info2",
-      editable: true,
-    },
-    {
-      title: "Quy cách",
-      dataIndex: "Quycach",
-      key: "Quycach",
-      editable: true,
-    },
-    {
-      title: "Quy cách đột lỗ",
-      dataIndex: "Quycachdotlo",
-      key: "Quycachdotlo",
-      editable: true,
-    },
-    {
-      title: "ĐVT",
-      dataIndex: "dvt",
-      key: "dvt",
-      editable: true,
-      ...getColumnSearchProps("dvt"),
-    },
-    {
-      title: "SL/Cụm",
-      dataIndex: "slcum",
-    },
-    {
-      title: "SL/Xe",
-      dataIndex: "slxe",
-      key: "sl2",
-    },
-    {
-      title: "Tên linh kiện",
-      dataIndex: "Tenlinhkien",
-      key: "Telinhkien",
-      editable: true,
-    },
-    {
-      title: "Mã linh kiện",
-      dataIndex: "Malinhkien",
-      key: "Malinhkien",
-      editable: true,
-      ...getColumnSearchProps("Malinhkien"),
-    },
-    {
-      title: "Yêu cầu khuôn",
-      dataIndex: "khuon",
-      editable: true,
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
+        {
+          title: "Thông số kỹ thuật",
+          dataIndex: "info2",
+          key: "info2",
+          editable: true,
+        }]
+      },
+      {
+        title: "ĐVT",
+        dataIndex: "dvt",
+        key: "dvt",
+        editable: true,
+        ...getColumnSearchProps("dvt"),
+      },
+      {
+        title: "SL/Cụm",
+        dataIndex: "slcum",
+      },
+      {
+        title: "SL/Xe",
+        dataIndex: "slxe",
+        key: "sl2",
+      }]
+    },{
+      title:'Thông tin phôi',
+      children:[{
+        title: "Mã số phôi",
+        dataIndex: "Malinhkien",
+        key: "Telinhkien",
+        editable: true,
+        ...getColumnSearchProps("Malinhkien"),
+      },
+      {
+        title: <div><p>Tên phôi</p><p>(Chọn gia công)</p></div>,
+        dataIndex: "Tenlinhkien",
+        key: "Tenlinhkien",
+        editable: true,
+      },{
+        title:'Thông số kỹ thuật',
+        editable: true,
+      },{
+        title:'Xuất xứ phôi',
+        editable: true,
+      },{
+        title:'Mã số bản vẽ phôi',
+        editable: true,
+      },{
+        title:'ĐVT',
+        editable: true,
+      },{
+        title:'Khôi lượng phôi/xe',
+        editable: true,
+      }]
+    },{
+      title:'Ghi chú',
       editable: true,
     },
     {
       title: "Chức năng",
       key: "edit",
+      fixed:'right',
       render: (_, record) => {
         const editable = isEditing(record);
-        if (bom.status < 2) {
           return editable ? (
             <span>
               <Typography.Link
@@ -740,10 +738,10 @@ export default function Ebomexport() {
                   marginRight: 8,
                 }}
               >
-                Save
+                <SaveOutlined/>
               </Typography.Link>
               <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                <a>Cancel</a>
+                <CloseOutlined color="red"/>
               </Popconfirm>
             </span>
           ) : (
@@ -751,10 +749,9 @@ export default function Ebomexport() {
               disabled={editingKey !== ""}
               onClick={() => edit(record)}
             >
-              Edit
+              <EditOutlined/>
             </Typography.Link>
           );
-          }
         // } else {
         //   if (username.filter((da) => da.idunit == bom.IDunit)[0].level > 6)
         //     return editable ? (

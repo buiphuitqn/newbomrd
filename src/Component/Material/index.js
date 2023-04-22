@@ -21,7 +21,7 @@ import Loadding from "../Loadding";
 const { Text } = Typography;
 const { Content } = Layout
 const Material = () => {
-  const { dataSource, loading,setLoading } = React.useContext(Context);
+  const { dataSource, loading,setLoading,collapsed } = React.useContext(Context);
   
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
@@ -139,24 +139,40 @@ const Material = () => {
   console.log(dataSource)
   const columns = [
     {
-      title: "Thông tin thiết kế",
-      children: [
-        {
-          title: "Tên hàng hóa",
+      title:'Thông tin linh kiện',
+      children:[{
+        title: "Mã số",
+        dataIndex: "col1",
+        key: "col1",
+        width: "120px",
+        fixed: 'left',
+        ...getColumnSearchProps("col1"),
+      },
+      {
+        title: "Tên linh kiện",
+        key: "col0",
+        width: "10%",
+        fixed: 'left',
+        ...getColumnSearchProps("col0"),
+        children:[{
+          title: "Tên tiêng việt",
           dataIndex: "col0",
           key: "col0",
-          width: "10%",
+          width: "5%",
           fixed: 'left',
           ...getColumnSearchProps("col0"),
-        },
-        {
-          title: "Mã số",
-          dataIndex: "col1",
-          key: "col1",
-          width: "10%",
+        },{
+          title: "Tên tiêng anh",
+          key: "col0",
+          width: "5%",
           fixed: 'left',
-          ...getColumnSearchProps("col1"),
-        },
+        }
+      ]
+      }]
+    }
+    ,{
+      title: "Thông tin kỹ thuật linh kiện",
+      children: [
         {
           title: "Vật liệu",
           dataIndex: "col2",
@@ -166,16 +182,20 @@ const Material = () => {
           title: "Xuất xứ",
           dataIndex: "col3",
           key: "startday",
-        },
-        {
-          title: "Quy cách",
-          dataIndex: "col4",
+        },{
+          title: "Nơi gia công",
           key: "endday",
         },
         {
-          title: "Quy cách đột lỗ",
-          dataIndex: "col5",
+          title: "Thông tin kỹ thuật",
           key: "endday",
+          children:[{
+            title:'Bản vẽ',
+            key:'layout'
+          },{
+            title:'Thông số kỹ thuật',
+            key:'info'
+          }]
         },
         {
           title: "ĐVT",
@@ -185,81 +205,62 @@ const Material = () => {
       ],
     },
     {
-      title: "Thông tin sản xuất",
+      title: "Thông tin phôi",
       children: [
         {
-          title: "Tên linh kiện/phôi",
-          dataIndex: "col7",
-          key: "endday",
-          width: "10%",
-        },
-        {
-          title: "mã số linh kiện/phôi",
+          title: "mã số phôi",
           dataIndex: "col8",
           key: "endday",
-          width: "10%",
           ...getColumnSearchProps("col8"),
+        },
+        {
+          title: "Tên phôi",
+          dataIndex: "col7",
+          key: "endday",
+        },{
+          title: "Thông số kỹ thuật",
+          key: "endday",
+        },{
+          title: "Xuất xứ phôi",
+          dataIndex: "col14",
+          key: "endday",
+        },{
+          title: "Mã bản vẽ",
+          key: "endday",
         },
         {
           title: "ĐVT",
           dataIndex: "col9",
+          key: "endday",
+        },{
+          title: "Khối lượng",
+          key: "endday",
+        },{
+          title: "Ghi chú",
           key: "endday",
         },
         {
           title: "Số lượng phôi",
           dataIndex: "col10",
           key: "endday",
-        },
-        {
-          title: "% Tiêu hao",
-          dataIndex: "col11",
-          key: "endday",
-        },
-        {
-          title: "% lượng dư phôi",
-          dataIndex: "col12",
-          key: "endday",
-        },
-        {
-          title: "Quy cách phôi",
-          dataIndex: "col13",
-          key: "endday",
-        },
-        {
-          title: "Xuất xứ linh kiện",
-          dataIndex: "col14",
-          key: "endday",
-        },
-        {
-          title: "Chưa có khuôn",
-          dataIndex: "col15",
-          key: "endday",
-        },
-        {
-          title: "Khuôn tạm",
-          dataIndex: "col16",
-          key: "endday",
-        },
-        {
-          title: "Khuôn sản xuất",
-          dataIndex: "col17",
-          key: "endday",
-        },
-        {
-          title: "Trạm",
-          dataIndex: "col18",
-          key: "endday",
-        },
-        {
-          title: "Chuyền",
-          dataIndex: "col19",
-          key: "endday",
-        },
-        {
-          title: "Xưởng",
-          dataIndex: "col20",
-          key: "endday",
-        },
+        },{
+          title:'Thông tin khuôn',
+          children:[{
+            title: "Chưa có khuôn",
+            dataIndex: "col15",
+            key: "endday",
+          },
+          {
+            title: "Khuôn tạm",
+            dataIndex: "col16",
+            key: "endday",
+          },
+          {
+            title: "Khuôn sản xuất",
+            dataIndex: "col17",
+            key: "endday",
+          }]
+        }
       ],
     },
   ];
@@ -267,7 +268,7 @@ const Material = () => {
   return (
     <Layout className="homelayout">
       <MenuSider />
-      <Layout className="site-layout">
+      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
         <Headerpage />
         <Content
           className="site-layout-background"

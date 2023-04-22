@@ -13,6 +13,7 @@ import MBom from "./Component/MBom";
 import Member from "./Component/Member";
 import Material from "./Component/Material";
 import Functionlist from "./Component/Functionlist";
+import Tablemanager from "./Component/Tablemanager";
 
 function App({ history }) {
   const { initState } = Statedata()
@@ -37,6 +38,7 @@ function App({ history }) {
         <Route path='/BOMManager/he-thong/chuc-nang' element={<Functionlist />}></Route>
         <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlist />}></Route>
         <Route path='/BOMManager/BOM/Ebom' element={<Ebom/>}></Route>
+        <Route path='/BOMManager/cai-dat/cau-hinh-bang' element={<Tablemanager/>}></Route>
       </Routes>
     </ContextProvider>
   );

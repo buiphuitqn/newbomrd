@@ -30,7 +30,7 @@ const Login = () => {
     let user = values.username;
     let pass = values.password;
     let keycode = values.keycode;
-    var url = "https://10.40.12.4:7978/api/Login";
+    var url = "https://localhost:7978/api/Login";
     axios
       .post(url, {
         user: user,

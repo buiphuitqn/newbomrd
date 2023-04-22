@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import { Button, Divider, Layout, Table, Tooltip, Popconfirm, Space, Input } from 'antd'
 import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
@@ -7,10 +7,8 @@ import Highlighter from "react-highlight-words";
 import Context from "../../Data/Context";
 import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import Loadding from "../Loadding";
-
 const { Content } = Layout
-
-const Member = () => {
+const Tablemanager = () =>{
     const searchInput = React.useRef(null);
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
@@ -173,8 +171,8 @@ const Member = () => {
             )
         }
     ];
-    return (
-        <Layout className="homelayout">
+    return(
+    <Layout className="homelayout">
             <MenuSider />
             <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
                 <Headerpage />
@@ -193,7 +191,7 @@ const Member = () => {
                             width: "100%",
                         }}
                     >
-                        <p style={{ padding: 10 }}>Quản lý Nhân sự</p>
+                        <p style={{ padding: 10 }}>Cấu hình bảng dữ liệu data</p>
                         <Divider style={{ margin: 5 }} />
                         <div style={{ padding: 10 }}>
                             <div style={{ textAlign: '-webkit-right' }}>
@@ -234,9 +232,7 @@ const Member = () => {
                 <Footerpage />
             </Layout>
             {loading&&<Loadding/>}
-        </Layout>
-
-    )
+        </Layout>)
 }
 
-export default Member;
+export default Tablemanager

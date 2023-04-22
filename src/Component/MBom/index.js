@@ -47,13 +47,14 @@ const MBom = () => {
     setParentbom,
     loading,
     setLoading,
-    bom
+    bom,
+    collapsed
   } = React.useContext(Context);
   let navigate = useNavigate();
   React.useEffect(() => {
     setLoading(true)
     setListBom([]);
-    var url = "https://10.40.12.4:7978/api/Bom";
+    var url = "https://localhost:7978/api/Bom";
     axios
       .post(url)
       .then((res) => {
@@ -86,7 +87,7 @@ const MBom = () => {
   };
 
   const handleDelete = (record) => {
-    var url = "https://10.40.12.4:7978/api/DeleteBom";
+    var url = "https://localhost:7978/api/DeleteBom";
     axios
       .post(url, {
         NoBom: record.NoBom,
@@ -454,7 +455,7 @@ const MBom = () => {
   return (
     <Layout className="homelayout">
       <MenuSider />
-      <Layout className="site-layout">
+      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
         <Headerpage />
         <Content
           className="site-layout-background"

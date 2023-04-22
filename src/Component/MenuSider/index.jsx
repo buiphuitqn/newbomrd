@@ -13,7 +13,7 @@ const { Header, Sider } = Layout;
 
 
 const MenuSider = () => {
-    const [collapsed, setCollapsed] = React.useState(false);
+    
     const {
         menu,
         openkey,
@@ -21,7 +21,8 @@ const MenuSider = () => {
         selectkey,
         setSelectkey,
         allmenu,
-        setLoading
+        setLoading,
+        collapsed, setCollapsed
     } =
         React.useContext(Context);
     const [items, Setitems] = React.useState([])
@@ -48,7 +49,14 @@ const MenuSider = () => {
         }, 500);
     }, [menu]);
     return (
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider trigger={null} collapsible collapsed={collapsed} style={{
+            overflow: 'auto',
+            height: '100vh',
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            bottom: 0,
+          }}>
             <Header
                 className="headerbutton site-layout-background align-items-center"
                 style={{

@@ -29,7 +29,7 @@ const initialState = () => {
 
 const initialData = () => {
   var data2 = [];
-  var url = "https://10.40.12.4:7978/api/material";
+  var url = "https://localhost:7978/api/material";
   axios
     .post(url)
     .then((res) => {
@@ -106,7 +106,7 @@ const iconrender = (icon) => {
 }
 const initUnit = () => {
   var data2 = [];
-  var url = "https://10.40.12.4:7978/api/Bomchild";
+  var url = "https://localhost:7978/api/Bomchild";
   axios
     .post(url)
     .then((res) => {
@@ -132,7 +132,7 @@ const initUnit = () => {
 
 const initMenu = () => {
   var data2 = [];
-  var url = "https://10.40.12.4:7978/api/menulist";
+  var url = "https://localhost:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -170,7 +170,7 @@ const initMenu = () => {
 
 const initMenuall = () => {
   var data2 = [];
-  var url = "https://10.40.12.4:7978/api/menulist";
+  var url = "https://localhost:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -228,6 +228,7 @@ export default function () {
   const [openkey,setOpenkey] = React.useState(null)
   const [selectkey,setSelectkey] = React.useState(null)
   const [loading, setLoading] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(false);
   const initState = {
     login,
     setLogin,
@@ -266,7 +267,8 @@ export default function () {
     openkey,setOpenkey,
     selectkey,setSelectkey,
     stateModalmention, setStateModalmention,
-    loading, setLoading
+    loading, setLoading,
+    collapsed, setCollapsed
   };
   return { initState };
 }

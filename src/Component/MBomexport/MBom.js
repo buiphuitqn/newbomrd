@@ -152,8 +152,8 @@ export default function MBom() {
   React.useEffect(() => {
     var url = "";
     parentbom.indexchild
-      ? (url = "https://10.40.12.4:7978/api/LoadMbomtemp")
-      : (url = "https://10.40.12.4:7978/api/LoadAllMbom");
+      ? (url = "https://localhost:7978/api/LoadMbomtemp")
+      : (url = "https://localhost:7978/api/LoadAllMbom");
     var id = parentbom.id;
     axios
       .post(url, { id: parentbom.id })
@@ -215,8 +215,8 @@ export default function MBom() {
           });
         } else {
           parentbom.indexchild
-            ? (url = "https://10.40.12.4:7978/api/LoadEbomtemp")
-            : (url = "https://10.40.12.4:7978/api/LoadAllebom");
+            ? (url = "https://localhost:7978/api/LoadEbomtemp")
+            : (url = "https://localhost:7978/api/LoadAllebom");
           var id = parentbom.id;
           axios.post(url, { id: id }).then((res) => {
             if (res.data.length != 0) {
@@ -406,7 +406,7 @@ export default function MBom() {
   const handleExportMBom = () => {
     var url = "";
     if (parentbom.indexchild) {
-      url = "https://10.40.12.4:7978/api/DoneMbom";
+      url = "https://localhost:7978/api/DoneMbom";
       var id = parentbom.id;
       axios
         .post(url, { id: id })
@@ -440,7 +440,7 @@ export default function MBom() {
         datachild.filter((da) => da.idbom == parentbom.id && da.statusmbom == 2)
           .length == 8
       ) {
-        url = "https://10.40.12.4:7978/api/DoneMbomall";
+        url = "https://localhost:7978/api/DoneMbomall";
         var id = parentbom.id;
         axios
           .post(url, { id: id })
@@ -480,8 +480,8 @@ export default function MBom() {
     }
     // var url = "";
     // parentbom.indexchild
-    //   ? (url = "https://10.40.12.4:7978/api/DoneMbom")
-    //   : (url = "https://10.40.12.4:7978/api/DoneMbomall");
+    //   ? (url = "https://localhost:7978/api/DoneMbom")
+    //   : (url = "https://localhost:7978/api/DoneMbomall");
   };
 
   const handleSaveEbom = () => {
@@ -496,7 +496,7 @@ export default function MBom() {
       newArray[
         newArray.indexOf(newArray.filter((da) => da.id == parentbom.id)[0])
       ].statusmbom = 1;
-      var url = "https://10.40.12.4:7978/api/Insertmbomtemp";
+      var url = "https://localhost:7978/api/Insertmbomtemp";
       var id = bom.id;
       var data = datambom;
       axios

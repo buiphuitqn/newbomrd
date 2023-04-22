@@ -39,20 +39,20 @@ p {
 @media screen and (max-width: 1920px) {
     .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 39vh !important
+        max-height: 56vh !important
     }
 }
 
 @media screen and (max-width: 1366px) {
     .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 29vh !important
+        max-height: 46vh !important
     }
 }
 
 @media screen and (min-width: 1920px) {
     .tbebomchild .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 65vh !important
+        max-height: 89vh !important
     }
 }

@@ -10,12 +10,12 @@ import Context from "../../Data/Context";
 const { Content } = Layout;
 
 const HomePage = () => {
-  const { loading } =
+  const { loading,collapsed, setCollapsed } =
   React.useContext(Context);
   return (
     <Layout className="homelayout">
       <MenuSider />
-      <Layout className="site-layout">
+      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
         <Headerpage />
         <Content
           className="site-layout-background"

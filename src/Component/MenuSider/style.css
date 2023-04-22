@@ -6,7 +6,6 @@
     transition: color 0.3s;
   }
 .ant-layout-sider-dark{
-  max-width: 250px !important;
   width: auto !important;
   flex: auto !important;
 }

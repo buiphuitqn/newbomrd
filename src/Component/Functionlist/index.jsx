@@ -15,7 +15,8 @@ const Functionlist = () => {
         allmenu,
         iconrender,
         loading,
-        setLoading
+        setLoading,
+        collapsed
       } = React.useContext(Context);
       const [datasource,setDatasource] = React.useState([])
     const columns = [
@@ -59,7 +60,7 @@ const Functionlist = () => {
     return (
         <Layout className="homelayout">
             <MenuSider />
-            <Layout className="site-layout">
+            <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
                 <Headerpage />
                 <Content
                     className="site-layout-background"

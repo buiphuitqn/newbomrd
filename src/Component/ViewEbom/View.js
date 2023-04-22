@@ -147,7 +147,7 @@ export default function View() {
   const [showfinish, setShowfinish] = React.useState(false);
   let navigate = useNavigate();
   React.useEffect(() => {
-    var url = "https://10.40.12.4:7978/api/LoadAllebom";
+    var url = "https://localhost:7978/api/LoadAllebom";
     var id = parentbom.id;
     axios
       .post(url, { id: id })
@@ -332,7 +332,7 @@ export default function View() {
       datachild.filter((da) => da.idbom == parentbom.id && da.status == 2)
         .length == 8
     ) {
-      var url = "https://10.40.12.4:7978/api/DoneEbomall";
+      var url = "https://localhost:7978/api/DoneEbomall";
       var id = parentbom.id;
       axios
         .post(url, { id: id })
@@ -375,7 +375,7 @@ export default function View() {
         description: "Bạn chưa nhập đầy đủ thông tin",
       });
     } else {
-      var url = "https://10.40.12.4:7978/api/Insertebomtemp";
+      var url = "https://localhost:7978/api/Insertebomtemp";
       var id = parentbom.id;
       var data = dataebom;
       axios
