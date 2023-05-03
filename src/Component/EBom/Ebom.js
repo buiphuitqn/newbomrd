@@ -1,8 +1,10 @@
+//Bảng nhập BOM
+
 import React from "react";
 import logo from "../../Library/images/LOGO THACO AUTO.png";
 import Context from "../../Data/Context";
 import axios from "axios";
-import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
+import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined, ClockCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   Divider,
   Button,
@@ -14,43 +16,14 @@ import {
   Col,
   Form,
   Typography,
-  InputNumber,
+  Tag,
+  Select,
   notification,
 } from "antd";
 import Highlighter from "react-highlight-words";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 
-const EditableCell = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = <Input />;
-  if (children[1] != null && children[1] != undefined && children[1] != "0")
-    editing = false;
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{
-            margin: 0,
-          }}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
-};
 
 const exportLevel = (level) => {
   var newLevel = [];
@@ -129,13 +102,16 @@ const softdata = (arrayall, arraymember) => {
 export default function Ebomexport() {
   const {
     bom,
-    enovia,
+    setBom,
     dataSource,
     username,
     dataebom,
     setDataebom,
     datachild,
     setDatachild,
+    dropdvt,
+    dropnoigiacong,
+    dropxuatxu
   } = React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
@@ -144,22 +120,71 @@ export default function Ebomexport() {
   const [editingKey, setEditingKey] = React.useState("");
   const [showfinish, setShowfinish] = React.useState(false);
   let navigate = useNavigate();
+
+  //hàm tạo dòng edit dữ liệu
+  const EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    var inputNode = <Input />;
+    if (dataIndex == 'xuat_xu') {
+      inputNode = (
+        <Select options={dropxuatxu} onChange={(value) => record.xuat_xu = value} />
+      );
+    }
+    if (dataIndex == 'noi_gia_cong') {
+      inputNode = (
+        <Select options={dropnoigiacong} onChange={(value) => record.noi_gia_cong = value} />
+      );
+    }
+    if (dataIndex == 'dvt') {
+      inputNode = (
+        <Select options={dropdvt} onChange={(value) => record.dvt = value} />
+      );
+    }
+    const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt']
+    if (arraydrop.filter(da => da == dataIndex).length == 0)
+      if (children[1] != null && children[1] != undefined && children[1] != "0")
+        editing = false;
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{
+              margin: 0,
+            }}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
   React.useEffect(() => {
-    var url = "https://localhost:7978/api/LoadEbomtemp";
+    //Tải dữ liệu từ bảng ebom
+    var url = "https://113.174.246.52:7978/api/LoadEbomtemp";
     var id = bom.id;
     axios
       .post(url, { id: id })
       .then((res) => {
-        if (res.data.length != 0 && res.data.length == enovia.length) {
+        if (res.data.length != 0) {
           setDataebom([]);
           var data = res.data;
           var lever = exportLevel(data.map((en) => en.level));
           var Slxe = exportSLxe(
             data.map((en) => en.level),
-            data.map((en) => en.Slxe)
+            data.map((en) => en.slcum)
           );
           data.map((item, index) => {
-            console.log(item)
             setDataebom((dataebom) => [
               ...dataebom,
               {
@@ -167,23 +192,25 @@ export default function Ebomexport() {
                 no: index + 1,
                 level: lever[index],
                 level2: item.level,
-                ID: item.idmaterial,
-                Name: item.namematerial,
-                vatlieu: item.vatlieu,
-                xuatxu: item.xuatxu,
-                Quycach: item.Quycach,
-                Quycachdotlo: item.Quycachdotlo,
-                Tenlinhkien: item.Tenlinhkien,
-                Malinhkien: item.Malinhkien,
-                slcum: item.Slcum,
+                ma_vat_tu: item.ma_vat_tu,
+                ten_vn: item.ten_vn,
+                ten_en: item.ten_en,
+                vat_lieu: item.vat_lieu,
+                xuat_xu: item.xuat_xu,
+                noi_gia_cong: item.noi_gia_cong,
+                ma_ban_ve: item.ma_ban_ve,
+                thong_so_ky_thuat: item.thong_so_ky_thuat,
+                slcum: item.slcum,
                 slxe: Slxe[index],
-                info2: item.info,
-                img: item.image,
-                note: item.note,
-                Amount: item.amountchange,
-                info: item.infochange,
-                dvt: item.DVT,
-                khuon: item.Khuon,
+                dvt: item.dvt,
+                ma_phoi: item.ma_phoi,
+                ten_phoi: item.ten_phoi,
+                thong_so_phoi: item.thong_so_phoi,
+                xuat_xu_phoi: item.xuat_xu_phoi,
+                ban_ve_vat_tu: item.ban_ve_vat_tu,
+                dvt_phoi:item.dvt_phoi,
+                khoi_luong:item.khoi_luong,
+                ghi_chu:item.ghi_chu
               },
             ]);
           });
@@ -195,195 +222,244 @@ export default function Ebomexport() {
               description:
                 "Chưa nhập dữ liệu tạm cho Ebom. Vui lòng kiểm tra lại",
             });
-          var url = "https://localhost:7978/api/Enoviachild";
+          var url = "https://113.174.246.52:7978/api/Enoviachild";
           var id = bom.id;
           axios
             .post(url, { id: id })
             .then((res2) => {
+
               setDataebom([]);
-              console.log(res2)
               if (res2.data.length != 0) {
                 var data = res2.data;
                 var lever = exportLevel(
                   data.map((en) => en.level)
                 );
-                console.log(lever)
                 var Slxe = exportSLxe(
                   data.map((en) => en.level),
                   data.map((en) => en.Amount)
                 );
                 data.map((en, index) => {
-                  if (
-                    res.data.filter((da) => da.idenovia == en.id).length != 0
-                  ) {
-                    setDataebom((dataebom) => [
-                      ...dataebom,
-                      {
-                        key: index,
-                        no: index + 1,
-                        level: lever[index],
-                        level2: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .level,
-                        ID: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .idmaterial,
-                        Name: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .namematerial,
-                        vatlieu: res.data.filter(
-                          (da) => da.idenovia == en.id
-                        )[0].vatlieu,
-                        xuatxu: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .xuatxu,
-                        Quycach: res.data.filter(
-                          (da) => da.idenovia == en.id
-                        )[0].Quycach,
-                        Quycachdotlo: res.data.filter(
-                          (da) => da.idenovia == en.id
-                        )[0].Quycachdotlo,
-                        Tenlinhkien: res.data.filter(
-                          (da) => da.idenovia == en.id
-                        )[0].Tenlinhkien,
-                        Malinhkien: res.data.filter(
-                          (da) => da.idenovia == en.id
-                        )[0].Malinhkien,
-                        slcum: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .Slcum,
-                        slxe: Slxe[index],
-                        info2: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .info,
-                        img: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .image,
-                        note: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .note,
-                        Amount: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .amountchange,
-                        info: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .infochange,
-                        dvt: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .DVT,
-                        khuon: res.data.filter((da) => da.idenovia == en.id)[0]
-                          .Khuon,
-                      },
-                    ]);
-                  } else
-                    setDataebom((dataebom) => [
-                      ...dataebom,
-                      {
-                        key: index,
-                        no: index + 1,
-                        level: lever[index],
-                        level2: en.level,
-                        ID: en.idmaterial,
-                        Name:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                  setDataebom((dataebom) => [
+                    ...dataebom,
+                    {
+                      key: index,
+                      no: index + 1,
+                      level: lever[index],
+                      level2: en.level,
+                      ma_vat_tu: en.idmaterial,
+                      ten_vn:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ten_vn != ""
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col0 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col0
-                              : "0"
-                            : en.Name != ""
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ten_vn
+                            : "0"
+                          : en.Name != ""
                             ? en.Name
                             : "0",
-                        vatlieu:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                      ten_en:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ten_en != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ten_en != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col2 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col2
-                              : "0"
-                            : "0",
-                        xuatxu:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ten_en
+                            : "0"
+                          : "0",
+                      vat_lieu:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].vat_lieu != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].vat_lieu != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col3 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col3
-                              : "0"
-                            : "0",
-                        Quycach:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].vat_lieu
+                            : "0"
+                          : "0",
+                      xuat_xu:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].xuat_xu != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].xuat_xu != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col4 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col4
-                              : "0"
-                            : "0",
-                        Quycachdotlo:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].xuat_xu
+                            : "0"
+                          : "0",
+                      noi_gia_cong:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].noi_gia_cong != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].noi_gia_cong != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col5 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col5
-                              : "0"
-                            : "0",
-                        Tenlinhkien:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].noi_gia_cong
+                            : "0"
+                          : "0",
+                      ma_ban_ve:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ma_ban_ve != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ma_ban_ve != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col7 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col7
-                              : "0"
-                            : "0",
-                        Malinhkien:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ma_ban_ve
+                            : "0"
+                          : "0",
+                      thong_so_ky_thuat:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].thong_so_ky_thuat != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].thong_so_ky_thuat != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col8 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col8
-                              : "0"
-                            : "0",
-                        slcum: en.Amount,
-                        slxe: Slxe[index],
-                        info2:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].thong_so_ky_thuat
+                            : "0"
+                          : "0",
+                      dvt:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].dvt != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].dvt != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col15 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col15
-                              : "0"
-                            : "0",
-                        img: "0",
-                        note: "0",
-                        dvt:
-                          dataSource.filter((da) => da.col1 == en.idmaterial)
-                            .length != 0
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].dvt
+                            : "0"
+                          : "0",
+                      ma_phoi:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ma_phoi != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ma_phoi != null)
                             ? dataSource.filter(
-                                (da) => da.col1 == en.idmaterial
-                              )[0].col6 != ""
-                              ? dataSource.filter(
-                                  (da) => da.col1 == en.idmaterial
-                                )[0].col6
-                              : "0"
-                            : "0",
-                        info: "0",
-                        Amount: "0",
-                        khuon: "0",
-                        idenovia: en.id,
-                      },
-                    ]);
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ma_phoi
+                            : "0"
+                          : "0",
+                      slcum: en.Amount,
+                      slxe: Slxe[index],
+                      ten_phoi:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ten_phoi != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ten_phoi != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ten_phoi
+                            : "0"
+                          : "0",
+                      xuat_xu_phoi:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].xuat_xu_phoi != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].xuat_xu_phoi != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].xuat_xu_phoi
+                            : "0"
+                          : "0",
+                      thong_so_phoi:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].thong_so_phoi != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].thong_so_phoi != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].thong_so_phoi
+                            : "0"
+                          : "0",
+                      ban_ve_vat_tu:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ban_ve_vat_tu != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ban_ve_vat_tu != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ban_ve_vat_tu
+                            : "0"
+                          : "0",
+                      dvt_phoi:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].dvt_phoi != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].dvt_phoi != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].dvt_phoi
+                            : "0"
+                          : "0",
+                      khoi_luong:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].khoi_luong != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].khoi_luong != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].khoi_luong
+                            : "0"
+                          : "0",
+                      ghi_chu:
+                        dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
+                          .length != 0
+                          ? (dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ghi_chu != '' && dataSource.filter(
+                            (da) => da.ma_vat_tu == en.idmaterial
+                          )[0].ghi_chu != null)
+                            ? dataSource.filter(
+                              (da) => da.ma_vat_tu == en.idmaterial
+                            )[0].ghi_chu
+                            : "0"
+                          : "0",
+                      idenovia: en.id,
+                    },
+                  ]);
                 });
               }
             })
@@ -392,7 +468,7 @@ export default function Ebomexport() {
               notification["error"]({
                 message: "Thông báo",
                 description: "Không thể truy cập máy chủ",
-                duration:2
+                duration: 2
               });
             });
         }
@@ -401,7 +477,7 @@ export default function Ebomexport() {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   }, []);
@@ -411,9 +487,10 @@ export default function Ebomexport() {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters,confirm) => {
     clearFilters();
     setSearchText("");
+    confirm();
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -430,7 +507,7 @@ export default function Ebomexport() {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Nhập nội dung`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -451,29 +528,16 @@ export default function Ebomexport() {
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
+            Xoá
           </Button>
         </Space>
       </div>
@@ -522,7 +586,7 @@ export default function Ebomexport() {
   };
 
   const handleExportMBom = () => {
-    var url = "https://localhost:7978/api/DoneEbom";
+    var url = "https://113.174.246.52:7978/api/DoneEbom";
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -536,7 +600,7 @@ export default function Ebomexport() {
           notification["success"]({
             message: "Thông báo",
             description: "Lưu thành công",
-            duration:2
+            duration: 2
           });
         }
       })
@@ -544,48 +608,68 @@ export default function Ebomexport() {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   };
 
-  const handleSaveEbom = () => {
-    var check = JSON.stringify(dataebom).match(/:null[\},]/) != null;
-    if (check) {
+  const handleSendApprove = () =>{
+    var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+    var id = bom.id
+    var status = 1
+    axios.post(url,{id:id,status:1})
+    .then((res)=>{
+      if(res.data==='OK')
+      {
+        setBom({...bom,status:1,statuschild:<Tag icon={<ClockCircleOutlined />} color="warning">
+        Đang phê duyệt
+      </Tag>})
+        notification["success"]({
+          message:'Thông báo',
+          description:"Gửi phê duyệt thành công",
+          duration:2
+        })
+      }
+    }).catch((error)=>{
       notification["error"]({
         message: "Thông báo",
-        description: "Bạn chưa nhập đầy đủ thông tin",
+        description: "Không thể truy cập máy chủ",
+        duration: 2
       });
-    } else {
-      let newArray = [...datachild];
-      newArray[
-        newArray.indexOf(newArray.filter((da) => da.id == bom.id)[0])
-      ].status = 1;
-      setDatachild(newArray);
-      var url = "https://localhost:7978/api/Insertebomtemp";
-      var id = bom.id;
-      var data = dataebom;
-      axios
-        .post(url, {
-          id: id,
-          data: data,
-        })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          notification["error"]({
+    })
+  }
+  const handleSaveEbom = () => {
+    //var check = JSON.stringify(dataebom).match(/:null[\},]/) != null;
+    var url = "https://113.174.246.52:7978/api/Insertebomtemp";
+    var id = bom.id;
+    var data = dataebom;
+    axios
+      .post(url, {
+        id: id,
+        data: data,
+      })
+      .then((res) => {
+        if (res.data.affectedRows === dataebom.length)
+          notification["success"]({
             message: "Thông báo",
-            description: "Không thể truy cập máy chủ",
-            duration:2
+            description: "Dữ liệu đã được lưu",
+            duration: 2
           });
+          else {
+            notification["warning"]({
+              message: "Thông báo",
+              description: "Có lỗi trong quá trình lưu. Vui lòng thử lại",
+              duration: 2
+            });
+          }
+      })
+      .catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration: 2
         });
-      notification["success"]({
-        message: "Thông báo",
-        description: "Dữ liệu đã được lưu vào bảng tạm",
-        duration:2
       });
-    }
   };
 
   const save = async (key) => {
@@ -593,7 +677,6 @@ export default function Ebomexport() {
       const row = await form.validateFields();
       const newData = [...dataebom];
       const index = newData.findIndex((item) => key === item.key);
-
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
@@ -613,70 +696,83 @@ export default function Ebomexport() {
       title: "STT",
       dataIndex: "no",
       key: "id",
+      width: '80px',
       fixed: 'left',
     },
     {
       title: "Phân cấp",
       dataIndex: "level",
+      width: '150px',
       key: "id",
       fixed: 'left',
       ...getColumnSearchProps("level"),
-    },{
-      title:'Thông tin linh kiện',
-      children:[{
+    }, {
+      title: 'Thông tin linh kiện',
+      children: [{
         title: "Mã hàng hóa",
-        dataIndex: "ID",
-        key: "name",
-        ...getColumnSearchProps("ID"),
-      },{
-        title:"Tên hàng hoá",
-        children:[{
+        dataIndex: "ma_vat_tu",
+        key: "mahang",
+        width: '150px',
+        ...getColumnSearchProps("ma_vat_tu"),
+      }, {
+        title: "Tên hàng hoá",
+        children: [{
           title: "Tên hàng hóa (VN)",
-          dataIndex: "Name",
-          key: "member",
+          dataIndex: "ten_vn",
+          width: '150px',
+          key: "ten_vn",
           editable: true,
-          ...getColumnSearchProps("Name"),
+          ...getColumnSearchProps("ten_vn"),
         },
         {
           title: "Tên hàng hóa (EN)",
+          dataIndex: 'ten_en',
           key: "member",
+          width: '150px',
           editable: true,
         }]
       },
       {
         title: "Vật liệu",
-        dataIndex: "vatlieu",
-        key: "vatlieu",
+        dataIndex: "vat_lieu",
+        key: "vat_lieu",
+        width: '100px',
         editable: true,
       },
       {
         title: "Xuất xứ",
-        dataIndex: "xuatxu",
-        key: "xuatxu",
+        dataIndex: "xuat_xu",
+        key: "xuat_xu",
+        width: '150px',
         editable: true,
-        ...getColumnSearchProps("xuatxu"),
+        ...getColumnSearchProps("xuat_xu"),
       },
       {
         title: "Nơi gia công thành phẩm",
-        dataIndex: "xuatxu",
-        key: "xuatxu",
+        dataIndex: "noi_gia_cong",
+        key: "noi_gia_cong",
+        width: '150px',
         editable: true,
-        ...getColumnSearchProps("xuatxu"),
-      },{
-        title:'Thông tin kỹ thuật',
-        children:[{
-          title:'Bản vẽ'
+        ...getColumnSearchProps("noi_gia_cong"),
+      }, {
+        title: 'Thông tin kỹ thuật',
+        children: [{
+          title: 'Bản vẽ',
+          dataIndex: 'ma_ban_ve',
+          width: '100px',
         },
         {
           title: "Thông số kỹ thuật",
-          dataIndex: "info2",
-          key: "info2",
+          dataIndex: "thong_so_ky_thuat",
+          key: "thong_so_ky_thuat",
+          width: '100px',
           editable: true,
         }]
       },
       {
         title: "ĐVT",
         dataIndex: "dvt",
+        width: '100px',
         key: "dvt",
         editable: true,
         ...getColumnSearchProps("dvt"),
@@ -684,74 +780,91 @@ export default function Ebomexport() {
       {
         title: "SL/Cụm",
         dataIndex: "slcum",
+        width: '80px',
       },
       {
         title: "SL/Xe",
         dataIndex: "slxe",
         key: "sl2",
+        width: '80px',
       }]
-    },{
-      title:'Thông tin phôi',
-      children:[{
+    }, {
+      title: 'Thông tin phôi',
+      children: [{
         title: "Mã số phôi",
-        dataIndex: "Malinhkien",
-        key: "Telinhkien",
+        dataIndex: "ma_phoi",
+        key: "ma_phoi",
+        width: '100px',
         editable: true,
-        ...getColumnSearchProps("Malinhkien"),
+        ...getColumnSearchProps("ma_phoi"),
       },
       {
         title: <div><p>Tên phôi</p><p>(Chọn gia công)</p></div>,
-        dataIndex: "Tenlinhkien",
-        key: "Tenlinhkien",
+        dataIndex: "ten_phoi",
+        key: "ten_phoi",
+        width: '100px',
         editable: true,
-      },{
-        title:'Thông số kỹ thuật',
+      }, {
+        title: 'Thông số kỹ thuật',
+        dataIndex: 'thong_so_phoi',
+        width: '100px',
         editable: true,
-      },{
-        title:'Xuất xứ phôi',
+      }, {
+        title: 'Xuất xứ phôi',
+        dataIndex: 'xuat_xu_phoi',
+        width: '100px',
         editable: true,
-      },{
-        title:'Mã số bản vẽ phôi',
+      }, {
+        title: 'Mã số bản vẽ phôi',
+        dataIndex: 'ban_ve_vat_tu',
+        width: '100px',
         editable: true,
-      },{
-        title:'ĐVT',
+      }, {
+        title: 'ĐVT',
+        dataIndex: 'dvt_phoi',
+        width: '100px',
         editable: true,
-      },{
-        title:'Khôi lượng phôi/xe',
+      }, {
+        title: 'Khôi lượng phôi/xe',
+        dataIndex: 'khoi_luong',
+        width: '100px',
         editable: true,
       }]
-    },{
-      title:'Ghi chú',
+    }, {
+      title: 'Ghi chú',
+      dataIndex: 'ghi_chu',
+      width: '100px',
       editable: true,
     },
     {
       title: "Chức năng",
       key: "edit",
-      fixed:'right',
+      width: '100px',
+      fixed: 'right',
       render: (_, record) => {
         const editable = isEditing(record);
-          return editable ? (
-            <span>
-              <Typography.Link
-                onClick={() => save(record.key)}
-                style={{
-                  marginRight: 8,
-                }}
-              >
-                <SaveOutlined/>
-              </Typography.Link>
-              <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                <CloseOutlined color="red"/>
-              </Popconfirm>
-            </span>
-          ) : (
+        return editable ? (
+          <span>
             <Typography.Link
-              disabled={editingKey !== ""}
-              onClick={() => edit(record)}
+              onClick={() => save(record.key)}
+              style={{
+                marginRight: 8,
+              }}
             >
-              <EditOutlined/>
+              <SaveOutlined />
             </Typography.Link>
-          );
+            <Popconfirm title="Bạn có muốn đóng?" onConfirm={cancel}>
+              <CloseOutlined color="red" />
+            </Popconfirm>
+          </span>
+        ) : (
+          <Typography.Link
+            disabled={editingKey !== ""}
+            onClick={() => edit(record)}
+          >
+            <EditOutlined />
+          </Typography.Link>
+        );
         // } else {
         //   if (username.filter((da) => da.idunit == bom.IDunit)[0].level > 6)
         //     return editable ? (
@@ -828,7 +941,7 @@ export default function Ebomexport() {
                 fontWeight: "bold",
               }}
             >
-              E-BOM {bom.indexchild && ` (${bom.namechild})`}
+              E-BOM {bom.name && ` (${bom.name})`}
             </Button>
           </Divider>
         </Col>
@@ -845,9 +958,27 @@ export default function Ebomexport() {
                 Lưu E-BOM
               </Button>
             )} */}
-            <Button onClick={handleSaveEbom} type="primary">
-                Lưu E-BOM
-              </Button>
+            {(bom.status === 0 || bom.status === 2) ? (
+              <div>
+                <Popconfirm
+                  title="Bạn có muốn lưu"
+                  okText="Có"
+                  cancelText="Không"
+                  onConfirm={handleSaveEbom}
+                >
+                  <Button type="primary">
+                    Lưu E-BOM
+                  </Button>
+                </Popconfirm>
+                <Popconfirm
+                  title="Bạn có muốn gửi duyệt"
+                  okText="Có"
+                  cancelText="Không"
+                  onConfirm={handleSendApprove}
+                >
+                  <Button type="danger">
+                    Gửi phê duyệt
+                  </Button></Popconfirm></div>) : bom.statuschild}
           </Divider>
         </Col>
       </Row>
@@ -865,10 +996,9 @@ export default function Ebomexport() {
           <div style={{ width: "100%" }}>
             <p>Mã hóa: QT.RDOT.TTTK/01- BM07</p>
             <p>Đơn vị: R&D Ô tô</p>
-            <p>{`Số: ${bom.NoBom}`}</p>
-            <p>{`Ngày: ${new Date(bom.TimeCreate).getDate()}/${
-              new Date(bom.TimeCreate).getMonth() + 1
-            }/${new Date(bom.TimeCreate).getFullYear()}`}</p>
+            <p>{`Số: ${bom.nobom}`}</p>
+            <p>{`Ngày: ${new Date(bom.TimeCreate).getDate()}/${new Date(bom.TimeCreate).getMonth() + 1
+              }/${new Date(bom.TimeCreate).getFullYear()}`}</p>
           </div>
         </Col>
       </Row>
@@ -879,7 +1009,7 @@ export default function Ebomexport() {
               className="tbebomchild"
               style={{
                 fontFamily: "Tahoma",
-                fontSize:14
+                fontSize: 14
               }}
               components={{
                 body: {
@@ -896,8 +1026,8 @@ export default function Ebomexport() {
               columns={mergedColumns}
               rowClassName={(record, index) =>
                 record.xuatxu == "BUS THACO" &&
-                record.dvt == "Chi tiết" &&
-                record.Malinhkien == "0"
+                  record.dvt == "Chi tiết" &&
+                  record.Malinhkien == "0"
                   ? "red"
                   : "green"
               }

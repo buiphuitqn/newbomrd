@@ -1,5 +1,7 @@
+// Bảng quản lý danh sách BOM
+
 import React from "react";
-import { DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, SyncOutlined, EyeOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined, ClockCircleOutlined, CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import {
   Button,
   Input,
@@ -12,7 +14,8 @@ import {
   Badge,
   Tooltip,
   Layout,
-  Spin
+  Spin,
+  Tag
 } from "antd";
 import {
   EditOutlined
@@ -54,15 +57,21 @@ const MBom = () => {
   React.useEffect(() => {
     setLoading(true)
     setListBom([]);
-    var url = "https://localhost:7978/api/Bom";
+    var url = "https://113.174.246.52:7978/api/Bom";
     axios
       .post(url)
       .then((res) => {
         if (res.data.length != 0) {
           var data = res.data;
-          console.log(data)
           data = data.map((da, index) => {
-            return { ...da, key: index }
+            return {
+              ...da, key: index, status: da.child.filter(ds => ds.status === 0).length === 0 ? <Tag icon={<CheckCircleOutlined />} color="success">
+                Đã hoàn thiện</Tag> : da.child.filter(ds => ds.status === 0).length === da.child.length ? <Tag icon={<CloseCircleOutlined />} color="error">
+                  Chưa hoàn thiện
+                </Tag> : <Tag icon={<ClockCircleOutlined />} color="warning">
+                Đang hoàn thiện
+              </Tag>
+            }
           })
           setListBom(data)
         }
@@ -71,7 +80,7 @@ const MBom = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   }, [keymenu]);
@@ -81,32 +90,33 @@ const MBom = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters,confirm) => {
     clearFilters();
     setSearchText("");
+    confirm();
   };
 
   const handleDelete = (record) => {
-    var url = "https://localhost:7978/api/DeleteBom";
+    var url = "https://113.174.246.52:7978/api/DeleteBom";
     axios
       .post(url, {
-        NoBom: record.NoBom,
+        NoBom: record.nobom,
       })
       .then((res) => {
         const { insertId } = res.data;
         notification["success"]({
           message: "Thông báo",
           description: `Xóa BOM thành công`,
-          duration:2
+          duration: 2
         });
-        const newData = listBom.filter((item) => item.NoBom !== record.NoBom);
+        const newData = listBom.filter((item) => item.nobom !== record.nobom);
         setListBom(newData);
       })
       .catch((error) => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   };
@@ -125,7 +135,7 @@ const MBom = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Nhập nội dung`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -146,29 +156,16 @@ const MBom = () => {
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
+            Xoá
           </Button>
         </Space>
       </div>
@@ -209,7 +206,7 @@ const MBom = () => {
 
 
   const expandedRowRender = (record) => {
-    const { Namebom, NoBom, TimeCreate, IDunit } = record;
+    const { Namebom, nobom, TimeCreate, IDunit } = record;
     const innerColumns = [
       {
         title: "STT",
@@ -224,15 +221,13 @@ const MBom = () => {
         title: "Trạng thái",
         render: (recordin) =>
           recordin.child.length != 0 ? (
-            <span>
-              <Badge status="success" />
+            <Tag icon={<CheckCircleOutlined />} color="success">
               Đã cập nhật Enovia
-            </span>
+            </Tag>
           ) : (
-            <span>
-              <Badge status="warning" />
+            <Tag icon={<CloseCircleOutlined />} color="error">
               Chưa cập nhật Enovia
-            </span>
+            </Tag>
           )
       }, {
         title: "Chức năng",
@@ -242,7 +237,7 @@ const MBom = () => {
               <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
-                  NoBom: NoBom,
+                  nobom: nobom,
                   TimeCreate: TimeCreate,
                   IDunit: IDunit,
                   ...recordin,
@@ -257,7 +252,7 @@ const MBom = () => {
               <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
-                  NoBom: NoBom,
+                  nobom: nobom,
                   TimeCreate: TimeCreate,
                   IDunit: IDunit,
                   ...recordin,
@@ -268,13 +263,30 @@ const MBom = () => {
                   <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
+              <a onClick={() => {
+                setBom(recordin)
+                navigate("/BOMManager/BOM/phe-duyet-ebom-cum")
+              }}>
+                <Tooltip title="E-Bom Cụm">
+                  <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
+              <a
+                style={{
+                  color: "blue",
+                }}
+              >
+                <Tooltip title="M-Bom Cụm">
+                  <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                </Tooltip>
+              </a>
             </Space>
           ) : (
             <Space size="middle">
-              <a  onClick={() => {
+              <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
-                  NoBom: NoBom,
+                  nobom: nobom,
                   TimeCreate: TimeCreate,
                   IDunit: IDunit,
                   ...recordin,
@@ -289,7 +301,7 @@ const MBom = () => {
               <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
-                  NoBom: NoBom,
+                  nobom: nobom,
                   TimeCreate: TimeCreate,
                   IDunit: IDunit,
                   ...recordin,
@@ -315,6 +327,10 @@ const MBom = () => {
           title: "Tên cụm",
           dataIndex: "name",
           key: "name"
+        }, {
+          title: "Trạng thái",
+          dataIndex: "statuschild",
+          key: "name"
         },
         {
           title: "Chức năng",
@@ -322,7 +338,7 @@ const MBom = () => {
           render: (record) =>
           (
             <Space size="middle">
-              <a onClick={()=>{
+              <a onClick={() => {
                 setBom(record)
                 navigate("/BOMManager/BOM/Ebom")
               }}>
@@ -335,7 +351,10 @@ const MBom = () => {
                   <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-              <a>
+              <a onClick={() => {
+                setBom(record)
+                navigate("/BOMManager/BOM/phe-duyet-ebom-con")
+              }}>
                 <Tooltip title="E-Bom Cụm">
                   <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
@@ -354,7 +373,17 @@ const MBom = () => {
         }
       ];
       const datasourceinnerInner = innerRecord.child.map((da, index) => {
-        return { ...da, key: index, tt: (index + 1) }
+        return {
+          ...da, key: index, tt: (index + 1), statuschild: da.status === 0 ? <Tag icon={<SyncOutlined spin />} color="processing">
+            Đang nhập
+          </Tag> : da.status === 1 ? <Tag icon={<ClockCircleOutlined />} color="warning">
+            Đang phê duyệt
+          </Tag> : da.status === 2 ? <Tag icon={<CloseCircleOutlined />} color="error">
+            Từ chối
+          </Tag> : <Tag icon={<CheckCircleOutlined />} color="success">
+            Đã duyệt
+          </Tag>
+        }
       })
       return (
         <Table
@@ -400,6 +429,11 @@ const MBom = () => {
       dataIndex: "nameunit",
       key: "member",
       ...getColumnSearchProps("nameunit"),
+    }, {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "member",
+      ...getColumnSearchProps("status"),
     },
     {
       title: "Chức năng",
@@ -410,8 +444,8 @@ const MBom = () => {
           <Space size="middle">
             <a
               onClick={() => {
-                setParentbom(record);
-                navigate("/ViewEbom");
+                setBom(record);
+                navigate("/BOMManager/BOM/ebom-tong");
               }}
               style={{
                 color: "blue",
@@ -455,7 +489,7 @@ const MBom = () => {
   return (
     <Layout className="homelayout">
       <MenuSider />
-      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
+      <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 200 }}>
         <Headerpage />
         <Content
           className="site-layout-background"
@@ -508,7 +542,7 @@ const MBom = () => {
         </Content>
         <Footerpage />
       </Layout>
-      {loading&&<Loadding/>}
+      {loading && <Loadding />}
     </Layout>
 
   );

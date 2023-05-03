@@ -1,3 +1,5 @@
+// Bảng quản lý danh sách Enovia
+
 import React from "react";
 import {
   DownloadOutlined,
@@ -44,7 +46,7 @@ const BOM = () => {
   const searchInput = React.useRef(null);
   React.useEffect(() => {
     setLoading(true)
-    var url = "https://localhost:7978/api/Enovia";
+    var url = "https://113.174.246.52:7978/api/Enovia";
     var id = bom.id;
     var idmember = username[0].IDMember;
     axios
@@ -100,30 +102,29 @@ const BOM = () => {
   };
   const exportEbom = () => {
     setHiden(!hiden)
-    // var url = "https://localhost:7978/api/Insertenovia";
-    // var id = bom.id;
-    // var idmember = username[0].IDMember;
-    // var data = enovia;
-    // axios
-    //   .post(url, {
-    //     id: id,
-    //     data: data,
-    //     idmember: idmember,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //     notification["success"]({
-    //       message: "Thông báo",
-    //       description: "Lưu thành công",
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     notification["error"]({
-    //       message: "Thông báo",
-    //       description: "Không thể truy cập máy chủ",
-    //       duration:2
-    //     });
-    //   });
+    var url = "https://113.174.246.52:7978/api/Insertenovia";
+    var id = bom.id;
+    var idmember = username[0].IDMember;
+    var data = enovia;
+    axios
+      .post(url, {
+        id: id,
+        data: data,
+        idmember: idmember,
+      })
+      .then((res) => {
+        notification["success"]({
+          message: "Thông báo",
+          description: "Lưu thành công",
+        });
+      })
+      .catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration:2
+        });
+      });
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -132,13 +133,14 @@ const BOM = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters,confirm) => {
     clearFilters();
     setSearchText("");
+    confirm();
   };
 
   const handleDelete = (record) => {
-    var url = "https://localhost:7978/api/Deleteenovia";
+    var url = "https://113.174.246.52:7978/api/Deleteenovia";
     var id = bom.id;
     var idmaterial = record.ID;
     axios
@@ -177,7 +179,7 @@ const BOM = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Nhập nội dung`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -198,29 +200,16 @@ const BOM = () => {
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
+            Xoá
           </Button>
         </Space>
       </div>

@@ -24,8 +24,6 @@ export default function Modalmentions() {
     React.useEffect(() => {
         
     }, []);
-
-    console.log(bom)
     return (
         <Modal
             title={`PHÂN QUYỀN: ${bom.Namebom} - ${bom.namechild}`}

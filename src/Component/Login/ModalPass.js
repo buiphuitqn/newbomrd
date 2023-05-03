@@ -38,7 +38,7 @@ export default function Modalpass() {
         description: "Mật khẩu không khớp",
       });
     else {
-      var url = "https://localhost:7978/api/Changepass2";
+      var url = "https://113.174.246.52:7978/api/Changepass2";
       axios
         .post(url, {
           user: user,

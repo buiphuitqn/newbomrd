@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate,useLocation } from "react-router-dom";
 import ContextProvider from './Data/ContextProvider';
 import './App.css';
 import Login from './Component/Login';
@@ -8,16 +8,19 @@ import HomePage from './Component/Homepage';
 import BOM from './Component/BOM';
 import Ebom from './Component/EBom';
 import MBomExport from './Component/MBomexport';
-import ViewEbom from './Component/ViewEbom';
 import MBom from "./Component/MBom";
 import Member from "./Component/Member";
 import Material from "./Component/Material";
 import Functionlist from "./Component/Functionlist";
 import Tablemanager from "./Component/Tablemanager";
+import Approvebomchild from "./Component/Approvebomchild";
+import Approvebomcum from "./Component/Approvebomcum";
+import Viewebom from "./Component/Viewebom";
 
 function App({ history }) {
   const { initState } = Statedata()
   let navigate = useNavigate();
+  const location = useLocation();
   React.useEffect(() => {
     if(initState.username.length!=0)
     initState.selectkey == null && navigate("/BOMManager")
@@ -38,6 +41,9 @@ function App({ history }) {
         <Route path='/BOMManager/he-thong/chuc-nang' element={<Functionlist />}></Route>
         <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlist />}></Route>
         <Route path='/BOMManager/BOM/Ebom' element={<Ebom/>}></Route>
+        <Route path='/BOMManager/BOM/phe-duyet-ebom-con' element={<Approvebomchild/>}></Route>
+        <Route path='/BOMManager/BOM/phe-duyet-ebom-cum' element={<Approvebomcum/>}></Route>
+        <Route path='/BOMManager/BOM/ebom-tong' element={<Viewebom/>}></Route>
         <Route path='/BOMManager/cai-dat/cau-hinh-bang' element={<Tablemanager/>}></Route>
       </Routes>
     </ContextProvider>

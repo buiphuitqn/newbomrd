@@ -33,9 +33,10 @@ const Material = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters) => {
+  const handleReset = (clearFilters,confirm) => {
     clearFilters();
     setSearchText("");
+    confirm();
   };
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -51,7 +52,7 @@ const Material = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Nhập nội dung`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -72,29 +73,16 @@ const Material = () => {
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
+            Xoá
           </Button>
         </Space>
       </div>
@@ -136,34 +124,32 @@ const Material = () => {
     },2000)
     
   }, []);
-  console.log(dataSource)
   const columns = [
     {
       title:'Thông tin linh kiện',
       children:[{
         title: "Mã số",
-        dataIndex: "col1",
+        dataIndex: "ma_vat_tu",
         key: "col1",
         width: "120px",
         fixed: 'left',
-        ...getColumnSearchProps("col1"),
+        ...getColumnSearchProps("ma_vat_tu"),
       },
       {
         title: "Tên linh kiện",
         key: "col0",
         width: "10%",
         fixed: 'left',
-        ...getColumnSearchProps("col0"),
         children:[{
-          title: "Tên tiêng việt",
-          dataIndex: "col0",
+          title: "Tên tiếng việt",
+          dataIndex: "ten_vn",
           key: "col0",
           width: "5%",
           fixed: 'left',
-          ...getColumnSearchProps("col0"),
+          ...getColumnSearchProps("ten_vn"),
         },{
-          title: "Tên tiêng anh",
-          key: "col0",
+          title: "Tên tiếng anh",
+          key: "ten_en",
           width: "5%",
           fixed: 'left',
         }
@@ -175,15 +161,16 @@ const Material = () => {
       children: [
         {
           title: "Vật liệu",
-          dataIndex: "col2",
+          dataIndex: "vat_lieu",
           key: "address",
         },
         {
           title: "Xuất xứ",
-          dataIndex: "col3",
+          dataIndex: "xuat_xu",
           key: "startday",
         },{
           title: "Nơi gia công",
+          dataIndex:'noi_gia_cong',
           key: "endday",
         },
         {
@@ -191,15 +178,17 @@ const Material = () => {
           key: "endday",
           children:[{
             title:'Bản vẽ',
+            dataIndex:'ma_ban_ve',
             key:'layout'
           },{
             title:'Thông số kỹ thuật',
+            dataIndex:'thong_so_ky_thuat',
             key:'info'
           }]
         },
         {
           title: "ĐVT",
-          dataIndex: "col6",
+          dataIndex: "dvt",
           key: "endday",
         },
       ],
@@ -209,35 +198,38 @@ const Material = () => {
       children: [
         {
           title: "mã số phôi",
-          dataIndex: "col8",
+          dataIndex: "ma_phoi",
           key: "endday",
-          ...getColumnSearchProps("col8"),
+          ...getColumnSearchProps("ma_phoi"),
         },
         {
           title: "Tên phôi",
-          dataIndex: "col7",
+          dataIndex: "ten_phoi",
           key: "endday",
         },{
           title: "Thông số kỹ thuật",
+          dataIndex:'thong_so_phoi',
           key: "endday",
         },{
           title: "Xuất xứ phôi",
-          dataIndex: "col14",
+          dataIndex: "thong_so_phoi",
           key: "endday",
         },{
           title: "Mã bản vẽ",
-          key: "endday",
+          key: "ban_ve_vat_tu",
         },
         {
           title: "ĐVT",
-          dataIndex: "col9",
+          dataIndex: "dvt_phoi",
           key: "endday",
         },{
           title: "Khối lượng",
-          key: "endday",
+          dataIndex:'khoi_luong',
+          key: "khoi_luong",
         },{
           title: "Ghi chú",
-          key: "endday",
+          dataIndex:'ghi_chu',
+          key: "ghi_chu",
         },
         {
           title: "Số lượng phôi",
@@ -246,18 +238,23 @@ const Material = () => {
         },{
           title:'Thông tin khuôn',
           children:[{
-            title: "Chưa có khuôn",
-            dataIndex: "col15",
+            title: "Chưa có",
+            dataIndex: "chua_khuon",
             key: "endday",
           },
           {
             title: "Khuôn tạm",
-            dataIndex: "col16",
+            dataIndex: "khuon_tam",
             key: "endday",
           },
           {
-            title: "Khuôn sản xuất",
-            dataIndex: "col17",
+            title: "Đã có",
+            dataIndex: "da_co_khuon",
+            key: "endday",
+          },
+          {
+            title: "Không cần",
+            dataIndex: "khong_khuon",
             key: "endday",
           }]
         }

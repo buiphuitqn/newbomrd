@@ -29,7 +29,7 @@ const initialState = () => {
 
 const initialData = () => {
   var data2 = [];
-  var url = "https://localhost:7978/api/material";
+  var url = "https://113.174.246.52:7978/api/material";
   axios
     .post(url)
     .then((res) => {
@@ -38,25 +38,9 @@ const initialData = () => {
         data.map((item, index) => {
           data2.push({
             key: index,
-            col0: item.Tenhang,
-            col1: item.mahang,
-            col2: item.Vatlieu,
-            col3: item.Xuatxu,
-            col4: item.Quycach,
-            col5: item.Quycachdotlo,
-            col6: item.DVT,
-            col7: item.Telinhkien,
-            col8: item.malinhkien,
-            col9: item.DVTLinhkien,
-            col10: item.Slphoi,
-            col11: item.Tieuhao,
-            col12: item.Luongduphoi,
-            col13: item.Quycachphoi,
-            col14: item.Xuatxulinhkien,
-            col15: item.thongso,
+            ...item
           });
         });
-        console.log(data2)
       } else {
         notification["error"]({
           message: "Thông báo",
@@ -106,7 +90,7 @@ const iconrender = (icon) => {
 }
 const initUnit = () => {
   var data2 = [];
-  var url = "https://localhost:7978/api/Bomchild";
+  var url = "https://113.174.246.52:7978/api/Bomchild";
   axios
     .post(url)
     .then((res) => {
@@ -132,7 +116,7 @@ const initUnit = () => {
 
 const initMenu = () => {
   var data2 = [];
-  var url = "https://localhost:7978/api/menulist";
+  var url = "https://113.174.246.52:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -170,7 +154,7 @@ const initMenu = () => {
 
 const initMenuall = () => {
   var data2 = [];
-  var url = "https://localhost:7978/api/menulist";
+  var url = "https://113.174.246.52:7978/api/menulist";
   axios
     .post(url)
     .then((res) => {
@@ -206,6 +190,102 @@ const initMenuall = () => {
   return data2
 };
 
+const initialdropdvt = () => {
+  var data2 = [];
+  var url = "https://113.174.246.52:7978/api/dropdvt";
+  axios
+    .post(url)
+    .then((res) => {
+      if (res.data.length != 0) {
+        var data = res.data;
+        data.map((item, index) => {
+          data2.push({
+            key: index,
+            ...item
+          });
+        });
+      } else {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể tải dữ liệu",
+          duration:2
+        });
+      }
+    })
+    .catch((error) => {
+      notification["error"]({
+        message: "Thông báo",
+        description: "Không thể truy cập máy chủ",
+        duration:2
+      });
+    });
+  return data2;
+};
+
+const initialdropnoigiacong = () => {
+  var data2 = [];
+  var url = "https://113.174.246.52:7978/api/dropnoigiacong";
+  axios
+    .post(url)
+    .then((res) => {
+      if (res.data.length != 0) {
+        var data = res.data;
+        data.map((item, index) => {
+          data2.push({
+            key: index,
+            ...item
+          });
+        });
+      } else {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể tải dữ liệu",
+          duration:2
+        });
+      }
+    })
+    .catch((error) => {
+      notification["error"]({
+        message: "Thông báo",
+        description: "Không thể truy cập máy chủ",
+        duration:2
+      });
+    });
+  return data2;
+};
+
+const initialdropxuatxu = () => {
+  var data2 = [];
+  var url = "https://113.174.246.52:7978/api/dropxuatxu";
+  axios
+    .post(url)
+    .then((res) => {
+      if (res.data.length != 0) {
+        var data = res.data;
+        data.map((item, index) => {
+          data2.push({
+            key: index,
+            ...item
+          });
+        });
+      } else {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể tải dữ liệu",
+          duration:2
+        });
+      }
+    })
+    .catch((error) => {
+      notification["error"]({
+        message: "Thông báo",
+        description: "Không thể truy cập máy chủ",
+        duration:2
+      });
+    });
+  return data2;
+};
+
 export default function () {
   const [login, setLogin] = React.useState(false);
   const [username, setUsername] = React.useState(initialState);
@@ -229,6 +309,9 @@ export default function () {
   const [selectkey,setSelectkey] = React.useState(null)
   const [loading, setLoading] = React.useState(true);
   const [collapsed, setCollapsed] = React.useState(false);
+  const [dropdvt,setDropdvt]=React.useState(initialdropdvt)
+  const [dropnoigiacong,setDropnoigiacong] = React.useState(initialdropnoigiacong)
+  const [dropxuatxu,setDropxuatxu] = React.useState(initialdropxuatxu)
   const initState = {
     login,
     setLogin,
@@ -268,7 +351,10 @@ export default function () {
     selectkey,setSelectkey,
     stateModalmention, setStateModalmention,
     loading, setLoading,
-    collapsed, setCollapsed
+    collapsed, setCollapsed,
+    dropdvt,
+    dropnoigiacong,
+    dropxuatxu
   };
   return { initState };
 }

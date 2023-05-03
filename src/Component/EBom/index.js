@@ -21,6 +21,16 @@ const Ebom = () => {
   const {collapsed,loading,setLoading} = React.useContext(Context);
   React.useEffect(()=>{
     setLoading(true)
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = ''; // some message to prompt user to confirm leaving the page
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   },[])
   return (
     <Layout className="homelayout">

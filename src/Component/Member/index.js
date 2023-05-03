@@ -24,9 +24,10 @@ const Member = () => {
         setSearchedColumn(dataIndex);
     };
 
-    const handleReset = (clearFilters) => {
+    const handleReset = (clearFilters,confirm) => {
         clearFilters();
         setSearchText("");
+        confirm();
     };
 
     const handleDelete = (record) => {
@@ -71,7 +72,7 @@ const Member = () => {
                     </Button>
                     <Button
                         type="ghost"
-                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        onClick={() => clearFilters && handleReset(clearFilters,confirm)}
                         size="small"
                         style={{
                             width: 90,
