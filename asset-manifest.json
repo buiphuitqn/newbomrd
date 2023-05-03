@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/newbomrd/static/css/main.38b51ccc.css",
+    "main.js": "/newbomrd/static/js/main.20b44aca.js",
+    "static/js/787.44ec742f.chunk.js": "/newbomrd/static/js/787.44ec742f.chunk.js",
+    "static/media/BG.jpg": "/newbomrd/static/media/BG.7474b5172feecc9e9328.jpg",
+    "static/media/RD.png": "/newbomrd/static/media/RD.feecf75504477a579d8c.png",
+    "static/media/Enovia.xlsx": "/newbomrd/static/media/Enovia.25cc7880b7f58096fa44.xlsx",
+    "index.html": "/newbomrd/index.html",
+    "main.38b51ccc.css.map": "/newbomrd/static/css/main.38b51ccc.css.map",
+    "main.20b44aca.js.map": "/newbomrd/static/js/main.20b44aca.js.map",
+    "787.44ec742f.chunk.js.map": "/newbomrd/static/js/787.44ec742f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.38b51ccc.css",
+    "static/js/main.20b44aca.js"
+  ]
+}
