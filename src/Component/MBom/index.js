@@ -90,7 +90,7 @@ const MBom = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters,confirm) => {
+  const handleReset = (clearFilters, confirm) => {
     clearFilters();
     setSearchText("");
     confirm();
@@ -159,7 +159,7 @@ const MBom = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -220,11 +220,19 @@ const MBom = () => {
       }, {
         title: "Trạng thái",
         render: (recordin) =>
-          recordin.child.length != 0 ? (
+          recordin.child.length != 0 ? recordin.status === 0 ? (
             <Tag icon={<CheckCircleOutlined />} color="success">
               Đã cập nhật Enovia
             </Tag>
-          ) : (
+          ) :recordin.child.filter(re=>re.status===3).length===recordin.child.length?<Tag icon={<ClockCircleOutlined />} color="warning">
+          Đang phê duyệt
+        </Tag>: recordin.status === 2 ? (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              Đã duyệt
+            </Tag>
+          ) : <Tag icon={<ClockCircleOutlined />} color="warning">
+            Cần hiệu chỉnh
+          </Tag> : (
             <Tag icon={<CloseCircleOutlined />} color="error">
               Chưa cập nhật Enovia
             </Tag>

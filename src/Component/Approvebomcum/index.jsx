@@ -1,13 +1,13 @@
 import React from "react";
 import {
     SearchOutlined,
-    MenuUnfoldOutlined,
+    CheckCircleOutlined,
     CrownOutlined,
     UserOutlined,
     VideoCameraOutlined,
-    LogoutOutlined,
+    ClockCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Form, Table, notification, Row, Col, Button, Divider, Popconfirm, Input, Space } from "antd";
+import { Layout, Form, Table, notification, Modal, Row, Col, Button, Divider, Popconfirm, Input, Space, Tag, Checkbox } from "antd";
 import Context from "../../Data/Context";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Loadding from "../Loadding";
 import axios from "axios";
+const CheckboxGroup = Checkbox.Group;
 const { Header, Sider, Content } = Layout;
 const exportLevel = (level) => {
     var newLevel = [];
@@ -86,15 +87,38 @@ const exportSLxe = (level, slcum) => {
     }
     return endlevel;
 };
+
+const layout = {
+    labelCol: {
+        span: 6,
+    },
+    wrapperCol: {
+        span: 18,
+    },
+};
+
+const tailLayout = {
+    wrapperCol: {
+        offset: 6,
+        span: 18,
+    },
+};
 const Approvebomcum = () => {
     const [form] = Form.useForm();
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
     const searchInput = React.useRef(null);
     const [showfinish, setShowfinish] = React.useState(false);
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, username,dataSource } = React.useContext(Context);
+    const [stateModalbom, setStateModalbom] = React.useState(false)
+    const defaultCheckedList = [];
+    const [indeterminate, setIndeterminate] = React.useState(true);
+    const [checkAll, setCheckAll] = React.useState(false);
+    const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
+    const [itemcheck, setItemcheck] = React.useState([])
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource } = React.useContext(Context);
     React.useEffect(() => {
         setLoading(true)
+        console.log(bom)
         //Tải dữ liệu từ bảng ebom
         var url = "https://113.174.246.52:7978/api/Enovia";
         var id = bom.id;
@@ -118,7 +142,7 @@ const Approvebomcum = () => {
                                 var data2 = res2.data;
                                 data.map((item, index) => {
                                     var dt = data2.filter(da => da.idenovia === item.id2);
-                                    var ds = dataSource.filter(da=>da.ma_vat_tu ===item.ID)
+                                    var ds = dataSource.filter(da => da.ma_vat_tu === item.ID)
                                     setDataebom((dataebom) => [
                                         ...dataebom,
                                         {
@@ -128,23 +152,23 @@ const Approvebomcum = () => {
                                             level2: item.level,
                                             ma_vat_tu: dt.length != 0 ? dt[0].ma_vat_tu : item.ID,
                                             ten_vn: dt.length != 0 ? dt[0].ten_vn : item.Name,
-                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length!=0?ds[0].ten_en:"",
-                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length!=0?ds[0].vat_lieu:"",
-                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length!=0?ds[0].xuat_xu:"",
-                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length!=0?ds[0].noi_gia_cong:"",
-                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length!=0?ds[0].ma_ban_ve:"",
-                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat :ds.length!=0?ds[0].thong_so_ky_thuat:"",
+                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length != 0 ? ds[0].ten_en : "",
+                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length != 0 ? ds[0].vat_lieu : "",
+                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length != 0 ? ds[0].xuat_xu : "",
+                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length != 0 ? ds[0].noi_gia_cong : "",
+                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length != 0 ? ds[0].ma_ban_ve : "",
+                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat : ds.length != 0 ? ds[0].thong_so_ky_thuat : "",
                                             slcum: dt.length != 0 ? dt[0].slcum : item.Amount,
                                             slxe: Slxe[index],
-                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length!=0?ds[0].dvt:"",
-                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length!=0?ds[0].ma_phoi:"",
-                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length!=0?ds[0].ten_phoi:"",
-                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi :ds.length!=0?ds[0].thong_so_phoi:"",
-                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length!=0?ds[0].xuat_xu_phoi:"",
-                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length!=0?ds[0].ban_ve_vat_tu:"",
-                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length!=0?ds[0].dvt_phoi:"",
-                                            khoi_luong:dt.length != 0 ? dt[0].khoi_luong : ds.length!=0?ds[0].khoi_luong:"",
-                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu :ds.length!=0?ds[0].ghi_chu:""
+                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length != 0 ? ds[0].dvt : "",
+                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length != 0 ? ds[0].ma_phoi : "",
+                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length != 0 ? ds[0].ten_phoi : "",
+                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi : ds.length != 0 ? ds[0].thong_so_phoi : "",
+                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length != 0 ? ds[0].xuat_xu_phoi : "",
+                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "",
+                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "",
+                                            khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "",
+                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : ""
                                         },
                                     ]);
                                 });
@@ -218,7 +242,7 @@ const Approvebomcum = () => {
                         Tìm
                     </Button>
                     <Button
-                        onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
                         size="small"
                         style={{
                             width: 90,
@@ -264,7 +288,7 @@ const Approvebomcum = () => {
         setSearchedColumn(dataIndex);
     };
 
-    const handleReset = (clearFilters,confirm) => {
+    const handleReset = (clearFilters, confirm) => {
         clearFilters();
         setSearchText("");
         confirm();
@@ -429,6 +453,88 @@ const Approvebomcum = () => {
             }),
         };
     });
+
+    const handleApprove = () => {
+        var url = "https://113.174.246.52:7978/api/updatestatusbomcum"
+        var id = bom.id
+        axios.post(url, { id: id,status:2 })
+            .then((res) => {
+                if (res.data === 'OK') {
+                    setBom({ ...bom, status: 2 })
+                    notification["success"]({
+                        message: 'Thông báo',
+                        description: "Phê duyệt thành công",
+                        duration: 2
+                    })
+                }
+            }).catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            })
+    }
+
+    const handleDeny = () => {
+        setItemcheck([])
+        bom.child.map((da, index) => {
+            setItemcheck(itemcheck => [...itemcheck, {
+                key: index,
+                value: da.id,
+                label: da.name
+            }]);
+        })
+        setStateModalbom(true)
+    }
+
+    const handleDenysubmit = () =>{
+        var url = "https://113.174.246.52:7978/api/denystatusbomcum"
+        var id = bom.id
+        axios.post(url, { id:id,data:checkedList })
+            .then((res) => {
+                if (res.data === 'OK') {
+                    setBom({ ...bom, status: 1 })
+                    var newbom = [...bom.child]
+                    for (let i = 0; i < newbom.length; i++) {
+                        if (checkedList.includes(newbom[i].id)) {
+                            newbom[i].status = 2;
+                        }
+                      }
+                      setBom({ ...bom, status: 1,child:newbom })
+                    notification["success"]({
+                        message: 'Thông báo',
+                        description: "Từ chối thành công",
+                        duration: 2
+                    }) 
+                    setStateModalbom(false)
+                    setCheckedList([])
+                }
+            }).catch((error) => {
+                console.log(error)
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            })
+    }
+
+    const onCheckAllChange = (e) => {
+        setIndeterminate(false);
+        setCheckAll(e.target.checked);
+        if (e.target.checked) {
+            const allValues = itemcheck.map(option => option.value);
+            setCheckedList(allValues);
+        } else {
+            setCheckedList([]);
+        }
+    };
+    const onChange = (list) => {
+        setCheckedList(list);
+        setIndeterminate(!!list.length && list.length < itemcheck.length);
+        setCheckAll(list.length === itemcheck.length);
+    };
     return (
         <Layout className="homelayout">
             <MenuSider />
@@ -465,27 +571,25 @@ const Approvebomcum = () => {
                             </Col>
                             <Col span={6}>
                                 <Divider orientation="right">
-                                    {bom&&(bom.child.filter(da=>da.status==3).length === bom.child.length) ? (
+                                    {bom && (bom.child.filter(re=>re.status===3).length===bom.child.length || bom.status === 0) ? (
                                         <div>
                                             <Popconfirm
-                                                title="Bạn có muốn lưu"
+                                                title="Bạn muốn phê duyệt?"
                                                 okText="Có"
                                                 cancelText="Không"
-                                            //onConfirm={handleSaveEbom}
+                                                onConfirm={handleApprove}
                                             >
                                                 <Button type="primary">
                                                     Duyệt
                                                 </Button>
                                             </Popconfirm>
-                                            <Popconfirm
-                                                title="Bạn có muốn gửi duyệt"
-                                                okText="Có"
-                                                cancelText="Không"
-                                            //onConfirm={handleSendApprove}
-                                            >
-                                                <Button type="danger">
-                                                    Từ chối
-                                                </Button></Popconfirm></div>) : bom.status === 3 && bom.statuschild}
+                                            <Button type="danger" onClick={handleDeny}>
+                                                Từ chối
+                                            </Button></div>) :bom.status===2?<Tag icon={<CheckCircleOutlined />} color="success">
+                                        Đã duyệt
+                                    </Tag> : <Tag icon={<ClockCircleOutlined />} color="warning">
+                                        Cần hiệu chỉnh
+                                    </Tag>}
                                 </Divider>
                             </Col>
                         </Row>
@@ -540,6 +644,30 @@ const Approvebomcum = () => {
                             </Col>
                         </Row>
                     </div>
+                    <Modal
+                        title="Chọn cụm lỗi"
+                        centered
+                        open={stateModalbom}
+                        okButtonProps={{
+                            htmlType: "submit",
+                        }}
+                        onCancel={() => setStateModalbom(false)}
+                        footer={[<Button type="primary" onClick={handleDenysubmit}>
+                            Xác nhận
+                        </Button>,
+                        <Button danger onClick={() => setStateModalbom(false)}>
+                            Hủy
+                        </Button>]}
+                    >
+                        <Row>
+                            <Col span={24}>
+                                <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                                    Chọn tất cả
+                                </Checkbox>
+                                <CheckboxGroup options={itemcheck} value={checkedList} onChange={onChange} style={{ display: 'flex', flexDirection: 'column' }} />
+                            </Col>
+                        </Row>
+                    </Modal>
                 </Content>
                 <Footerpage />
             </Layout>

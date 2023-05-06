@@ -43,6 +43,7 @@ const MenuSider = () => {
         return [rootNode];
     }
     React.useEffect(() => {
+        console.log(menu)
         setTimeout(() => {
             menu.length!=0&&Setitems(convertToTree(menu))
             setLoading(false)
