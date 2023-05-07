@@ -9,7 +9,7 @@ import {
     CheckCircleOutlined,
     CloseCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Form, Table, notification, Row, Col, Button, Divider, Popconfirm, Input, Space, Tag } from "antd";
+import { Layout, Form, Table, notification, Row, Col, Button, Divider, Popconfirm, Input, Space, Tag, Checkbox, Modal, Select } from "antd";
 import Context from "../../Data/Context";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ import Footerpage from "../Footerpage";
 import Loadding from "../Loadding";
 import axios from "axios";
 const { Header, Sider, Content } = Layout;
+const CheckboxGroup = Checkbox.Group;
 const exportLevel = (level) => {
     var newLevel = [];
     level.map((item) => {
@@ -94,9 +95,18 @@ const Viewebom = () => {
     const [searchedColumn, setSearchedColumn] = React.useState("");
     const searchInput = React.useRef(null);
     const [showfinish, setShowfinish] = React.useState(false);
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom,dataSource } = React.useContext(Context);
+    const [stateModalbom, setStateModalbom] = React.useState(false)
+    const defaultCheckedList = [];
+    const [indeterminate, setIndeterminate] = React.useState(true);
+    const [checkAll, setCheckAll] = React.useState(false);
+    const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
+    const [itemcheck, setItemcheck] = React.useState([])
+
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, dataSource } = React.useContext(Context);
+
     React.useEffect(() => {
         setLoading(true)
+        console.log(bom)
         //Tải dữ liệu từ bảng ebom
         var url = "https://113.174.246.52:7978/api/LoadAllebom";
         var id = bom.id;
@@ -142,7 +152,7 @@ const Viewebom = () => {
                                 ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "",
                                 dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "",
                                 khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "",
-                                ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : ""
+                                ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : "",
                             },
                         ]);
                     });
@@ -151,6 +161,7 @@ const Viewebom = () => {
 
             })
             .catch((error) => {
+                console.log(error)
                 notification["error"]({
                     message: "Thông báo",
                     description: "Không thể truy cập máy chủ",
@@ -206,7 +217,7 @@ const Viewebom = () => {
                         Tìm
                     </Button>
                     <Button
-                        onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
                         size="small"
                         style={{
                             width: 90,
@@ -253,20 +264,20 @@ const Viewebom = () => {
         console.log(dataIndex)
     };
 
-    const handleReset = (clearFilters,confirm) => {
+    const handleReset = (clearFilters, confirm) => {
         clearFilters();
         setSearchText("");
         confirm()
     };
 
     const handleApprove = () => {
-        var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+        var url = "https://113.174.246.52:7978/api/updatedoneebom"
         var id = bom.id
-        axios.post(url, { id: id, status: 3 })
+        axios.post(url, { id: id, status: 1, data: dataebom })
             .then((res) => {
                 if (res.data === 'OK') {
                     setBom({
-                        ...bom, status: 3, statuschild: <Tag icon={<CheckCircleOutlined />} color="success">
+                        ...bom, DoneEbom: 1, status: <Tag icon={<CheckCircleOutlined />} color="success">
                             Đã duyệt
                         </Tag>
                     })
@@ -286,23 +297,41 @@ const Viewebom = () => {
     }
 
     const handleDeny = () => {
-        var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+        setItemcheck([])
+        bom.child.map((da, index) => {
+            setItemcheck(itemcheck => [...itemcheck, {
+                key: index,
+                value: da.id,
+                label: da.namechild
+            }]);
+        })
+        setStateModalbom(true)
+    }
+
+    const handleDenysubmit = () => {
+        var url = "https://113.174.246.52:7978/api/denystatusbom"
         var id = bom.id
-        axios.post(url, { id: id, status: 2 })
+        axios.post(url, { id: id, data: checkedList })
             .then((res) => {
                 if (res.data === 'OK') {
-                    setBom({
-                        ...bom, status: 2, statuschild: <Tag icon={<CloseCircleOutlined />} color="error">
-                            Từ chối
-                        </Tag>
-                    })
+                    setBom({ ...bom, status: 1 })
+                    var newbom = [...bom.child]
+                    for (let i = 0; i < newbom.length; i++) {
+                        if (checkedList.includes(newbom[i].id)) {
+                            newbom[i].status = 2;
+                        }
+                    }
+                    setBom({ ...bom, status: 1, child: newbom })
                     notification["success"]({
                         message: 'Thông báo',
                         description: "Từ chối thành công",
                         duration: 2
                     })
+                    setStateModalbom(false)
+                    setCheckedList([])
                 }
             }).catch((error) => {
+                console.log(error)
                 notification["error"]({
                     message: "Thông báo",
                     description: "Không thể truy cập máy chủ",
@@ -310,6 +339,47 @@ const Viewebom = () => {
                 });
             })
     }
+    const handleExportexcel = () => {
+        setLoading(true)
+        var url = "https://113.174.246.52:7978/api/exportExcel";
+        axios
+            .post(url, {
+                data: dataebom,
+            },
+                {
+                    responseType: "blob",
+                }
+            )
+            .then((res) => {
+                setLoading(false)
+                let url = window.URL.createObjectURL(new Blob([res.data]));
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = `Result_${bom.Namebom}.xlsx`;
+                a.click();
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                });
+            });
+    }
+    const onCheckAllChange = (e) => {
+        setIndeterminate(false);
+        setCheckAll(e.target.checked);
+        if (e.target.checked) {
+            const allValues = itemcheck.map(option => option.value);
+            setCheckedList(allValues);
+        } else {
+            setCheckedList([]);
+        }
+    };
+    const onChange = (list) => {
+        setCheckedList(list);
+        setIndeterminate(!!list.length && list.length < itemcheck.length);
+        setCheckAll(list.length === itemcheck.length);
+    };
 
     const columns = [
         {
@@ -500,33 +570,41 @@ const Viewebom = () => {
                                             fontWeight: "bold",
                                         }}
                                     >
-                                        E-BOM {bom.name && ` (${bom.name})`}
+                                        E-BOM {bom.Namebom && ` (${bom.Namebom})`}
                                     </Button>
                                 </Divider>
                             </Col>
                             <Col span={6}>
                                 <Divider orientation="right">
-                                    {(bom.status === 1) ? (
-                                        <div>
-                                            <Popconfirm
-                                                title="Bạn muốn phê duyệt?"
-                                                okText="Có"
-                                                cancelText="Không"
-                                                onConfirm={handleApprove}
-                                            >
-                                                <Button type="primary">
-                                                    Duyệt
-                                                </Button>
-                                            </Popconfirm>
-                                            <Popconfirm
-                                                title="Bạn muốn từ chối?"
-                                                okText="Có"
-                                                cancelText="Không"
-                                                onConfirm={handleDeny}
-                                            >
-                                                <Button type="danger">
+                                    {(bom && bom.child.filter(bo => bo.status === 2).length !== bom.child.length) ? (
+                                        bom.DoneEbom === 0 ?
+                                            <div>
+                                                <Popconfirm
+                                                    title="Bạn muốn phê duyệt?"
+                                                    okText="Có"
+                                                    cancelText="Không"
+                                                    onConfirm={handleApprove}
+                                                >
+                                                    <Button type="primary">
+                                                        Duyệt
+                                                    </Button>
+                                                </Popconfirm>
+                                                <Button type="danger" onClick={handleDeny}>
                                                     Từ chối
-                                                </Button></Popconfirm></div>) : bom.status === 3 && bom.statuschild}
+                                                </Button></div> :
+                                            <div>
+                                                <Popconfirm
+                                                    title="Bạn muốn xuất file?"
+                                                    okText="Có"
+                                                    cancelText="Không"
+                                                    onConfirm={handleExportexcel}
+                                                >
+                                                    <Button type="primary">
+                                                        Xuất Excel
+                                                    </Button>
+                                                </Popconfirm>
+                                            </div>) : bom.status
+                                    }
                                 </Divider>
                             </Col>
                         </Row>
@@ -580,6 +658,30 @@ const Viewebom = () => {
                                 </Form>
                             </Col>
                         </Row>
+                        <Modal
+                            title="Chọn cụm lỗi"
+                            centered
+                            open={stateModalbom}
+                            okButtonProps={{
+                                htmlType: "submit",
+                            }}
+                            onCancel={() => setStateModalbom(false)}
+                            footer={[<Button type="primary" onClick={handleDenysubmit}>
+                                Xác nhận
+                            </Button>,
+                            <Button danger onClick={() => setStateModalbom(false)}>
+                                Hủy
+                            </Button>]}
+                        >
+                            <Row>
+                                <Col span={24}>
+                                    <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+                                        Chọn tất cả
+                                    </Checkbox>
+                                    <CheckboxGroup options={itemcheck} value={checkedList} onChange={onChange} style={{ display: 'flex', flexDirection: 'column' }} />
+                                </Col>
+                            </Row>
+                        </Modal>
                     </div>
                 </Content>
                 <Footerpage />

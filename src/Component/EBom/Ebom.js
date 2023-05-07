@@ -179,6 +179,7 @@ export default function Ebomexport() {
         if (res.data.length != 0) {
           setDataebom([]);
           var data = res.data;
+          console.log(data)
           var lever = exportLevel(data.map((en) => en.level));
           var Slxe = exportSLxe(
             data.map((en) => en.level),
@@ -210,7 +211,8 @@ export default function Ebomexport() {
                 ban_ve_vat_tu: item.ban_ve_vat_tu,
                 dvt_phoi:item.dvt_phoi,
                 khoi_luong:item.khoi_luong,
-                ghi_chu:item.ghi_chu
+                ghi_chu:item.ghi_chu,
+                idenovia:item.idenovia
               },
             ]);
           });
@@ -895,34 +897,53 @@ export default function Ebomexport() {
   ];
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
-      if (!col.children) return col;
-      else {
-        col.children.map((chil, index) => {
-          if (chil.editable) {
-            col.children[index] = {
-              ...chil,
-              onCell: (record) => ({
-                record,
-                dataIndex: chil.dataIndex,
-                title: chil.title,
-                editing: isEditing(record),
-              }),
-            };
-            return col;
-          }
-        });
-      }
+        if (!col.children) return col;
+        else {
+            col.children.map((chil, index) => {
+                if (chil.editable) {
+                    col.children[index] = {
+                        ...chil,
+                        onCell: (record) => ({
+                            record,
+                            dataIndex: chil.dataIndex,
+                            title: chil.title,
+                            editing: isEditing(record),
+                        }),
+                    };
+                    return col;
+                }
+                else{
+                    if(!chil.children) return col
+                    else{
+                        chil.children.map((chi, index2) => {
+                            if (chi.editable) {
+                                col.children[index].children[index2] = {
+                                    ...chi,
+                                    onCell: (record) => ({
+                                        record,
+                                        dataIndex: chi.dataIndex,
+                                        title: chi.title,
+                                        editing: isEditing(record),
+                                    }),
+                                };
+                                return col;
+                            }
+                        })
+                    }
+                }
+            });
+        }
     }
     return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
+        ...col,
+        onCell: (record) => ({
+            record,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            editing: isEditing(record),
+        }),
     };
-  });
+});
   return (
     <div
       style={{

@@ -16,6 +16,7 @@ import Tablemanager from "./Component/Tablemanager";
 import Approvebomchild from "./Component/Approvebomchild";
 import Approvebomcum from "./Component/Approvebomcum";
 import Viewebom from "./Component/Viewebom";
+import Deptmanager from "./Component/Deptmanager";
 
 function App({ history }) {
   const { initState } = Statedata()
@@ -44,7 +45,7 @@ function App({ history }) {
         <Route path='/BOMManager/BOM/phe-duyet-ebom-con' element={<Approvebomchild/>}></Route>
         <Route path='/BOMManager/BOM/phe-duyet-ebom-cum' element={<Approvebomcum/>}></Route>
         <Route path='/BOMManager/BOM/ebom-tong' element={<Viewebom/>}></Route>
-        <Route path='/BOMManager/cai-dat/cau-hinh-bang' element={<Tablemanager/>}></Route>
+        <Route path='/BOMManager/he-thong/quan-ly-bo-phan' element={<Deptmanager/>}></Route>
       </Routes>
     </ContextProvider>
   );

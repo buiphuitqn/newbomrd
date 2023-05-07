@@ -2,12 +2,12 @@ import React from "react";
 import {
     SearchOutlined,
     CheckCircleOutlined,
-    CrownOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
+    SaveOutlined,
+    CloseOutlined,
+    EditOutlined,
     ClockCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Form, Table, notification, Modal, Row, Col, Button, Divider, Popconfirm, Input, Space, Tag, Checkbox } from "antd";
+import { Layout, Form, Table, notification, Modal, Row, Col, Button, Divider, Popconfirm, Input, Space, Tag, Checkbox, Select, Typography } from "antd";
 import Context from "../../Data/Context";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
@@ -115,7 +115,55 @@ const Approvebomcum = () => {
     const [checkAll, setCheckAll] = React.useState(false);
     const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
     const [itemcheck, setItemcheck] = React.useState([])
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource } = React.useContext(Context);
+    const [editingKey, setEditingKey] = React.useState("");
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource, dropdvt, dropnoigiacong, dropxuatxu } = React.useContext(Context);
+    const EditableCell = ({
+        editing,
+        dataIndex,
+        title,
+        inputType,
+        record,
+        index,
+        children,
+        ...restProps
+    }) => {
+        var inputNode = <Input />;
+        if (dataIndex == 'xuat_xu') {
+            inputNode = (
+                <Select options={dropxuatxu} onChange={(value) => record.xuat_xu = value} />
+            );
+        }
+        if (dataIndex == 'noi_gia_cong') {
+            inputNode = (
+                <Select options={dropnoigiacong} onChange={(value) => record.noi_gia_cong = value} />
+            );
+        }
+        if (dataIndex == 'dvt') {
+            inputNode = (
+                <Select options={dropdvt} onChange={(value) => record.dvt = value} />
+            );
+        }
+        const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt']
+        if (arraydrop.filter(da => da == dataIndex).length == 0)
+            if (children[1] != null && children[1] != undefined && children[1] != "0" && children[1] != "")
+                editing = false;
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <Form.Item
+                        name={dataIndex}
+                        style={{
+                            margin: 0,
+                        }}
+                    >
+                        {inputNode}
+                    </Form.Item>
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
     React.useEffect(() => {
         setLoading(true)
         console.log(bom)
@@ -140,6 +188,7 @@ const Approvebomcum = () => {
                             setDataebom([]);
                             if (res2.data.length != 0) {
                                 var data2 = res2.data;
+                                console.log(data2)
                                 data.map((item, index) => {
                                     var dt = data2.filter(da => da.idenovia === item.id2);
                                     var ds = dataSource.filter(da => da.ma_vat_tu === item.ID)
@@ -149,26 +198,27 @@ const Approvebomcum = () => {
                                             key: index,
                                             no: index + 1,
                                             level: lever[index],
-                                            level2: item.level,
+                                            level2: item.Amount,
                                             ma_vat_tu: dt.length != 0 ? dt[0].ma_vat_tu : item.ID,
                                             ten_vn: dt.length != 0 ? dt[0].ten_vn : item.Name,
-                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length != 0 ? ds[0].ten_en : "",
-                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length != 0 ? ds[0].vat_lieu : "",
-                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length != 0 ? ds[0].xuat_xu : "",
-                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length != 0 ? ds[0].noi_gia_cong : "",
-                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length != 0 ? ds[0].ma_ban_ve : "",
-                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat : ds.length != 0 ? ds[0].thong_so_ky_thuat : "",
+                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length != 0 ? ds[0].ten_en : "0",
+                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length != 0 ? ds[0].vat_lieu : "0",
+                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length != 0 ? ds[0].xuat_xu : "0",
+                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length != 0 ? ds[0].noi_gia_cong : "0",
+                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length != 0 ? ds[0].ma_ban_ve : "0",
+                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat : ds.length != 0 ? ds[0].thong_so_ky_thuat : "0",
                                             slcum: dt.length != 0 ? dt[0].slcum : item.Amount,
                                             slxe: Slxe[index],
-                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length != 0 ? ds[0].dvt : "",
-                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length != 0 ? ds[0].ma_phoi : "",
-                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length != 0 ? ds[0].ten_phoi : "",
-                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi : ds.length != 0 ? ds[0].thong_so_phoi : "",
-                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length != 0 ? ds[0].xuat_xu_phoi : "",
-                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "",
-                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "",
-                                            khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "",
-                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : ""
+                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length != 0 ? ds[0].dvt : "0",
+                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length != 0 ? ds[0].ma_phoi : "0",
+                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length != 0 ? ds[0].ten_phoi : "0",
+                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi : ds.length != 0 ? ds[0].thong_so_phoi : "0",
+                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length != 0 ? ds[0].xuat_xu_phoi : "0",
+                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "0",
+                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "0",
+                                            khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "0",
+                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : "0",
+                                            idenovia: item.id2
                                         },
                                     ]);
                                 });
@@ -331,6 +381,7 @@ const Approvebomcum = () => {
                     dataIndex: 'ten_en',
                     key: "member",
                     width: '150px',
+                    editable: true
                 }]
             },
             {
@@ -338,6 +389,7 @@ const Approvebomcum = () => {
                 dataIndex: "vat_lieu",
                 key: "vat_lieu",
                 width: '100px',
+                editable: true
             },
             {
                 title: "Xuất xứ",
@@ -345,6 +397,7 @@ const Approvebomcum = () => {
                 key: "xuat_xu",
                 width: '150px',
                 ...getColumnSearchProps("xuat_xu"),
+                editable: true
             },
             {
                 title: "Nơi gia công thành phẩm",
@@ -352,18 +405,21 @@ const Approvebomcum = () => {
                 key: "noi_gia_cong",
                 width: '150px',
                 ...getColumnSearchProps("noi_gia_cong"),
+                editable: true
             }, {
                 title: 'Thông tin kỹ thuật',
                 children: [{
                     title: 'Bản vẽ',
                     dataIndex: 'ma_ban_ve',
                     width: '100px',
+                    editable: true
                 },
                 {
                     title: "Thông số kỹ thuật",
                     dataIndex: "thong_so_ky_thuat",
                     key: "thong_so_ky_thuat",
                     width: '100px',
+                    editable: true
                 }]
             },
             {
@@ -372,17 +428,20 @@ const Approvebomcum = () => {
                 width: '100px',
                 key: "dvt",
                 ...getColumnSearchProps("dvt"),
+                editable: true
             },
             {
                 title: "SL/Cụm",
                 dataIndex: "slcum",
                 width: '80px',
+                editable: true
             },
             {
                 title: "SL/Xe",
                 dataIndex: "slxe",
                 key: "sl2",
                 width: '80px',
+                editable: true
             }]
         }, {
             title: 'Thông tin phôi',
@@ -392,38 +451,77 @@ const Approvebomcum = () => {
                 key: "ma_phoi",
                 width: '100px',
                 ...getColumnSearchProps("ma_phoi"),
+                editable: true
             },
             {
                 title: <div><p>Tên phôi</p><p>(Chọn gia công)</p></div>,
                 dataIndex: "ten_phoi",
                 key: "ten_phoi",
                 width: '100px',
+                editable: true
             }, {
                 title: 'Thông số kỹ thuật',
                 dataIndex: 'thong_so_phoi',
                 width: '100px',
+                editable: true
             }, {
                 title: 'Xuất xứ phôi',
                 dataIndex: 'xuat_xu_phoi',
                 width: '100px',
+                editable: true
             }, {
                 title: 'Mã số bản vẽ phôi',
                 dataIndex: 'ban_ve_vat_tu',
                 width: '100px',
+                editable: true
             }, {
                 title: 'ĐVT',
                 dataIndex: 'dvt_phoi',
                 width: '100px',
+                editable: true
             }, {
                 title: 'Khôi lượng phôi/xe',
                 dataIndex: 'khoi_luong',
                 width: '100px',
+                editable: true
             }]
         }, {
             title: 'Ghi chú',
             dataIndex: 'ghi_chu',
             width: '100px',
-        }
+            editable: true
+        },
+        {
+            title: "Chức năng",
+            key: "edit",
+            width: '100px',
+            fixed: 'right',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return record.key === 0 && (editable ? (
+                    <span>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            <SaveOutlined />
+                        </Typography.Link>
+                        <Popconfirm title="Bạn có muốn đóng?" onConfirm={cancel}>
+                            <CloseOutlined color="red" />
+                        </Popconfirm>
+                    </span>
+                ) : (
+                    <Typography.Link
+                        disabled={editingKey !== ""}
+                        onClick={() => edit(record)}
+                    >
+                        <EditOutlined />
+                    </Typography.Link>
+                ));
+            },
+        },
     ];
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
@@ -437,9 +535,29 @@ const Approvebomcum = () => {
                                 record,
                                 dataIndex: chil.dataIndex,
                                 title: chil.title,
+                                editing: isEditing(record),
                             }),
                         };
                         return col;
+                    }
+                    else {
+                        if (!chil.children) return col
+                        else {
+                            chil.children.map((chi, index2) => {
+                                if (chi.editable) {
+                                    col.children[index].children[index2] = {
+                                        ...chi,
+                                        onCell: (record) => ({
+                                            record,
+                                            dataIndex: chi.dataIndex,
+                                            title: chi.title,
+                                            editing: isEditing(record),
+                                        }),
+                                    };
+                                    return col;
+                                }
+                            })
+                        }
                     }
                 });
             }
@@ -450,6 +568,7 @@ const Approvebomcum = () => {
                 record,
                 dataIndex: col.dataIndex,
                 title: col.title,
+                editing: isEditing(record),
             }),
         };
     });
@@ -457,7 +576,7 @@ const Approvebomcum = () => {
     const handleApprove = () => {
         var url = "https://113.174.246.52:7978/api/updatestatusbomcum"
         var id = bom.id
-        axios.post(url, { id: id,status:2 })
+        axios.post(url, { id: id, status: 2 })
             .then((res) => {
                 if (res.data === 'OK') {
                     setBom({ ...bom, status: 2 })
@@ -488,10 +607,10 @@ const Approvebomcum = () => {
         setStateModalbom(true)
     }
 
-    const handleDenysubmit = () =>{
+    const handleDenysubmit = () => {
         var url = "https://113.174.246.52:7978/api/denystatusbomcum"
         var id = bom.id
-        axios.post(url, { id:id,data:checkedList })
+        axios.post(url, { id: id, data: checkedList })
             .then((res) => {
                 if (res.data === 'OK') {
                     setBom({ ...bom, status: 1 })
@@ -500,13 +619,13 @@ const Approvebomcum = () => {
                         if (checkedList.includes(newbom[i].id)) {
                             newbom[i].status = 2;
                         }
-                      }
-                      setBom({ ...bom, status: 1,child:newbom })
+                    }
+                    setBom({ ...bom, status: 1, child: newbom })
                     notification["success"]({
                         message: 'Thông báo',
                         description: "Từ chối thành công",
                         duration: 2
-                    }) 
+                    })
                     setStateModalbom(false)
                     setCheckedList([])
                 }
@@ -534,6 +653,43 @@ const Approvebomcum = () => {
         setCheckedList(list);
         setIndeterminate(!!list.length && list.length < itemcheck.length);
         setCheckAll(list.length === itemcheck.length);
+    };
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...dataebom];
+            const index = newData.findIndex((item) => key === item.key);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, { ...item, ...row });
+                console.log({ ...item, ...row })
+                setDataebom(newData);
+                setEditingKey("");
+                var url = 'https://113.174.246.52:7978/api/Insertebomchild';
+                axios.post(url, { id: bom.id, data: { ...item, ...row } }).then((res) => {
+                    console.log(res.data)
+                })
+            } else {
+                newData.push(row);
+                setDataebom(newData);
+                setEditingKey("");
+            }
+        } catch (errInfo) {
+            console.log("Validate Failed:", errInfo);
+        }
+    };
+
+    const isEditing = (record) => record.key === editingKey;
+
+    const edit = (record) => {
+        form.setFieldsValue({
+            ...record,
+        });
+        setEditingKey(record.key);
+    };
+
+    const cancel = () => {
+        setEditingKey("");
     };
     return (
         <Layout className="homelayout">
@@ -571,25 +727,29 @@ const Approvebomcum = () => {
                             </Col>
                             <Col span={6}>
                                 <Divider orientation="right">
-                                    {bom && (bom.child.filter(re=>re.status===3).length===bom.child.length || bom.status === 0) ? (
-                                        <div>
-                                            <Popconfirm
-                                                title="Bạn muốn phê duyệt?"
-                                                okText="Có"
-                                                cancelText="Không"
-                                                onConfirm={handleApprove}
-                                            >
-                                                <Button type="primary">
-                                                    Duyệt
-                                                </Button>
-                                            </Popconfirm>
-                                            <Button type="danger" onClick={handleDeny}>
-                                                Từ chối
-                                            </Button></div>) :bom.status===2?<Tag icon={<CheckCircleOutlined />} color="success">
-                                        Đã duyệt
-                                    </Tag> : <Tag icon={<ClockCircleOutlined />} color="warning">
-                                        Cần hiệu chỉnh
-                                    </Tag>}
+                                    {
+                                        bom && bom.child.filter(re => re.status === 3).length === bom.child.length ? bom.status === 2 ?
+                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                                Đã duyệt
+                                            </Tag> : (<div>
+                                                <Popconfirm
+                                                    title="Bạn muốn phê duyệt?"
+                                                    okText="Có"
+                                                    cancelText="Không"
+                                                    onConfirm={handleApprove}
+                                                >
+                                                    <Button type="primary">
+                                                        Duyệt
+                                                    </Button>
+                                                </Popconfirm>
+                                                <Button type="danger" onClick={handleDeny}>
+                                                    Từ chối
+                                                </Button></div>) : bom.status === 0 ? <Tag icon={<ClockCircleOutlined />} color="warning">
+                                                    Đang cập nhật
+                                                </Tag> : <Tag icon={<ClockCircleOutlined />} color="warning">
+                                            Cần hiệu chỉnh
+                                        </Tag>
+                                    }
                                 </Divider>
                             </Col>
                         </Row>
@@ -621,6 +781,11 @@ const Approvebomcum = () => {
                                         style={{
                                             fontFamily: "Tahoma",
                                             fontSize: 14
+                                        }}
+                                        components={{
+                                            body: {
+                                                cell: EditableCell,
+                                            },
                                         }}
                                         scroll={{
                                             x: 2000,

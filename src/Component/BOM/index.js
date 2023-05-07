@@ -248,6 +248,7 @@ const BOM = () => {
       title: "Level",
       dataIndex: "Level",
       key: "id",
+      ...getColumnSearchProps("Level"),
     },
     {
       title: "Mã vật tư",
@@ -287,7 +288,7 @@ const BOM = () => {
             </Popconfirm>
           </Space>
         ) : (
-          username.filter((da) => da.idunit == bom.IDunit)[0].level > 6 && (
+          (
             <Space size="middle">
               <Popconfirm
                 title="Bạn có muốn xóa không?"

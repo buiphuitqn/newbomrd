@@ -219,24 +219,33 @@ const MBom = () => {
         key: "country"
       }, {
         title: "Trạng thái",
-        render: (recordin) =>
-          recordin.child.length != 0 ? recordin.status === 0 ? (
-            <Tag icon={<CheckCircleOutlined />} color="success">
-              Đã cập nhật Enovia
-            </Tag>
-          ) :recordin.child.filter(re=>re.status===3).length===recordin.child.length?<Tag icon={<ClockCircleOutlined />} color="warning">
-          Đang phê duyệt
-        </Tag>: recordin.status === 2 ? (
-            <Tag icon={<CheckCircleOutlined />} color="success">
-              Đã duyệt
-            </Tag>
-          ) : <Tag icon={<ClockCircleOutlined />} color="warning">
-            Cần hiệu chỉnh
-          </Tag> : (
-            <Tag icon={<CloseCircleOutlined />} color="error">
-              Chưa cập nhật Enovia
-            </Tag>
-          )
+        render: (recordin) => {
+          if (recordin.child.length != 0) {
+            if (recordin.status === 2)
+              return (<Tag icon={<CheckCircleOutlined />} color="success">
+                Đã duyệt
+              </Tag>)
+            else if (recordin.status === 0)
+              return (<Tag icon={<CheckCircleOutlined />} color="success">
+                Đã có Enovia
+              </Tag>)
+            else {
+              if (recordin.child.filter(re => re.status === 2).length === recordin.child.length)
+                return (<Tag icon={<ClockCircleOutlined />} color="warning">
+                  Đang phê duyệt
+                </Tag>)
+              else return (<Tag icon={<ClockCircleOutlined />} color="warning">
+                Cần hiệu chỉnh
+              </Tag>)
+            }
+          }
+          else
+            return (
+              <Tag icon={<CloseCircleOutlined />} color="error">
+                Chưa cập nhật Enovia
+              </Tag>
+            )
+        }
       }, {
         title: "Chức năng",
         render: (recordin) =>
