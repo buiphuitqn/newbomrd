@@ -51,13 +51,14 @@ const MBom = () => {
     loading,
     setLoading,
     bom,
-    collapsed
+    collapsed,
+    ulrAPI
   } = React.useContext(Context);
   let navigate = useNavigate();
   React.useEffect(() => {
     setLoading(true)
     setListBom([]);
-    var url = "https://113.174.246.52:7978/api/Bom";
+    var url = `${ulrAPI}/api/Bom`;
     axios
       .post(url)
       .then((res) => {
@@ -97,7 +98,7 @@ const MBom = () => {
   };
 
   const handleDelete = (record) => {
-    var url = "https://113.174.246.52:7978/api/DeleteBom";
+    var url = `${ulrAPI}/api/DeleteBom`;
     axios
       .post(url, {
         NoBom: record.nobom,

@@ -15,7 +15,7 @@ import Functionlist from "./Component/Functionlist";
 import Tablemanager from "./Component/Tablemanager";
 import Approvebomchild from "./Component/Approvebomchild";
 import Approvebomcum from "./Component/Approvebomcum";
-import Viewebom from "./Component/Viewebom";
+import Viewebom from "./Component/ViewEbom"
 import Deptmanager from "./Component/Deptmanager";
 
 function App({ history }) {

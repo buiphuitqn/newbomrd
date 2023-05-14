@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 export default function Modalpass() {
-  const { changepass, setChangepass, username } = React.useContext(Context);
+  const { changepass, setChangepass, username,ulrAPI } = React.useContext(Context);
   const [user, setUser] = React.useState("");
   const [pass, setPass] = React.useState("");
   const [pass1, setPass1] = React.useState("");
@@ -38,7 +38,7 @@ export default function Modalpass() {
         description: "Mật khẩu không khớp",
       });
     else {
-      var url = "https://113.174.246.52:7978/api/Changepass2";
+      var url = `${ulrAPI}/api/Changepass2`;
       axios
         .post(url, {
           user: user,

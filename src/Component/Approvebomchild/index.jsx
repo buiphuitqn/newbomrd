@@ -94,11 +94,11 @@ const Approvebomchild = () => {
     const [searchedColumn, setSearchedColumn] = React.useState("");
     const searchInput = React.useRef(null);
     const [showfinish, setShowfinish] = React.useState(false);
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom,setBom } = React.useContext(Context);
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom,setBom,ulrAPI } = React.useContext(Context);
     React.useEffect(() => {
         setLoading(true)
         //Tải dữ liệu từ bảng ebom
-        var url = "https://113.174.246.52:7978/api/LoadEbomtemp";
+        var url = `${ulrAPI}/api/LoadEbomtemp`;
         var id = bom.id;
         axios
             .post(url, { id: id })
@@ -252,7 +252,7 @@ const Approvebomchild = () => {
     };
 
     const handleApprove = ()=>{
-        var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+        var url = `${ulrAPI}/api/updatestatusbomchild`
     var id = bom.id
     var status = 1
     axios.post(url,{id:id,status:3})
@@ -278,7 +278,7 @@ const Approvebomchild = () => {
     }
 
     const handleDeny = () =>{
-        var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+        var url = `${ulrAPI}/api/updatestatusbomchild`
     var id = bom.id
     var status = 1
     axios.post(url,{id:id,status:2})

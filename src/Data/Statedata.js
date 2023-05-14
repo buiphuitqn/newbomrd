@@ -27,9 +27,19 @@ const initialState = () => {
   }
 };
 
+const dataulr = JSON.parse(window.localStorage.getItem("urlapi"));
+const initialurl = () => {
+  if (dataulr) {
+    return dataulr;
+  } else {
+    window.localStorage.setItem("urlapi", JSON.stringify([]));
+    return [];
+  }
+};
+
 const initialData = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/material";
+  var url = `${initialurl}/api/material`;
   axios
     .post(url)
     .then((res) => {
@@ -90,7 +100,7 @@ const iconrender = (icon) => {
 }
 const initUnit = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/Bomchild";
+  var url = `${initialurl}/api/Bomchild`;
   axios
     .post(url)
     .then((res) => {
@@ -116,7 +126,7 @@ const initUnit = () => {
 
 const initMenu = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/menulist";
+  var url = `${initialurl}/api/menulist`;
   axios
     .post(url)
     .then((res) => {
@@ -154,7 +164,7 @@ const initMenu = () => {
 
 const initMenuall = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/menulist";
+  var url = `${initialurl}/api/menulist`;
   axios
     .post(url)
     .then((res) => {
@@ -192,7 +202,7 @@ const initMenuall = () => {
 
 const initialdropdvt = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/dropdvt";
+  var url = `${initialurl}/api/dropdvt`;
   axios
     .post(url)
     .then((res) => {
@@ -224,7 +234,7 @@ const initialdropdvt = () => {
 
 const initialdropnoigiacong = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/dropnoigiacong";
+  var url = `${initialurl}/api/dropnoigiacong`;
   axios
     .post(url)
     .then((res) => {
@@ -256,7 +266,7 @@ const initialdropnoigiacong = () => {
 
 const initialdropxuatxu = () => {
   var data2 = [];
-  var url = "https://113.174.246.52:7978/api/dropxuatxu";
+  var url = `${initialurl}/api/dropxuatxu`;
   axios
     .post(url)
     .then((res) => {
@@ -289,6 +299,7 @@ const initialdropxuatxu = () => {
 export default function () {
   const [login, setLogin] = React.useState(false);
   const [username, setUsername] = React.useState(initialState);
+  const [ulrAPI,setUrlAPI] = React.useState(initialurl)
   const [menu, setMenu] = React.useState(initMenu);
   const [allmenu,setAllmenu] = React.useState(initMenuall)
   const [show, setShow] = React.useState(false);
@@ -354,7 +365,8 @@ export default function () {
     collapsed, setCollapsed,
     dropdvt,
     dropnoigiacong,
-    dropxuatxu
+    dropxuatxu,
+    ulrAPI,setUrlAPI
   };
   return { initState };
 }

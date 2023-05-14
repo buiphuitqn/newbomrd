@@ -116,7 +116,7 @@ const Approvebomcum = () => {
     const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
     const [itemcheck, setItemcheck] = React.useState([])
     const [editingKey, setEditingKey] = React.useState("");
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource, dropdvt, dropnoigiacong, dropxuatxu } = React.useContext(Context);
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource, dropdvt, dropnoigiacong, dropxuatxu,ulrAPI } = React.useContext(Context);
     const EditableCell = ({
         editing,
         dataIndex,
@@ -168,7 +168,7 @@ const Approvebomcum = () => {
         setLoading(true)
         console.log(bom)
         //Tải dữ liệu từ bảng ebom
-        var url = "https://113.174.246.52:7978/api/Enovia";
+        var url = `${ulrAPI}/api/Enovia`;
         var id = bom.id;
         var idmember = username[0].IDMember;
         axios
@@ -181,7 +181,7 @@ const Approvebomcum = () => {
                         data.map((en) => en.Level),
                         data.map((en) => en.Amount)
                     );
-                    url = "https://113.174.246.52:7978/api/LoadEbomtempcum";
+                    url = `${ulrAPI}/api/LoadEbomtempcum`;
                     axios
                         .post(url, { id: id })
                         .then((res2) => {
@@ -574,7 +574,7 @@ const Approvebomcum = () => {
     });
 
     const handleApprove = () => {
-        var url = "https://113.174.246.52:7978/api/updatestatusbomcum"
+        var url = `${ulrAPI}/api/updatestatusbomcum`
         var id = bom.id
         axios.post(url, { id: id, status: 2 })
             .then((res) => {
@@ -608,7 +608,7 @@ const Approvebomcum = () => {
     }
 
     const handleDenysubmit = () => {
-        var url = "https://113.174.246.52:7978/api/denystatusbomcum"
+        var url = `${ulrAPI}/api/denystatusbomcum`
         var id = bom.id
         axios.post(url, { id: id, data: checkedList })
             .then((res) => {
@@ -665,7 +665,7 @@ const Approvebomcum = () => {
                 console.log({ ...item, ...row })
                 setDataebom(newData);
                 setEditingKey("");
-                var url = 'https://113.174.246.52:7978/api/Insertebomchild';
+                var url = `${ulrAPI}/api/Insertebomchild`;
                 axios.post(url, { id: bom.id, data: { ...item, ...row } }).then((res) => {
                     console.log(res.data)
                 })

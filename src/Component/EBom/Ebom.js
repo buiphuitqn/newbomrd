@@ -111,7 +111,8 @@ export default function Ebomexport() {
     setDatachild,
     dropdvt,
     dropnoigiacong,
-    dropxuatxu
+    dropxuatxu,
+    ulrAPI
   } = React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
@@ -171,7 +172,7 @@ export default function Ebomexport() {
   };
   React.useEffect(() => {
     //Tải dữ liệu từ bảng ebom
-    var url = "https://113.174.246.52:7978/api/LoadEbomtemp";
+    var url = `${ulrAPI}/api/LoadEbomtemp`;
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -224,7 +225,7 @@ export default function Ebomexport() {
               description:
                 "Chưa nhập dữ liệu tạm cho Ebom. Vui lòng kiểm tra lại",
             });
-          var url = "https://113.174.246.52:7978/api/Enoviachild";
+          var url = `${ulrAPI}/api/Enoviachild`;
           var id = bom.id;
           axios
             .post(url, { id: id })
@@ -588,7 +589,7 @@ export default function Ebomexport() {
   };
 
   const handleExportMBom = () => {
-    var url = "https://113.174.246.52:7978/api/DoneEbom";
+    var url = `${ulrAPI}/api/DoneEbom`;
     var id = bom.id;
     axios
       .post(url, { id: id })
@@ -616,7 +617,7 @@ export default function Ebomexport() {
   };
 
   const handleSendApprove = () =>{
-    var url = "https://113.174.246.52:7978/api/updatestatusbomchild"
+    var url = `${ulrAPI}/api/updatestatusbomchild`
     var id = bom.id
     var status = 1
     axios.post(url,{id:id,status:1})
@@ -642,7 +643,7 @@ export default function Ebomexport() {
   }
   const handleSaveEbom = () => {
     //var check = JSON.stringify(dataebom).match(/:null[\},]/) != null;
-    var url = "https://113.174.246.52:7978/api/Insertebomtemp";
+    var url = `${ulrAPI}/api/Insertebomtemp`;
     var id = bom.id;
     var data = dataebom;
     axios

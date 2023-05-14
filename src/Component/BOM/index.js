@@ -38,7 +38,7 @@ const BOM = () => {
   const { } =
     React.useContext(Context);
   let navigate = useNavigate();
-  const { bom, dataSource, enovia, setEnovia, username,loading,setLoading,collapsed } =
+  const { bom, dataSource, enovia, setEnovia, username,loading,setLoading,collapsed ,ulrAPI} =
     React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
   const [hiden,setHiden] = React.useState(false)
@@ -46,7 +46,7 @@ const BOM = () => {
   const searchInput = React.useRef(null);
   React.useEffect(() => {
     setLoading(true)
-    var url = "https://113.174.246.52:7978/api/Enovia";
+    var url = `${ulrAPI}/api/Enovia`;
     var id = bom.id;
     var idmember = username[0].IDMember;
     axios
@@ -102,7 +102,7 @@ const BOM = () => {
   };
   const exportEbom = () => {
     setHiden(!hiden)
-    var url = "https://113.174.246.52:7978/api/Insertenovia";
+    var url = `${ulrAPI}/api/Insertenovia`;
     var id = bom.id;
     var idmember = username[0].IDMember;
     var data = enovia;
@@ -140,7 +140,7 @@ const BOM = () => {
   };
 
   const handleDelete = (record) => {
-    var url = "https://113.174.246.52:7978/api/Deleteenovia";
+    var url =`${ulrAPI}/api/Deleteenovia`;
     var id = bom.id;
     var idmaterial = record.ID;
     axios

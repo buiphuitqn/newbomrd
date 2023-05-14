@@ -17,3 +17,22 @@
     box-shadow: 5px 10px 10px #888;
     max-width: 500px;
 }
+
+.btnsetting{
+    z-index: 3;
+    display: flex;
+    position: fixed;
+    height: 30px;
+    width: 30px;
+    align-items: center;
+    text-align: center;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border-color: transparent;
+}
+.btnsetting :hover{
+    background-color: transparent;
+    border-color: transparent;
+    color: blue;
+}

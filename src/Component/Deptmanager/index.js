@@ -14,7 +14,7 @@ const Deptmanager = () => {
     const searchInput = React.useRef(null);
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
-    const {loading,setLoading,collapsed} = React.useContext(Context)
+    const {loading,setLoading,collapsed,ulrAPI} = React.useContext(Context)
     React.useEffect(()=>{
         setLoading(true)
     },[])

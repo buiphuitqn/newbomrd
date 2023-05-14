@@ -102,13 +102,13 @@ const Viewebom = () => {
     const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
     const [itemcheck, setItemcheck] = React.useState([])
 
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, dataSource } = React.useContext(Context);
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, dataSource,ulrAPI } = React.useContext(Context);
 
     React.useEffect(() => {
         setLoading(true)
         console.log(bom)
         //Tải dữ liệu từ bảng ebom
-        var url = "https://113.174.246.52:7978/api/LoadAllebom";
+        var url = `${ulrAPI}/api/LoadAllebom`;
         var id = bom.id;
         axios
             .post(url, { id: id })
@@ -271,7 +271,7 @@ const Viewebom = () => {
     };
 
     const handleApprove = () => {
-        var url = "https://113.174.246.52:7978/api/updatedoneebom"
+        var url = `${ulrAPI}/api/updatedoneebom`
         var id = bom.id
         axios.post(url, { id: id, status: 1, data: dataebom })
             .then((res) => {
@@ -309,7 +309,7 @@ const Viewebom = () => {
     }
 
     const handleDenysubmit = () => {
-        var url = "https://113.174.246.52:7978/api/denystatusbom"
+        var url = `${ulrAPI}/api/denystatusbom`
         var id = bom.id
         axios.post(url, { id: id, data: checkedList })
             .then((res) => {
@@ -341,7 +341,7 @@ const Viewebom = () => {
     }
     const handleExportexcel = () => {
         setLoading(true)
-        var url = "https://113.174.246.52:7978/api/exportExcel";
+        var url = `${ulrAPI}/api/exportExcel`;
         axios
             .post(url, {
                 data: dataebom,

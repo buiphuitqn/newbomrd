@@ -1,5 +1,5 @@
-import { Col, Form, Input, Row, Tooltip, notification,Button } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { Col, Form, Input, Row, Popconfirm, notification, Button,Modal } from "antd";
+import { EditOutlined, SaveOutlined, SettingOutlined } from "@ant-design/icons";
 import banner from "../../Library/images/RD.png";
 import React from "react";
 import Context from "../../Data/Context";
@@ -19,18 +19,20 @@ import Loadding from "../Loadding";
 
 const Login = () => {
   const [form] = Form.useForm();
-  const { username, setUsername, changepass, setChangepass,loading,setLoading } =
+  const { username, setUsername, changepass, setChangepass, loading, setLoading,ulrAPI,setUrlAPI } =
     React.useContext(Context);
+  const [url, setUrl] = React.useState(ulrAPI)
+  const [stateurl, setStateurl] = React.useState(false)
   let navigate = useNavigate();
-  React.useEffect(()=>{
+  React.useEffect(() => {
     setLoading(false)
-  },[])
+  }, [])
   const handleLogin = (values) => {
     setLoading(true)
     let user = values.username;
     let pass = values.password;
     let keycode = values.keycode;
-    var url = "https://113.174.246.52:7978/api/Login";
+    var url = `${ulrAPI}/api/Login`;
     axios
       .post(url, {
         user: user,
@@ -53,7 +55,7 @@ const Login = () => {
           notification["error"]({
             message: "Thông báo",
             description: "Thông tin đăng nhập không đúng",
-            duration:2
+            duration: 2
           });
         }
       })
@@ -61,12 +63,13 @@ const Login = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   };
   return (
     <div className="login-page">
+      <button className="btnsetting" onClick={()=>setStateurl(true)}><SettingOutlined style={{ fontSize: 20 }} /></button>
       <div className="login-box">
         <Form
           name="login-form"
@@ -81,7 +84,7 @@ const Login = () => {
             <p className="form-title">BOM Manager</p>
             <p>Đăng nhập ứng dụng</p>
           </div>
-          
+
           <Form.Item
             name="username"
             rules={[
@@ -113,7 +116,22 @@ const Login = () => {
           </Form.Item>
         </Form>
       </div>
-      {loading&&<Loadding/>}
+      {loading && <Loadding />}
+      <Modal
+            title={`Đường dẫn API`}
+            centered
+            open={stateurl}
+            okButtonProps={{
+                htmlType: "submit",
+            }}
+            onCancel={() => setStateurl(false)}
+            footer={[<Button onClick={()=>{
+              setUrlAPI(url)
+              window.localStorage.setItem("urlapi", JSON.stringify(url));
+            }}><SaveOutlined/></Button>]}
+        >
+            <Input value={url} onChange={(e)=>setUrl(e.target.value)}/>
+        </Modal>
     </div>
   );
 };

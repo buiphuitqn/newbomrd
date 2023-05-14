@@ -38,13 +38,14 @@ export default function Modalbom() {
     username,
     datachild,
     setDatachild,
+    ulrAPI
   } = React.useContext(Context);
   const [form] = Form.useForm();
   const [unit, setUnit] = React.useState([]);
 
   const listunit = username.map((en) => en.idunit);
   React.useEffect(() => {
-    var url = "https://113.174.246.52:7978/api/Loadunit";
+    var url = `${ulrAPI}/api/Loadunit`;
     axios
       .post(url)
       .then((res) => {
@@ -73,7 +74,7 @@ export default function Modalbom() {
   const onFinish = (values) => {
     const check = listBom.filter((da) => da.nobom == values.no);
     if (check.length == 0) {
-      var url = "https://113.174.246.52:7978/api/CreateBom";
+      var url = `${ulrAPI}/api/CreateBom`;
       axios
         .post(url, {
           IDMember: username[0].IDMember,
@@ -88,7 +89,7 @@ export default function Modalbom() {
             description: `Tạo BOM thành công. Mã số Bom ${insertId}`,
           });
           setListBom([]);
-          var url = "https://113.174.246.52:7978/api/Bom";
+          var url = `${ulrAPI}/api/Bom`;
           axios
             .post(url)
             .then((res) => {
@@ -119,7 +120,7 @@ export default function Modalbom() {
               });
             });
           setDatachild([]);
-          var url = "https://113.174.246.52:7978/api/LoadBomchild";
+          var url = `${ulrAPI}/api/LoadBomchild`;
           axios
             .post(url)
             .then((res) => {
