@@ -48,7 +48,7 @@ const BOM = () => {
     setLoading(true)
     var url = `${ulrAPI}/api/Enovia`;
     var id = bom.id;
-    var idmember = username[0].IDMember;
+    var idmember = username.IDMember;
     axios
       .post(url, { id: id, IDMember: idmember })
       .then((res) => {
@@ -93,7 +93,7 @@ const BOM = () => {
           {
             key: index,
             ...data,
-            IDMember: username[0].IDMember,
+            IDMember: username.IDMember,
             state: "new",
           },
         ]);
@@ -104,7 +104,7 @@ const BOM = () => {
     setHiden(!hiden)
     var url = `${ulrAPI}/api/Insertenovia`;
     var id = bom.id;
-    var idmember = username[0].IDMember;
+    var idmember = username.IDMember;
     var data = enovia;
     axios
       .post(url, {
@@ -419,7 +419,7 @@ const BOM = () => {
                   disabled={enovia.length != 0 ? true : false}
                   onChange={(e) => {
                     const { status } = e.file;
-                    if (status == "error") {
+                    if (status == "done") {
                       var file = e.file.originFileObj;
                       delete file["uid"];
                       readExcel(file);
@@ -454,7 +454,7 @@ const BOM = () => {
                   }}
                   columns={columns}
                   rowClassName={(record, index) =>
-                    record.IDMember == username[0].IDMember ? "green" : "red"
+                    record.IDMember == username.IDMember ? "green" : "red"
                   }
                   bordered
                   dataSource={enovia}

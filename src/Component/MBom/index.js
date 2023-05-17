@@ -32,6 +32,7 @@ import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Modalmentions from "./Modalmentions.js";
 import Loadding from "../Loadding";
+import Modalgroup from "./Modalgroup";
 const { Content } = Layout
 const MBom = () => {
   const [searchText, setSearchText] = React.useState("");
@@ -52,9 +53,13 @@ const MBom = () => {
     setLoading,
     bom,
     collapsed,
-    ulrAPI
+    ulrAPI,
+    bomchild, setBomchild,
+    phanquyen,
+    stateModalgroup, setStateModalgroup
   } = React.useContext(Context);
   let navigate = useNavigate();
+  
   React.useEffect(() => {
     setLoading(true)
     setListBom([]);
@@ -62,8 +67,9 @@ const MBom = () => {
     axios
       .post(url)
       .then((res) => {
-        if (res.data.length != 0) {
-          var data = res.data;
+        if (res.data.length != 0 && phanquyen.length!==0) {
+          var unit = phanquyen.phong_ban.map(e => e.id)
+          var data = res.data.filter(da => unit.includes(da.idunit));
           data = data.map((da, index) => {
             return {
               ...da, key: index, status: da.child.filter(ds => ds.status === 0).length === 0 ? <Tag icon={<CheckCircleOutlined />} color="success">
@@ -78,6 +84,7 @@ const MBom = () => {
         }
       })
       .catch((error) => {
+        console.log(error)
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
@@ -207,7 +214,8 @@ const MBom = () => {
 
 
   const expandedRowRender = (record) => {
-    const { Namebom, nobom, TimeCreate, IDunit } = record;
+    const { Namebom, nobom, TimeCreate, idunit } = record;
+    console.log(record)
     const innerColumns = [
       {
         title: "STT",
@@ -250,14 +258,30 @@ const MBom = () => {
       }, {
         title: "Chức năng",
         render: (recordin) =>
-          recordin.child.length != 0 ? (
+        phanquyen.function[0].trang_thai===1?(
+          <a onClick={() => {
+            setBom({
+              Namebom: Namebom,
+              nobom: nobom,
+              IDunit: idunit,
+              ...recordin,
+            })
+            setStateModalmention(true)
+          }}>
+            <Tooltip title="Phân quyền">
+              <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
+            </Tooltip>
+          </a>
+        ):
+        phanquyen.function[1].trang_thai===1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.map(da=>da.id).includes(recordin.ma_phong_ban)&&(
+          recordin.child.length != 0 ?((
             <Space size="middle">
               <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
                   nobom: nobom,
                   TimeCreate: TimeCreate,
-                  IDunit: IDunit,
+                  IDunit: idunit,
                   ...recordin,
                 })
                 navigate("/BOMManager/BOM/ennovia");
@@ -267,20 +291,7 @@ const MBom = () => {
                   <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-              <a onClick={() => {
-                setBom({
-                  Namebom: Namebom,
-                  nobom: nobom,
-                  TimeCreate: TimeCreate,
-                  IDunit: IDunit,
-                  ...recordin,
-                })
-                setStateModalmention(true)
-              }}>
-                <Tooltip title="Phân quyền">
-                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
+              
               <a onClick={() => {
                 setBom(recordin)
                 navigate("/BOMManager/BOM/phe-duyet-ebom-cum")
@@ -289,24 +300,15 @@ const MBom = () => {
                   <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-              <a
-                style={{
-                  color: "blue",
-                }}
-              >
-                <Tooltip title="M-Bom Cụm">
-                  <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
             </Space>
-          ) : (
+          )):(
             <Space size="middle">
               <a onClick={() => {
                 setBom({
                   Namebom: Namebom,
                   nobom: nobom,
                   TimeCreate: TimeCreate,
-                  IDunit: IDunit,
+                  IDunit: idunit,
                   ...recordin,
                 })
                 navigate("/BOMManager/BOM/ennovia");
@@ -316,26 +318,14 @@ const MBom = () => {
                   <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-              <a onClick={() => {
-                setBom({
-                  Namebom: Namebom,
-                  nobom: nobom,
-                  TimeCreate: TimeCreate,
-                  IDunit: IDunit,
-                  ...recordin,
-                })
-                setStateModalmention(true)
-              }}>
-                <Tooltip title="Phân quyền">
-                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
             </Space>
           )
+        ) 
       }
     ];
 
     const innerExpandedRowRender = (innerRecord) => {
+      const {namechild,ma_phong_ban} = innerRecord
       const innerInnerColumns = [
         {
           title: "TT",
@@ -354,21 +344,25 @@ const MBom = () => {
           title: "Chức năng",
           key: "age",
           render: (record) =>
+          phanquyen.function[1].trang_thai==1?(
+            <a onClick={() => {
+              setBomchild({
+                Namebom: Namebom,
+                nobom: nobom,
+                IDunit: idunit,
+                namechild:namechild,
+                ma_phong_ban:ma_phong_ban,
+                ...record,
+              })
+              setStateModalgroup(true)
+            }}>
+              <Tooltip title="Phân quyền">
+                <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
+              </Tooltip>
+            </a>
+          ):phanquyen.function[2].trang_thai==1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.filter(da=>da.id===ma_phong_ban)[0].child.filter(da=>da.id).map(da=>da.id).includes(record.ma_nhom)?
           (
             <Space size="middle">
-              <a onClick={() => {
-                setBom(record)
-                navigate("/BOMManager/BOM/Ebom")
-              }}>
-                <Tooltip title="Nhập dữ liệu">
-                  <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-              <a>
-                <Tooltip title="Phân quyền">
-                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
               <a onClick={() => {
                 setBom(record)
                 navigate("/BOMManager/BOM/phe-duyet-ebom-con")
@@ -377,13 +371,15 @@ const MBom = () => {
                   <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-              <a
-                style={{
-                  color: "blue",
-                }}
-              >
-                <Tooltip title="M-Bom Cụm">
-                  <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
+            </Space>
+          ):phanquyen.function[3].trang_thai==1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.filter(da=>da.id===ma_phong_ban)[0].child.filter(da=>da.id).map(da=>da.id).includes(record.ma_nhom)&&(
+            <Space size="middle">
+              <a onClick={() => {
+                setBom(record)
+                navigate("/BOMManager/BOM/Ebom")
+              }}>
+                <Tooltip title="Nhập dữ liệu">
+                  <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
             </Space>
@@ -458,7 +454,7 @@ const MBom = () => {
       key: "address",
       width: "15%",
       render: (record) =>
-        listBom.length >= 1 ? (
+      phanquyen.function[0].trang_thai === 1 && listBom.length >= 1 ? (
           <Space size="middle">
             <a
               onClick={() => {
@@ -504,6 +500,10 @@ const MBom = () => {
         ) : null
     }
   ];
+  if(phanquyen.length===0){
+    navigate('/BOMManager')
+    return
+  }
   return (
     <Layout className="homelayout">
       <MenuSider />
@@ -526,7 +526,7 @@ const MBom = () => {
             <p style={{ padding: 10 }}>Quản lý BOM</p>
             <Divider style={{ margin: 5 }} />
             <div>
-              <Button
+              {phanquyen.function[0].trang_thai === 1 && <Button
                 onClick={handleCreateBom}
                 type="primary"
                 style={{
@@ -534,7 +534,7 @@ const MBom = () => {
                 }}
               >
                 Tạo BOM
-              </Button>
+              </Button>}
             </div>
             <Table
               className="tblistbom"
@@ -556,6 +556,7 @@ const MBom = () => {
             />
             <Modalbom />
             <Modalmentions />
+            <Modalgroup/>
           </div>
         </Content>
         <Footerpage />

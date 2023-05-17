@@ -38,38 +38,15 @@ export default function Modalbom() {
     username,
     datachild,
     setDatachild,
-    ulrAPI
+    ulrAPI,
+    phanquyen,
+    unit, setUnit
   } = React.useContext(Context);
   const [form] = Form.useForm();
-  const [unit, setUnit] = React.useState([]);
 
-  const listunit = username.map((en) => en.idunit);
+  const listunit = phanquyen.phong_ban.map((en) => en.id);
   React.useEffect(() => {
-    var url = `${ulrAPI}/api/Loadunit`;
-    axios
-      .post(url)
-      .then((res) => {
-        setUnit([]);
-        if (res.data.length != 0) {
-          var data = res.data;
-          data.map((da) => {
-            setUnit((unit) => [...unit, da]);
-          });
-        } else {
-          notification["error"]({
-            message: "Thông báo",
-            description: "Không thể tải dữ liệu",
-            duration:2
-          });
-        }
-      })
-      .catch((error) => {
-        notification["error"]({
-          message: "Thông báo",
-          description: "Không thể truy cập máy chủ",
-          duration:2
-        });
-      });
+    
   }, []);
   const onFinish = (values) => {
     const check = listBom.filter((da) => da.nobom == values.no);
@@ -77,7 +54,7 @@ export default function Modalbom() {
       var url = `${ulrAPI}/api/CreateBom`;
       axios
         .post(url, {
-          IDMember: username[0].IDMember,
+          IDMember: username.IDMember,
           NoBom: values.no,
           NameBom: values.name,
           Unit: values.unit,

@@ -29,7 +29,7 @@ export default function Modalpass() {
   const [pass2, setPass2] = React.useState("");
   let navigate = useNavigate();
   React.useEffect(() => {
-    username.length != 0 && setUser(username[0].IDMember);
+    username && setUser(username.IDMember);
   }, [username]);
   const handlechangepass = () => {
     if (pass1 != pass2)
@@ -57,7 +57,7 @@ export default function Modalpass() {
               description: res.data.status,
             });
             setChangepass(false);
-            if (username.length != 0) {
+            if (username) {
               window.localStorage.setItem("username", JSON.stringify(username));
               navigate("/Homepage");
             }
@@ -95,7 +95,7 @@ export default function Modalpass() {
               size="large"
               value={user}
               onChange={
-                username.length == 0 && ((e) => setUser(e.target.value))
+                username && ((e) => setUser(e.target.value))
               }
               placeholder="Nhập tài khoản"
               style={{ marginBottom: 15, fontFamily: "Tahoma" }}

@@ -19,9 +19,8 @@ import Loadding from "../Loadding";
 
 const Login = () => {
   const [form] = Form.useForm();
-  const { username, setUsername, changepass, setChangepass, loading, setLoading,ulrAPI,setUrlAPI } =
+  const { username, setUsername, changepass, setChangepass, loading, setLoading,ulrAPI } =
     React.useContext(Context);
-  const [url, setUrl] = React.useState(ulrAPI)
   const [stateurl, setStateurl] = React.useState(false)
   let navigate = useNavigate();
   React.useEffect(() => {
@@ -40,14 +39,16 @@ const Login = () => {
       })
       .then((res) => {
         if (res.data.length != 0) {
-          var data = res.data;
-          if (data[0].changepass == 1) {
-            data.forEach((us) => delete us.Password);
+          var data = res.data[0];
+          console.log(data)
+          if (data.changepass == 1) {
+            delete data.Password
             window.localStorage.setItem("username", JSON.stringify(data));
             setUsername(data);
             navigate("/BOMManager");
+            console.log("toi day")
           } else {
-            data.forEach((us) => delete us.Password);
+            delete data.Password
             setChangepass(true);
             setUsername(data);
           }
@@ -60,6 +61,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
+        console.log(error)
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
@@ -117,21 +119,6 @@ const Login = () => {
         </Form>
       </div>
       {loading && <Loadding />}
-      <Modal
-            title={`Đường dẫn API`}
-            centered
-            open={stateurl}
-            okButtonProps={{
-                htmlType: "submit",
-            }}
-            onCancel={() => setStateurl(false)}
-            footer={[<Button onClick={()=>{
-              setUrlAPI(url)
-              window.localStorage.setItem("urlapi", JSON.stringify(url));
-            }}><SaveOutlined/></Button>]}
-        >
-            <Input value={url} onChange={(e)=>setUrl(e.target.value)}/>
-        </Modal>
     </div>
   );
 };

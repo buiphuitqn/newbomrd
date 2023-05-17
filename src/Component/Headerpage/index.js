@@ -3,19 +3,34 @@ import {
     UserOutlined,
     LogoutOutlined,
 } from "@ant-design/icons";
-import { Layout, Avatar } from "antd";
+import { Layout, Avatar, notification } from "antd";
 import Context from "../../Data/Context";
 import "./style.css";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const { Header } = Layout;
 
 
 
 const Headerpage = () => {
-    const { itemsmenu, setMenu, username, keymenu, setKeymenu } =
+    const { itemsmenu, setMenu, username, keymenu, setKeymenu, setPhanquyen, ulrAPI } =
         React.useContext(Context);
     let navigate = useNavigate();
-
+    React.useEffect(() => {
+        var url = `${ulrAPI}/api/phan_quyen`
+        var user = username.IDMember
+        axios.post(url, { user: user })
+            .then((res) => {
+                setPhanquyen(res.data)
+            }).catch((error) => {
+                console.log(error);
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            });
+    }, [])
     return (
         <Header
             className="headerbutton site-layout-background align-items-center"
@@ -52,7 +67,7 @@ const Headerpage = () => {
                         fontSize: 15,
                     }}
                 >
-                    {username.length!=0&&username[0].FullName}
+                    {username && username.FullName}
                 </p>
                 <a
                     className="logout"

@@ -1,12 +1,14 @@
 import React from "react";
-import { Button, Divider, Layout, Table, Tooltip, Popconfirm, Space, Input } from 'antd'
+import { Button, Divider, Layout, Table, Tooltip, Popconfirm, Space, Input, Select, notification } from 'antd'
 import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Highlighter from "react-highlight-words";
 import Context from "../../Data/Context";
-import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined, EyeOutlined } from "@ant-design/icons";
 import Loadding from "../Loadding";
+import axios from "axios";
+import Modaldept from "./Modaldept";
 
 const { Content } = Layout
 
@@ -14,24 +16,56 @@ const Deptmanager = () => {
     const searchInput = React.useRef(null);
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
-    const {loading,setLoading,collapsed,ulrAPI} = React.useContext(Context)
-    React.useEffect(()=>{
+    const { loading, setLoading, collapsed, ulrAPI, unit,stateModaldept, setStateModaldept } = React.useContext(Context)
+    const [datadept,setDatadept] = React.useState([])
+    const [datatable,setDatatable] = React.useState([])
+    const [option, setOption] = React.useState([])
+    React.useEffect(() => {
         setLoading(true)
-    },[])
+        setOption([])
+        unit.map(da => {
+            setOption(option => [...option, { key: da.key, value: da.id, label: da.nameunit }])
+        })
+    }, [])
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
     };
 
-    const handleReset = (clearFilters,confirm) => {
+    const handleReset = (clearFilters, confirm) => {
         clearFilters();
         setSearchText("");
         confirm();
     };
 
-    const handleDelete = (record) => {
-
+    const onChange = (value) => {
+        var url = `${ulrAPI}/api/tai_phong_ban`
+        axios.post(url, { unit: value })
+            .then((res) => { 
+                setDatadept([])
+                setDatatable([])
+                if(res.data.length!==0){
+                    setDatadept(res.data)
+                    res.data.map((da,index)=>{
+                        setDatatable(datatable=>[...datatable,{
+                            key:index,
+                            tt:(index+1),
+                            id:da.id,
+                            ten_phong:da.ten_phong,
+                            sl_nhan_su:da.child.length,
+                            sl_nhom:da.group.length
+                        }])
+                    })
+                }
+             })
+            .catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            })
     };
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({
@@ -72,7 +106,7 @@ const Deptmanager = () => {
                     </Button>
                     <Button
                         type="ghost"
-                        onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
                         size="small"
                         style={{
                             width: 90,
@@ -115,15 +149,26 @@ const Deptmanager = () => {
     const columns = [
         {
             title: "STT",
-            dataIndex: "IDMember",
+            dataIndex: "tt",
             key: "id",
-            ...getColumnSearchProps("IDMember"),
+            width: 60,
+            align: 'center',
         },
         {
             title: "Tên phòng ban",
-            dataIndex: "Namebom",
+            dataIndex: "ten_phong",
             key: "name",
-            ...getColumnSearchProps("Namebom"),
+            align: 'center',
+        }, {
+            title: "Số lượng nhóm",
+            dataIndex: "sl_nhom",
+            key: "name",
+            align: 'center',
+        }, {
+            title: "Số lượng nhân sự",
+            dataIndex: "sl_nhan_su",
+            key: "name",
+            align: 'center',
         },
         {
             title: "Chức năng",
@@ -137,8 +182,8 @@ const Deptmanager = () => {
                             color: "blue",
                         }}
                     >
-                        <Tooltip title="E-Bom">
-                            <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                        <Tooltip title="Xem DS nhóm">
+                            <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
                         </Tooltip>
                     </a>
                     <a
@@ -146,8 +191,8 @@ const Deptmanager = () => {
                             color: "blue",
                         }}
                     >
-                        <Tooltip title="M-Bom">
-                            <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                        <Tooltip title="Xem DS NSự">
+                            <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
                         </Tooltip>
                     </a>
                     <Popconfirm
@@ -159,7 +204,7 @@ const Deptmanager = () => {
                                 color: "red",
                             }}
                         >
-                            <Tooltip title="Xoá BOM">
+                            <Tooltip title="Xoá phòng">
                                 <DeleteOutlined style={{ fontSize: '18px', color: '#08c' }} />
                             </Tooltip>
                         </a>
@@ -171,7 +216,7 @@ const Deptmanager = () => {
     return (
         <Layout className="homelayout">
             <MenuSider />
-            <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
+            <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 200 }}>
                 <Headerpage />
                 <Content
                     className="site-layout-background"
@@ -191,12 +236,21 @@ const Deptmanager = () => {
                         <p style={{ padding: 10 }}>Quản lý Phòng ban</p>
                         <Divider style={{ margin: 5 }} />
                         <div style={{ padding: 10 }}>
-                            <div style={{ textAlign: '-webkit-right' }}>
+                            <div style={{ textAlign: '-webkit-right', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                                <Select
+                                    placeholder='Vui lòng chọn đơn vị'
+                                    options={option}
+                                    onChange={onChange}
+                                />
                                 <Button
                                     type="primary"
                                     style={{
                                         marginBottom: 16,
                                         display: 'flex'
+                                    }}
+                                    onClick={()=>{
+                                        setStateModaldept(true)
+                                        console.log('da')
                                     }}
                                 >
                                     <div>
@@ -222,13 +276,15 @@ const Deptmanager = () => {
                                 }}
                                 columns={columns}
                                 bordered
+                                dataSource={datatable}
                             />
                         </div>
                     </div>
                 </Content>
                 <Footerpage />
             </Layout>
-            {loading&&<Loadding/>}
+            {loading && <Loadding />}
+            <Modaldept/>
         </Layout>
 
     )

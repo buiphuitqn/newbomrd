@@ -17,12 +17,12 @@ import "./style.css";
 import { SaveOutlined } from "@ant-design/icons";
 
 
-export default function Modalmentions() {
+export default function Modalgroup() {
     const {
-        stateModalmention,
-        setStateModalmention,
-        bom,
-        ulrAPI
+        stateModalgroup,
+        setStateModalgroup,
+        bomchild,
+        ulrAPI,
     } = React.useContext(Context);
     const [value, setValue] = React.useState(0);
     const [listdept,setListdept] = React.useState([])
@@ -30,10 +30,9 @@ export default function Modalmentions() {
         setValue(e.target.value);
     };
     React.useEffect(() => {
-        ///api/ds_phong_thuong_hieu
-        if (bom) {
-            var url = `${ulrAPI}/api/ds_phong_thuong_hieu`;
-            var id = bom.IDunit;
+        if (bomchild) {
+            var url = `${ulrAPI}/api/ds_nhom_phong`;
+            var id = bomchild.ma_phong_ban;
             axios
                 .post(url, { id: id })
                 .then((res) => {
@@ -47,27 +46,27 @@ export default function Modalmentions() {
                     });
                 });
         }
-    }, [bom]);
+    }, [bomchild]);
     return (
         <Modal
-            title={`PHÂN QUYỀN: ${bom.Namebom} - ${bom.namechild}`}
+            title={`PHÂN QUYỀN: ${bomchild.Namebom} - ${bomchild.namechild} - ${bomchild.name}`}
             centered
-            open={stateModalmention}
+            open={stateModalgroup}
             okButtonProps={{
                 htmlType: "submit",
             }}
-            onCancel={() => setStateModalmention(false)}
+            onCancel={() => setStateModalgroup(false)}
             footer={[<Button onClick={()=>{
-                var url = `${ulrAPI}/api/cai_dat_phong_cum`
+                var url = `${ulrAPI}/api/cai_dat_nhom_con`
                 axios
-                .post(url, { id: bom.id,iddept:value })
+                .post(url, { id: bomchild.id,iddept:value })
                 .then((res) => {
                     notification["success"]({
                         message: "Thông báo",
                         description: "Phân quyền thành công",
                         duration: 2
                     });
-                    setStateModalmention(false)
+                    setStateModalgroup(false)
                 }).catch((error) => {
                     console.log(error)
                     notification["error"]({
@@ -82,7 +81,7 @@ export default function Modalmentions() {
                 <Space direction="vertical">
                     {
                         listdept.map((da,index)=>(
-                            <Radio key={index} value={da.id}>{da.ten_phong}</Radio>
+                            <Radio key={index} value={da.id}>{da.ten_nhom}</Radio>
                         ))
                     }
                 </Space>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Avatar } from "antd";
+import { Layout, notification } from "antd";
 import "./style.css";
 import bg from "../../Library/images/BG.jpg";
 import MenuSider from '../MenuSider'
@@ -7,11 +7,13 @@ import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Loadding from "../Loadding";
 import Context from "../../Data/Context";
+import axios from "axios";
 const { Content } = Layout;
 
 const HomePage = () => {
-  const { loading,collapsed, setCollapsed } =
+  const { loading,collapsed, setCollapsed,phanquyen, setPhanquyen,ulrAPI,username } =
   React.useContext(Context);
+  
   return (
     <Layout className="homelayout">
       <MenuSider />

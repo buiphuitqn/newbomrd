@@ -180,7 +180,6 @@ export default function Ebomexport() {
         if (res.data.length != 0) {
           setDataebom([]);
           var data = res.data;
-          console.log(data)
           var lever = exportLevel(data.map((en) => en.level));
           var Slxe = exportSLxe(
             data.map((en) => en.level),
@@ -219,12 +218,6 @@ export default function Ebomexport() {
           });
           setShowfinish(true);
         } else {
-          if (username[0].level != 1)
-            notification["error"]({
-              message: "Thông báo",
-              description:
-                "Chưa nhập dữ liệu tạm cho Ebom. Vui lòng kiểm tra lại",
-            });
           var url = `${ulrAPI}/api/Enoviachild`;
           var id = bom.id;
           axios

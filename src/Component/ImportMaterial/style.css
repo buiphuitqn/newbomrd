@@ -1,0 +1,26 @@
+@media screen and (max-width: 1920px){
+    .tabledata .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 61vh !important
+    }
+}
+@media screen and (max-width: 1366px){
+    .tabledata .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 45vh !important
+    }
+}
+@media screen and (min-width: 1920px){
+    .tabledata .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 67vh !important
+    }
+}
+.red {
+    color: red;
+
+}
+
+.green {
+    color: green;
+}

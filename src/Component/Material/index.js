@@ -232,10 +232,6 @@ const Material = () => {
           key: "ghi_chu",
         },
         {
-          title: "Số lượng phôi",
-          dataIndex: "col10",
-          key: "endday",
-        },{
           title:'Thông tin khuôn',
           children:[{
             title: "Chưa có",

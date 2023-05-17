@@ -170,7 +170,7 @@ const Approvebomcum = () => {
         //Tải dữ liệu từ bảng ebom
         var url = `${ulrAPI}/api/Enovia`;
         var id = bom.id;
-        var idmember = username[0].IDMember;
+        var idmember = username.IDMember;
         axios
             .post(url, { id: id, IDMember: idmember })
             .then((res) => {
