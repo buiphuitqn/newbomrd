@@ -168,8 +168,8 @@ const MenuSider = () => {
                     defaultSelectedKeys={selectkey}
                     onClick={(e) => {
                         setSelectkey([e.key]);
-                        if (allmenu.filter(da => da.key == e.key)[0].parentmenu > 0) {
-                            setOpenkey([`${allmenu.filter(da => da.key == e.key)[0].parentmenu}`])
+                        if (menu.filter(da => da.key == e.key)[0].parentmenu > 0) {
+                            setOpenkey([`${menu.filter(da=>da.id===menu.filter(da => da.key == e.key)[0].parentmenu)[0].key}`])
                         }
                         const { innerText } = e.domEvent.target;
                         navigate(`/BOMManager/${menu.filter(da => da.label == innerText).map(da => da.link)}`)

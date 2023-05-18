@@ -301,6 +301,8 @@ export default function () {
   const [stateModalmention, setStateModalmention] = React.useState(false);
   const [stateModalgroup, setStateModalgroup] = React.useState(false);
   const [stateModaldept, setStateModaldept] = React.useState(false);
+  const [stateModalmember, setStateModalmember] = React.useState(false);
+  const [stateModalsetting, setStateModalsetting] = React.useState(false);
   const [listBom, setListBom] = React.useState([]);
   const [dataebom, setDataebom] = React.useState([]);
   const [phanquyen, setPhanquyen] = React.useState([]);
@@ -315,6 +317,7 @@ export default function () {
   const [dropnoigiacong, setDropnoigiacong] = React.useState(initialdropnoigiacong)
   const [dropxuatxu, setDropxuatxu] = React.useState(initialdropxuatxu)
   const [unit, setUnit] = React.useState(initdataUnit);
+  const [listmember,setListmember] = React.useState([])
   const initState = {
     login,
     setLogin,
@@ -363,7 +366,10 @@ export default function () {
     stateModalgroup, setStateModalgroup,
     phanquyen, setPhanquyen,
     unit, setUnit,
-    stateModaldept, setStateModaldept
+    stateModaldept, setStateModaldept,
+    stateModalmember, setStateModalmember,
+    listmember,setListmember,
+    stateModalsetting, setStateModalsetting
   };
   return { initState };
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import {
     Form,
-    Col,
+    Radio,
     Modal,
     Row,
     Input,
@@ -32,10 +32,10 @@ const tailLayout = {
     },
 };
 
-export default function Modaldept() {
+export default function Modalsetting() {
     const {
-        stateModaldept,
-        setStateModaldept,
+        stateModalsetting,
+        setStateModalsetting,
         listBom,
         setListBom,
         username,
@@ -43,10 +43,10 @@ export default function Modaldept() {
         setDatachild,
         ulrAPI,
         phanquyen,
-        unit, setUnit
     } = React.useContext(Context);
     const [form] = Form.useForm();
     const [option, setOption] = React.useState([])
+    const [optiongroup, setOptiongroup] = React.useState([])
     const [listdept, setListdept] = React.useState([])
     const [checkedList, setCheckedList] = React.useState([]);
     const [showadd, setShowadd] = React.useState(false);
@@ -54,15 +54,16 @@ export default function Modaldept() {
     const [unitchange, setUnitchange] = React.useState('');
     React.useEffect(() => {
         setOption([])
-        unit.map(da => {
-            setOption(option => [...option, { key: da.key, value: da.id, label: da.nameunit }])
-        })
+        setListdept([{
+            key: 0,
+            value: 1,
+            label: 'Administrator'
+        }])
         var url = `${ulrAPI}/api/ds_phong`
         axios.post(url)
             .then((res) => {
-                setListdept([])
                 res.data.map((da, index) => {
-                    setListdept(listdept => [...listdept, {
+                    setOption(option => [...option, {
                         key: index,
                         value: da.id,
                         label: da.ten_phong
@@ -78,13 +79,18 @@ export default function Modaldept() {
     }, [])
 
     const onChange = (value) => {
-        setUnitchange(value)
-        var url = `${ulrAPI}/api/tai_phong_ban`
-        axios.post(url, { unit: value })
+        var url = `${ulrAPI}/api/ds_nhom_phong`
+        axios.post(url, { id: value })
             .then((res) => {
-                setCheckedList([])
+                setOptiongroup([])
                 if (res.data.length !== 0) {
-                    setCheckedList(res.data.map(da => da.id))
+                    res.data.map((da, index) => {
+                        setOptiongroup(optiongroup => [...optiongroup, {
+                            key: index,
+                            value: da.id,
+                            label: da.ten_nhom
+                        }])
+                    })
                 }
             })
             .catch((error) => {
@@ -103,69 +109,84 @@ export default function Modaldept() {
     const onFinish = () => {
         console.log('?')
         var url = `${ulrAPI}/api/cai_dat_phong`
-        axios.post(url,{idunit:unitchange,dept:checkedList})
-        .then((res)=>{
-            if(res.data==='NG') 
-            notification["error"]({
-                message: "Thông báo",
-                description: "Đã có lỗi sảy ra",
-                duration: 2
-            });
-            else
-            setStateModaldept(false)
-        })
-        .catch((error)=>{
-            notification["error"]({
-                message: "Thông báo",
-                description: "Không thể truy cập máy chủ",
-                duration: 2
-            });
-        })
+        axios.post(url, { idunit: unitchange, dept: checkedList })
+            .then((res) => {
+                if (res.data === 'NG')
+                    notification["error"]({
+                        message: "Thông báo",
+                        description: "Đã có lỗi sảy ra",
+                        duration: 2
+                    });
+                else
+                    setStateModalsetting(false)
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            })
     };
 
-    const handleAdddept = ()=>{
+    const handleAdddept = () => {
         setShowadd(false)
         var url = `${ulrAPI}/api/them_phong`
-        axios.post(url,{name:namedept})
-        .then((res)=>{
-            setListdept(listdept=>[...listdept,{
-                key:listdept.length,
-                value:res.data.insertId,
-                label:namedept
-            }])
-        })
-        .catch((error)=>{
-            notification["error"]({
-                message: "Thông báo",
-                description: "Không thể truy cập máy chủ",
-                duration: 2
-            });
-        })
+        axios.post(url, { name: namedept })
+            .then((res) => {
+                setListdept(listdept => [...listdept, {
+                    key: listdept.length,
+                    value: res.data.insertId,
+                    label: namedept
+                }])
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                    duration: 2
+                });
+            })
     }
 
     return (
         <Modal
-            title="Cài đặt phòng ban"
+            title="Phân quyền nhân sự"
             centered
-            open={stateModaldept}
+            open={stateModalsetting}
             okButtonProps={{
                 htmlType: "submit",
             }}
-            onCancel={() => setStateModaldept(false)}
-            footer={[<div style={{ display: 'flex', justifyContent: 'space-between' }}><Button type="primary" onClick={() => setShowadd(true)}>
-                Thêm phòng
-            </Button><div style={{ display: 'flex', justifyContent: 'end' }}><Button type="primary" htmlType="button" onClick={onFinish}>
+            onCancel={() => setStateModalsetting(false)}
+            footer={[<div style={{ display: 'flex', justifyContent: 'end' }}><Button type="primary" htmlType="button" onClick={onFinish}>
                 Xác nhận
             </Button>
-                    <Button htmlType="button" onClick={() => setStateModaldept(false)}>
-                        Hủy
-                    </Button></div></div>]}
+                <Button htmlType="button" onClick={() => setStateModalsetting(false)}>
+                    Hủy
+                </Button></div>]}
         >
+            <p>Phòng ban:</p>
             <Select
-                placeholder='Vui lòng chọn đơn vị'
+                placeholder='Vui lòng chọn phòng ban'
                 options={option}
                 onChange={onChange}
             />
+            <p>Nhóm:</p>
+            <Select
+                placeholder='Vui lòng chọn nhóm'
+                options={optiongroup}
+                onChange={onChange}
+            />
+            <p>Quyền:</p>
+            <Radio.Group>
+                <Space direction="vertical">
+                    <Radio value={1}>Quản lý dự án</Radio>
+                    <Radio value={2}>Trưởng phòng</Radio>
+                    <Radio value={3}>Trưởng nhóm</Radio>
+                    <Radio value={4}>Chuyên viên</Radio>
+                </Space>
+            </Radio.Group>
+            <p>Vai trò:</p>
             <CheckboxGroup options={listdept} value={checkedList} onChange={onChangelist} style={{ display: 'flex', flexDirection: 'column' }} />
             {showadd && <Space.Compact
                 style={{

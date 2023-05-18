@@ -5,7 +5,7 @@ import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Highlighter from "react-highlight-words";
 import Context from "../../Data/Context";
-import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined, EyeOutlined } from "@ant-design/icons";
+import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
 import Loadding from "../Loadding";
 import axios from "axios";
 import Modaldept from "./Modaldept";
@@ -195,20 +195,6 @@ const Deptmanager = () => {
                             <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
                         </Tooltip>
                     </a>
-                    <Popconfirm
-                        title="Bạn có muốn xóa không?"
-                    //onConfirm={() => handleDelete(record)}
-                    >
-                        <a
-                            style={{
-                                color: "red",
-                            }}
-                        >
-                            <Tooltip title="Xoá phòng">
-                                <DeleteOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                            </Tooltip>
-                        </a>
-                    </Popconfirm>
                 </Space>
             )
         }
@@ -254,11 +240,11 @@ const Deptmanager = () => {
                                     }}
                                 >
                                     <div>
-                                        <UserAddOutlined
+                                        <SettingOutlined
                                             style={{ display: "inline-flex", marginRight: "5px" }}
                                         />
                                     </div>
-                                    Thêm mới
+                                    Cài đặt
                                 </Button>
                             </div>
                             <Table

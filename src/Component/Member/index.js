@@ -1,12 +1,15 @@
 import React from "react";
-import { Button, Divider, Layout, Table, Tooltip, Popconfirm, Space, Input } from 'antd'
+import { Button, Divider, Layout, Table, Tooltip, Popconfirm, Space, Input,notification } from 'antd'
 import MenuSider from "../MenuSider";
 import Headerpage from "../Headerpage";
 import Footerpage from "../Footerpage";
 import Highlighter from "react-highlight-words";
 import Context from "../../Data/Context";
-import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import { FileMarkdownOutlined, FilePdfOutlined, DeleteOutlined, SearchOutlined, UserAddOutlined, SettingOutlined } from "@ant-design/icons";
 import Loadding from "../Loadding";
+import axios from "axios";
+import Modalmember from "./Modalmember";
+import Modalsetting from "./Modalsetting";
 
 const { Content } = Layout
 
@@ -14,9 +17,22 @@ const Member = () => {
     const searchInput = React.useRef(null);
     const [searchText, setSearchText] = React.useState("");
     const [searchedColumn, setSearchedColumn] = React.useState("");
-    const {loading,setLoading,collapsed} = React.useContext(Context)
+    const {loading,setLoading,collapsed,ulrAPI, setStateModalmember,listmember,setListmember, setStateModalsetting} = React.useContext(Context)
+    
     React.useEffect(()=>{
         setLoading(true)
+        var url =`${ulrAPI}/api/danh_sach_nhan_su`
+        axios.post(url)
+        .then((res)=>{
+            setListmember(res.data)
+        })
+        .catch((error)=>{
+            notification["error"]({
+                message: "Thông báo",
+                description: "Không thể truy cập máy chủ",
+                duration: 2
+            });
+        })
     },[])
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -118,18 +134,28 @@ const Member = () => {
             dataIndex: "IDMember",
             key: "id",
             ...getColumnSearchProps("IDMember"),
+            align: 'center',
         },
         {
             title: "Họ và tên",
-            dataIndex: "Namebom",
+            dataIndex: "FullName",
             key: "name",
-            ...getColumnSearchProps("Namebom"),
+            ...getColumnSearchProps("FullName"),
+            align: 'center',
         },
         {
-            title: "Bộ phận",
-            dataIndex: "Unit",
-            key: "member",
-            ...getColumnSearchProps("Unit"),
+            title: "Phòng ban",
+            dataIndex: "dept",
+            key: "dept",
+            ...getColumnSearchProps("dept"),
+            align: 'center',
+        },
+        {
+            title: "Nhóm",
+            dataIndex: "group",
+            key: "group",
+            ...getColumnSearchProps("group"),
+            align: 'center',
         },
         {
             title: "Chức năng",
@@ -142,18 +168,13 @@ const Member = () => {
                         style={{
                             color: "blue",
                         }}
-                    >
-                        <Tooltip title="E-Bom">
-                            <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                        </Tooltip>
-                    </a>
-                    <a
-                        style={{
-                            color: "blue",
+                        onClick={()=>{
+                            console.log(record)
+                            setStateModalsetting(true)
                         }}
                     >
-                        <Tooltip title="M-Bom">
-                            <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                        <Tooltip title="Cài đặt">
+                            <SettingOutlined style={{ fontSize: '18px', color: '#08c' }} />
                         </Tooltip>
                     </a>
                     <Popconfirm
@@ -204,6 +225,7 @@ const Member = () => {
                                         marginBottom: 16,
                                         display: 'flex'
                                     }}
+                                    onClick={()=>{setStateModalmember(true)}}
                                 >
                                     <div>
                                         <UserAddOutlined
@@ -228,6 +250,7 @@ const Member = () => {
                                 }}
                                 columns={columns}
                                 bordered
+                                dataSource={listmember}
                             />
                         </div>
                     </div>
@@ -235,6 +258,8 @@ const Member = () => {
                 <Footerpage />
             </Layout>
             {loading&&<Loadding/>}
+            <Modalmember/>
+            <Modalsetting/>
         </Layout>
 
     )
