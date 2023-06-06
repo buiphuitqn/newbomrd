@@ -18,6 +18,8 @@ import Approvebomcum from "./Component/Approvebomcum";
 import Viewebom from "./Component/ViewEbom"
 import Deptmanager from "./Component/Deptmanager";
 import ImportMaterial from "./Component/ImportMaterial";
+import Functionlistgroup from "./Component/Functionlistgroup";
+import Groupmanager from "./Component/Groupmanager";
 
 function App({ history }) {
   const { initState } = Statedata()
@@ -41,12 +43,13 @@ function App({ history }) {
         <Route path='/BOMManager/he-thong/quan-ly-nhan-su' element={<Member />}></Route>
         <Route path='/BOMManager/Vat_tu/Quan-ly-vat-tu' element={<Material />}></Route>
         <Route path='/BOMManager/he-thong/chuc-nang' element={<Functionlist />}></Route>
-        <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlist />}></Route>
+        <Route path='/BOMManager/he-thong/vai-tro' element={<Functionlistgroup />}></Route>
         <Route path='/BOMManager/BOM/Ebom' element={<Ebom/>}></Route>
         <Route path='/BOMManager/BOM/phe-duyet-ebom-con' element={<Approvebomchild/>}></Route>
         <Route path='/BOMManager/BOM/phe-duyet-ebom-cum' element={<Approvebomcum/>}></Route>
         <Route path='/BOMManager/BOM/ebom-tong' element={<Viewebom/>}></Route>
         <Route path='/BOMManager/he-thong/quan-ly-bo-phan' element={<Deptmanager/>}></Route>
+        <Route path='/BOMManager/he-thong/quan-ly-nhom' element={<Groupmanager/>}></Route>
         <Route path='/BOMManager/Vat_tu/Cap_nhat_vat_tu' element={<ImportMaterial/>}></Route>
       </Routes>
     </ContextProvider>

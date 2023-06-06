@@ -226,6 +226,7 @@ const Deptmanager = () => {
                                 <Select
                                     placeholder='Vui lòng chọn đơn vị'
                                     options={option}
+                                    allowClear
                                     onChange={onChange}
                                 />
                                 <Button

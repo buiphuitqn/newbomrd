@@ -106,7 +106,7 @@ const Viewebom = () => {
 
     React.useEffect(() => {
         setLoading(true)
-        console.log(bom)
+        bom&&console.log(bom.child.filter(bo => bo.status === 2).length===bom.child.length)
         //Tải dữ liệu từ bảng ebom
         var url = `${ulrAPI}/api/LoadAllebom`;
         var id = bom.id;
@@ -445,12 +445,14 @@ const Viewebom = () => {
                     title: 'Bản vẽ',
                     dataIndex: 'ma_ban_ve',
                     width: '100px',
+                    ...getColumnSearchProps("ma_ban_ve"),
                 },
                 {
                     title: "Thông số kỹ thuật",
                     dataIndex: "thong_so_ky_thuat",
                     key: "thong_so_ky_thuat",
                     width: '100px',
+                    ...getColumnSearchProps("thong_so_ky_thuat"),
                 }]
             },
             {
@@ -576,7 +578,7 @@ const Viewebom = () => {
                             </Col>
                             <Col span={6}>
                                 <Divider orientation="right">
-                                    {(bom && bom.child.filter(bo => bo.status === 2).length !== bom.child.length) ? (
+                                    {(bom && bom.child.filter(bo => bo.status === 2).length === bom.child.length) ? (
                                         bom.DoneEbom === 0 ?
                                             <div>
                                                 <Popconfirm

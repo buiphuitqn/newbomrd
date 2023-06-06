@@ -47,6 +47,7 @@ const Functionlist = () => {
         },
     ];
     React.useEffect(()=>{
+        console.log(allmenu)
         setLoading(true)
         setTimeout(()=>{
             allmenu.map((da,index)=>{
@@ -80,22 +81,6 @@ const Functionlist = () => {
                         <p style={{ padding: 10 }}>Danh mục chức năng</p>
                         <Divider style={{ margin: 5 }} />
                         <div style={{ padding: 10 }}>
-                            <div style={{ textAlign: '-webkit-right' }}>
-                                <Button
-                                    type="primary"
-                                    style={{
-                                        marginBottom: 16,
-                                        display: 'flex'
-                                    }}
-                                >
-                                    <div>
-                                        <UserAddOutlined
-                                            style={{ display: "inline-flex", marginRight: "5px" }}
-                                        />
-                                    </div>
-                                    Thêm mới
-                                </Button>
-                            </div>
                             <Table
                                 className="tblistbom"
                                 style={{

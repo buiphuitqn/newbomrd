@@ -128,7 +128,7 @@ const MenuSider = () => {
         setTimeout(() => {
             setLoading(false)
         }, 500);
-    }, [menu]);
+    }, []);
     return (
         <Sider trigger={null} collapsible collapsed={collapsed} style={{
             overflow: 'auto',

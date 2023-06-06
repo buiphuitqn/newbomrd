@@ -59,15 +59,52 @@ const MBom = () => {
     stateModalgroup, setStateModalgroup
   } = React.useContext(Context);
   let navigate = useNavigate();
-  
+  const [listdept, setListdept] = React.useState([])
+  const [listgroup, setListgroup] = React.useState([])
   React.useEffect(() => {
     setLoading(true)
     setListBom([]);
+    var url2 = `${ulrAPI}/api/ds_phong`
+    axios.post(url2)
+      .then((res) => {
+        setListdept([])
+        res.data.map((da, index) => {
+          setListdept(listdept => [...listdept, {
+            key: index,
+            value: da.id,
+            label: da.ten_phong
+          }])
+        })
+      }).catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration: 2
+        });
+      })
+    var url3 = `${ulrAPI}/api/ds_nhom`
+    axios.post(url3)
+      .then((res) => {
+        setListgroup([])
+        res.data.map((da, index) => {
+          setListgroup(listgroup => [...listgroup, {
+            key: index,
+            value: da.id,
+            label: da.ten_nhom
+          }])
+        })
+      }).catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration: 2
+        });
+      })
     var url = `${ulrAPI}/api/Bom`;
     axios
       .post(url)
       .then((res) => {
-        if (res.data.length != 0 && phanquyen.length!==0) {
+        if (res.data.length != 0 && phanquyen.length !== 0) {
           var unit = phanquyen.phong_ban.map(e => e.id)
           var data = res.data.filter(da => unit.includes(da.idunit));
           data = data.map((da, index) => {
@@ -215,7 +252,6 @@ const MBom = () => {
 
   const expandedRowRender = (record) => {
     const { Namebom, nobom, TimeCreate, idunit } = record;
-    console.log(record)
     const innerColumns = [
       {
         title: "STT",
@@ -256,76 +292,84 @@ const MBom = () => {
             )
         }
       }, {
+        title: "Phòng quản lý",
+        render: (recordp) => {
+          console.log(listdept)
+          return recordp.ma_phong_ban === null ? <Tag icon={<CloseCircleOutlined />} color="error">
+            Chưa phân quyền
+          </Tag> : listdept.filter(da => da.value === recordp.ma_phong_ban)[0].label
+          }
+      }, {
         title: "Chức năng",
         render: (recordin) =>
-        phanquyen.function[0].trang_thai===1?(
-          <a onClick={() => {
-            setBom({
-              Namebom: Namebom,
-              nobom: nobom,
-              IDunit: idunit,
-              ...recordin,
-            })
-            setStateModalmention(true)
-          }}>
-            <Tooltip title="Phân quyền">
-              <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
-            </Tooltip>
-          </a>
-        ):
-        phanquyen.function[1].trang_thai===1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.map(da=>da.id).includes(recordin.ma_phong_ban)&&(
-          recordin.child.length != 0 ?((
-            <Space size="middle">
-              <a onClick={() => {
-                setBom({
-                  Namebom: Namebom,
-                  nobom: nobom,
-                  TimeCreate: TimeCreate,
-                  IDunit: idunit,
-                  ...recordin,
-                })
-                navigate("/BOMManager/BOM/ennovia");
-              }
-              }>
-                <Tooltip title="Xem dư liệu">
-                  <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-              
-              <a onClick={() => {
-                setBom(recordin)
-                navigate("/BOMManager/BOM/phe-duyet-ebom-cum")
-              }}>
-                <Tooltip title="E-Bom Cụm">
-                  <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-            </Space>
-          )):(
-            <Space size="middle">
-              <a onClick={() => {
-                setBom({
-                  Namebom: Namebom,
-                  nobom: nobom,
-                  TimeCreate: TimeCreate,
-                  IDunit: idunit,
-                  ...recordin,
-                })
-                navigate("/BOMManager/BOM/ennovia");
-              }
-              }>
-                <Tooltip title="Cập nhật dữ liệu">
-                  <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-            </Space>
-          )
-        ) 
+          phanquyen.function[0].trang_thai === 1 ? (
+            <a onClick={() => {
+              setBom({
+                Namebom: Namebom,
+                nobom: nobom,
+                IDunit: idunit,
+                ...recordin,
+              })
+              setStateModalmention(true)
+            }}>
+              <Tooltip title="Phân quyền">
+                <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
+              </Tooltip>
+            </a>
+          ) :
+            phanquyen.function[1].trang_thai === 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.map(da => da.id).includes(recordin.ma_phong_ban) && (
+              recordin.child.length != 0 ? ((
+                <Space size="middle">
+                  <a onClick={() => {
+                    setBom({
+                      Namebom: Namebom,
+                      nobom: nobom,
+                      TimeCreate: TimeCreate,
+                      IDunit: idunit,
+                      ...recordin,
+                    })
+                    navigate("/BOMManager/BOM/ennovia");
+                  }
+                  }>
+                    <Tooltip title="Xem dư liệu">
+                      <EyeOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+
+                  <a onClick={() => {
+                    setBom(recordin)
+                    navigate("/BOMManager/BOM/phe-duyet-ebom-cum")
+                  }}>
+                    <Tooltip title="E-Bom Cụm">
+                      <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+                </Space>
+              )) : (
+                <Space size="middle">
+                  <a onClick={() => {
+                    setBom({
+                      Namebom: Namebom,
+                      nobom: nobom,
+                      TimeCreate: TimeCreate,
+                      IDunit: idunit,
+                      ...recordin,
+                    })
+                    navigate("/BOMManager/BOM/ennovia");
+                  }
+                  }>
+                    <Tooltip title="Cập nhật dữ liệu">
+                      <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+                </Space>
+              )
+            )
       }
     ];
 
     const innerExpandedRowRender = (innerRecord) => {
-      const {namechild,ma_phong_ban} = innerRecord
+      const { namechild, ma_phong_ban } = innerRecord
       const innerInnerColumns = [
         {
           title: "TT",
@@ -339,51 +383,57 @@ const MBom = () => {
           title: "Trạng thái",
           dataIndex: "statuschild",
           key: "name"
+        }, {
+          title: "Nhóm quản lý",
+          render: (record) =>
+            record.ma_nhom === null ? <Tag icon={<CloseCircleOutlined />} color="error">
+              Chưa phân quyền
+            </Tag> : listgroup.filter(da => da.value === record.ma_nhom)[0].label
         },
         {
           title: "Chức năng",
           key: "age",
           render: (record) =>
-          phanquyen.function[1].trang_thai==1?(
-            <a onClick={() => {
-              setBomchild({
-                Namebom: Namebom,
-                nobom: nobom,
-                IDunit: idunit,
-                namechild:namechild,
-                ma_phong_ban:ma_phong_ban,
-                ...record,
-              })
-              setStateModalgroup(true)
-            }}>
-              <Tooltip title="Phân quyền">
-                <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
-              </Tooltip>
-            </a>
-          ):phanquyen.function[2].trang_thai==1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.filter(da=>da.id===ma_phong_ban)[0].child.filter(da=>da.id).map(da=>da.id).includes(record.ma_nhom)?
-          (
-            <Space size="middle">
+            phanquyen.function[1].trang_thai == 1 ? (
               <a onClick={() => {
-                setBom(record)
-                navigate("/BOMManager/BOM/phe-duyet-ebom-con")
+                setBomchild({
+                  Namebom: Namebom,
+                  nobom: nobom,
+                  IDunit: idunit,
+                  namechild: namechild,
+                  ma_phong_ban: ma_phong_ban,
+                  ...record,
+                })
+                setStateModalgroup(true)
               }}>
-                <Tooltip title="E-Bom Cụm">
-                  <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                <Tooltip title="Phân quyền">
+                  <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-            </Space>
-          ):phanquyen.function[3].trang_thai==1&&phanquyen.phong_ban.filter(da=>da.id===idunit)[0].child.filter(da=>da.id===ma_phong_ban)[0].child.filter(da=>da.id).map(da=>da.id).includes(record.ma_nhom)&&(
-            <Space size="middle">
-              <a onClick={() => {
-                setBom(record)
-                navigate("/BOMManager/BOM/Ebom")
-              }}>
-                <Tooltip title="Nhập dữ liệu">
-                  <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-            </Space>
-          )
+            ) : (phanquyen.function[2].trang_thai == 1 &&phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length!==0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) ?
+              (
+                <Space size="middle">
+                  <a onClick={() => {
+                    setBom(record)
+                    navigate("/BOMManager/BOM/phe-duyet-ebom-con")
+                  }}>
+                    <Tooltip title="E-Bom Cụm">
+                      <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+                </Space>
+              ) : (phanquyen.function[3].trang_thai == 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length!==0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) && (
+                <Space size="middle">
+                  <a onClick={() => {
+                    setBom(record)
+                    navigate("/BOMManager/BOM/Ebom")
+                  }}>
+                    <Tooltip title="Nhập dữ liệu">
+                      <EditOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+                </Space>
+              )
         }
       ];
       const datasourceinnerInner = innerRecord.child.map((da, index) => {
@@ -454,7 +504,7 @@ const MBom = () => {
       key: "address",
       width: "15%",
       render: (record) =>
-      phanquyen.function[0].trang_thai === 1 && listBom.length >= 1 ? (
+        phanquyen.function[0].trang_thai === 1 && listBom.length >= 1 ? (
           <Space size="middle">
             <a
               onClick={() => {
@@ -500,7 +550,7 @@ const MBom = () => {
         ) : null
     }
   ];
-  if(phanquyen.length===0){
+  if (phanquyen.length === 0) {
     navigate('/BOMManager')
     return
   }
@@ -556,7 +606,7 @@ const MBom = () => {
             />
             <Modalbom />
             <Modalmentions />
-            <Modalgroup/>
+            <Modalgroup />
           </div>
         </Content>
         <Footerpage />

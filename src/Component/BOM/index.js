@@ -38,10 +38,10 @@ const BOM = () => {
   const { } =
     React.useContext(Context);
   let navigate = useNavigate();
-  const { bom, dataSource, enovia, setEnovia, username,loading,setLoading,collapsed ,ulrAPI} =
+  const { bom, dataSource, enovia, setEnovia, username, loading, setLoading, collapsed, ulrAPI } =
     React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
-  const [hiden,setHiden] = React.useState(false)
+  const [hiden, setHiden] = React.useState(false)
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef(null);
   React.useEffect(() => {
@@ -66,40 +66,59 @@ const BOM = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   }, []);
   const readExcel = (file) => {
-    const promise = new Promise((resolve, reject) => {
-      const fileread = new FileReader();
-      fileread.readAsArrayBuffer(file);
-      fileread.onload = (e) => {
-        const buffarray = e.target.result;
-        const wb = XLSX.read(buffarray, { type: "buffer" });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        resolve(data);
-      };
-      fileread.onerror = (error) => {
-        reject(error);
-      };
-    });
-    promise.then((d) => {
-      d.map((data, index) => {
+    const fileReader = new FileReader();
+    fileReader.onload = (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: null });
+      delete excelData[0]
+      excelData.map((da, index) => {
         setEnovia((enovia) => [
           ...enovia,
           {
             key: index,
-            ...data,
+            Level: da[0],
+            Name: da[1],
+            ID: da[2],
+            Amount: da[3],
             IDMember: username.IDMember,
             state: "new",
           },
         ]);
-      });
-    });
+      })
+      // Làm gì đó với dữ liệu Excel ở đây
+    };
+
+
+    fileReader.readAsArrayBuffer(file);
   };
+
+  const handleBeforeUpload = (file) => {
+    const fileType = file.type;
+    const allowedTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+
+    if (!allowedTypes.includes(fileType)) {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Chỉ được tải lên các tệp Excel!",
+          duration: 2
+        });
+        return false;
+    }
+
+    readExcel(file);
+    return false; // Prevent file from uploading
+};
   const exportEbom = () => {
     setHiden(!hiden)
     var url = `${ulrAPI}/api/Insertenovia`;
@@ -117,12 +136,13 @@ const BOM = () => {
           message: "Thông báo",
           description: "Lưu thành công",
         });
+        navigate('/BOMManager/BOM')
       })
       .catch((error) => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   };
@@ -133,14 +153,14 @@ const BOM = () => {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters,confirm) => {
+  const handleReset = (clearFilters, confirm) => {
     clearFilters();
     setSearchText("");
     confirm();
   };
 
   const handleDelete = (record) => {
-    var url =`${ulrAPI}/api/Deleteenovia`;
+    var url = `${ulrAPI}/api/Deleteenovia`;
     var id = bom.id;
     var idmaterial = record.ID;
     axios
@@ -160,7 +180,7 @@ const BOM = () => {
         notification["error"]({
           message: "Thông báo",
           description: "Không thể truy cập máy chủ",
-          duration:2
+          duration: 2
         });
       });
   };
@@ -203,7 +223,7 @@ const BOM = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -266,51 +286,12 @@ const BOM = () => {
       title: "Số lượng",
       dataIndex: "Amount",
       key: "member",
-    },
-    {
-      title: "Chức năng",
-      key: "address",
-      width: "15%",
-      render: (record) =>
-        bom.status == 0 ? (
-          <Space size="middle">
-            <Popconfirm
-              title="Bạn có muốn xóa không?"
-              onConfirm={() => handleDelete(record)}
-            >
-              <a
-                style={{
-                  color: "red",
-                }}
-              >
-                Xóa
-              </a>
-            </Popconfirm>
-          </Space>
-        ) : (
-          (
-            <Space size="middle">
-              <Popconfirm
-                title="Bạn có muốn xóa không?"
-                onConfirm={() => handleDelete(record)}
-              >
-                <a
-                  style={{
-                    color: "red",
-                  }}
-                >
-                  Xóa
-                </a>
-              </Popconfirm>
-            </Space>
-          )
-        ),
-    },
+    }
   ];
   return (
     <Layout className="homelayout">
       <MenuSider />
-      <Layout className="site-layout" style={{marginLeft:collapsed?80:200}}>
+      <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 200 }}>
         <Headerpage />
         <Content
           className="site-layout-background"
@@ -417,14 +398,15 @@ const BOM = () => {
                 </div>
                 <Dragger
                   disabled={enovia.length != 0 ? true : false}
-                  onChange={(e) => {
-                    const { status } = e.file;
-                    if (status == "done") {
-                      var file = e.file.originFileObj;
-                      delete file["uid"];
-                      readExcel(file);
-                    }
-                  }}
+                  beforeUpload={handleBeforeUpload}
+                // onChange={(e) => {
+                //     const { status } = e.file;
+                //     if (status == "done") {
+                //         var file = e.file.originFileObj;
+                //         delete file["uid"];
+                //         readExcel(file);
+                //     }
+                // }}
                 >
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
@@ -465,7 +447,7 @@ const BOM = () => {
         </Content>
         <Footerpage />
       </Layout>
-      {loading&&<Loadding/>}
+      {loading && <Loadding />}
     </Layout>
   );
 };

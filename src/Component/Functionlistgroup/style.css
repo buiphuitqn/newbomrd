@@ -1,0 +1,33 @@
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin-left: 0px !important;
+}
+@media screen and (max-width: 1920px){
+    .tblistbom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 60vh !important
+    }
+    .tblistbom .ant-table-cell{
+        font-size: 13px;
+    }
+}
+@media screen and (max-width: 1366px){
+    .tblistbom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 54vh !important
+    }
+    .tblistbom .ant-table-cell{
+        font-size: 12px;
+    }
+}
+@media screen and (min-width: 1920px){
+    .tblistbom .ant-table-body{
+        height: -webkit-fill-available;
+        max-height: 75vh !important
+    }
+    .tblistbom .ant-table-cell{
+        font-size: 14px;
+    }
+}
+.ant-btn {
+    margin-right: 8px;
+  }

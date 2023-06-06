@@ -367,12 +367,14 @@ const Approvebomchild = () => {
                     title: 'Bản vẽ',
                     dataIndex: 'ma_ban_ve',
                     width: '100px',
+                    ...getColumnSearchProps("ma_ban_ve"),
                 },
                 {
                     title: "Thông số kỹ thuật",
                     dataIndex: "thong_so_ky_thuat",
                     key: "thong_so_ky_thuat",
                     width: '100px',
+                    ...getColumnSearchProps("thong_so_ky_thuat"),
                 }]
             },
             {

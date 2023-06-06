@@ -1,6 +1,6 @@
-import { Col, Form, Input, Row, Popconfirm, notification, Button,Modal } from "antd";
+import { Col, Form, Input, Row, Popconfirm, notification, Button, Modal } from "antd";
 import { EditOutlined, SaveOutlined, SettingOutlined } from "@ant-design/icons";
-import banner from "../../Library/images/RD.png";
+import banner from "../../Library/images/RD2.png";
 import React from "react";
 import Context from "../../Data/Context";
 import axios from "axios";
@@ -19,7 +19,7 @@ import Loadding from "../Loadding";
 
 const Login = () => {
   const [form] = Form.useForm();
-  const { username, setUsername, changepass, setChangepass, loading, setLoading,ulrAPI } =
+  const { username, setUsername, changepass, setChangepass, loading, setLoading, ulrAPI } =
     React.useContext(Context);
   const [stateurl, setStateurl] = React.useState(false)
   let navigate = useNavigate();
@@ -30,7 +30,6 @@ const Login = () => {
     setLoading(true)
     let user = values.username;
     let pass = values.password;
-    let keycode = values.keycode;
     var url = `${ulrAPI}/api/Login`;
     axios
       .post(url, {
@@ -40,24 +39,17 @@ const Login = () => {
       .then((res) => {
         if (res.data.length != 0) {
           var data = res.data[0];
-          console.log(data)
-          if (data.changepass == 1) {
-            delete data.Password
-            window.localStorage.setItem("username", JSON.stringify(data));
-            setUsername(data);
-            navigate("/BOMManager");
-            console.log("toi day")
-          } else {
-            delete data.Password
-            setChangepass(true);
-            setUsername(data);
-          }
+          delete data.Password
+          window.localStorage.setItem("username", JSON.stringify(data));
+          setUsername(data);
+          navigate("/BOMManager");
         } else {
           notification["error"]({
             message: "Thông báo",
             description: "Thông tin đăng nhập không đúng",
             duration: 2
           });
+          setLoading(false)
         }
       })
       .catch((error) => {
@@ -67,11 +59,12 @@ const Login = () => {
           description: "Không thể truy cập máy chủ",
           duration: 2
         });
+        setLoading(false)
       });
   };
   return (
     <div className="login-page">
-      <button className="btnsetting" onClick={()=>setStateurl(true)}><SettingOutlined style={{ fontSize: 20 }} /></button>
+      <button className="btnsetting" onClick={() => setStateurl(true)}><SettingOutlined style={{ fontSize: 20 }} /></button>
       <div className="login-box">
         <Form
           name="login-form"
@@ -84,7 +77,7 @@ const Login = () => {
           </div>
           <div className="loginimage">
             <p className="form-title">BOM Manager</p>
-            <p>Đăng nhập ứng dụng</p>
+            <p style={{color:'#fff'}}>Đăng nhập ứng dụng</p>
           </div>
 
           <Form.Item

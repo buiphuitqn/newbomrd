@@ -155,6 +155,23 @@ const initMenuall = () => {
   return data2
 };
 
+function findChildren(node, arr) {
+  node.children = arr.filter(item => item.parentmenu === node.id);
+  if (node.children.length === 0)
+      delete node['children']
+  else
+      node.children.forEach(child => findChildren(child, arr));
+}
+
+function convertToTree(arr) {
+  // Tìm nút gốc (Parent = 0)
+  const rootNode = arr.find(item => item.parentmenu === 0);
+  // Gọi hàm đệ quy để tìm kiếm các con của nút gốc
+  findChildren(rootNode, arr);
+  return [rootNode];
+}
+
+
 const initialdropdvt = () => {
   var data2 = [];
   var url = `${initialurl}/api/dropdvt`;
@@ -303,6 +320,10 @@ export default function () {
   const [stateModaldept, setStateModaldept] = React.useState(false);
   const [stateModalmember, setStateModalmember] = React.useState(false);
   const [stateModalsetting, setStateModalsetting] = React.useState(false);
+  const [stateModalresetpass, setStateModalresetpass] = React.useState(false);
+  const [stateModalsettinggroup, setStateModalsettinggroup] = React.useState(false);
+  const [stateModaladdgroup, setStateModaladdgroup] = React.useState(false);
+  const [stateModaladdgroupb, setStateModaladdgroupb] = React.useState(false);
   const [listBom, setListBom] = React.useState([]);
   const [dataebom, setDataebom] = React.useState([]);
   const [phanquyen, setPhanquyen] = React.useState([]);
@@ -318,6 +339,12 @@ export default function () {
   const [dropxuatxu, setDropxuatxu] = React.useState(initialdropxuatxu)
   const [unit, setUnit] = React.useState(initdataUnit);
   const [listmember,setListmember] = React.useState([])
+  const [listgroup,setListgroup] = React.useState([])
+  const [member,setMember] = React.useState([])
+  const [phanquyenuser, setPhanquyenuser] = React.useState([]);
+  const [groupselect, setGroupselect] = React.useState([]);
+  const [datatable,setDatatable] = React.useState([])
+  const [deptselect,setDeptselect] = React.useState('')
   const initState = {
     login,
     setLogin,
@@ -369,7 +396,17 @@ export default function () {
     stateModaldept, setStateModaldept,
     stateModalmember, setStateModalmember,
     listmember,setListmember,
-    stateModalsetting, setStateModalsetting
+    stateModalsetting, setStateModalsetting,
+    member,setMember,
+    phanquyenuser, setPhanquyenuser,
+    stateModalsettinggroup, setStateModalsettinggroup,
+    stateModaladdgroup, setStateModaladdgroup,
+    listgroup,setListgroup,
+    groupselect, setGroupselect,
+    stateModaladdgroupb, setStateModaladdgroupb,
+    datatable,setDatatable,
+    deptselect,setDeptselect,
+    stateModalresetpass, setStateModalresetpass
   };
   return { initState };
 }

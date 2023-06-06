@@ -13,19 +13,19 @@ table thead tr th{
     text-align: center !important;
 }
 @media screen and (max-width: 1920px){
-    .ant-table-body{
+    .tabledatamaterial .ant-table-body{
         height: -webkit-fill-available;
-        max-height: 50vh !important
+        max-height: 46vh !important
     }
 }
 @media screen and (max-width: 1366px){
-    .ant-table-body{
+   .tabledatamaterial .ant-table-body{
         height: -webkit-fill-available;
-        max-height: 48vh !important
+        max-height: 40vh !important
     }
 }
 @media screen and (min-width: 1920px){
-    .ant-table-body{
+    .tabledatamaterial .ant-table-body{
         height: -webkit-fill-available;
         max-height: 73vh !important
     }

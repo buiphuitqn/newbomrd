@@ -8,11 +8,13 @@ import {
   Button,
   notification,
   Select,
+  Checkbox
 } from "antd";
 import Context from "../../Data/Context";
 import axios from "axios";
 import "./style.css";
 const { Option } = Select;
+const CheckboxGroup = Checkbox.Group;
 const layout = {
   labelCol: {
     span: 6,
@@ -43,12 +45,35 @@ export default function Modalbom() {
     unit, setUnit
   } = React.useContext(Context);
   const [form] = Form.useForm();
-
+  const [itemcheck, setItemcheck] = React.useState([])
+  const [checkedList, setCheckedList] = React.useState([1, 2, 3, 4, 5, 6, 7, 8])
   const listunit = phanquyen.phong_ban.map((en) => en.id);
   React.useEffect(() => {
-    
+    var url = `${ulrAPI}/api/ds_cum`;
+    axios.post(url)
+      .then((res) => {
+        setItemcheck([])
+        console.log(res.data.message)
+        form.setFieldsValue({ child: res.data.message.map(da=>da.id) });
+        res.data.message.map((da,index)=>{
+          setItemcheck(itemcheck=>[...itemcheck,{
+            key:index,
+            value:da.id,
+            label:da.namechild
+          }])
+        })
+        
+      })
+      .catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration: 2
+        });
+      })
   }, []);
   const onFinish = (values) => {
+    console.log(values,itemcheck,checkedList)
     const check = listBom.filter((da) => da.nobom == values.no);
     if (check.length == 0) {
       var url = `${ulrAPI}/api/CreateBom`;
@@ -58,6 +83,7 @@ export default function Modalbom() {
           NoBom: values.no,
           NameBom: values.name,
           Unit: values.unit,
+          Child: values.child
         })
         .then((res) => {
           const { insertId } = res.data;
@@ -205,6 +231,18 @@ export default function Modalbom() {
                   </Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item
+              name="child"
+              label="Bom cụm"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn đơn vị.",
+                },
+              ]}
+            >
+              <CheckboxGroup options={itemcheck} value={checkedList} style={{ display: 'flex', flexDirection: 'column' }} />
             </Form.Item>
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit">

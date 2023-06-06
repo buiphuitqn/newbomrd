@@ -141,7 +141,7 @@ export default function Ebomexport() {
     }
     if (dataIndex == 'noi_gia_cong') {
       inputNode = (
-        <Select options={dropnoigiacong} onChange={(value) => record.noi_gia_cong = value} />
+        <Select options={dropnoigiacong}  onChange={(value) => record.noi_gia_cong = value} />
       );
     }
     if (dataIndex == 'dvt') {
@@ -149,7 +149,17 @@ export default function Ebomexport() {
         <Select options={dropdvt} onChange={(value) => record.dvt = value} />
       );
     }
-    const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt']
+    if (dataIndex == 'xuat_xu_phoi') {
+      inputNode = (
+        <Select options={dropxuatxu} onChange={(value) => record.xuat_xu_phoi = value} />
+      );
+    }
+    if (dataIndex == 'dvt_phoi') {
+      inputNode = (
+        <Select options={dropdvt} onChange={(value) => record.dvt_phoi = value} />
+      );
+    }
+    const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt','xuat_xu_phoi','dvt_phoi']
     if (arraydrop.filter(da => da == dataIndex).length == 0)
       if (children[1] != null && children[1] != undefined && children[1] != "0")
         editing = false;
@@ -177,7 +187,8 @@ export default function Ebomexport() {
     axios
       .post(url, { id: id })
       .then((res) => {
-        if (res.data.length != 0) {
+        console.log(res.data)
+        if (res.data.length != 0) {  
           setDataebom([]);
           var data = res.data;
           var lever = exportLevel(data.map((en) => en.level));
@@ -756,6 +767,7 @@ export default function Ebomexport() {
           title: 'Bản vẽ',
           dataIndex: 'ma_ban_ve',
           width: '100px',
+          ...getColumnSearchProps("ma_ban_ve"),
         },
         {
           title: "Thông số kỹ thuật",
@@ -763,6 +775,7 @@ export default function Ebomexport() {
           key: "thong_so_ky_thuat",
           width: '100px',
           editable: true,
+          ...getColumnSearchProps("thong_so_ky_thuat"),
         }]
       },
       {

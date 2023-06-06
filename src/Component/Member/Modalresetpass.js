@@ -33,10 +33,10 @@ const tailLayout = {
     },
 };
 
-export default function Modalmember() {
+export default function Modalresetpass() {
     const {
-        stateModalmember, setStateModalmember,
-        listmember, setListmember,
+        stateModalresetpass, setStateModalresetpass,
+        member,
         ulrAPI,
     } = React.useContext(Context);
     const [form] = Form.useForm();
@@ -47,42 +47,34 @@ export default function Modalmember() {
     const [namedept, setNamedept] = React.useState('');
     const [unitchange, setUnitchange] = React.useState('');
     React.useEffect(() => {
+        console.log(member)
     }, [])
 
 
     const onFinish = (values) => {
-        if (listmember.map(da => da.IDMember).includes(values.idmember))
-            notification["error"]({
-                message: "Thông báo",
-                description: "Mã nhân viên đã tồn tại",
-                duration: 2
-            });
-        else {
-            var url = `${ulrAPI}/api/them_nhan_su`
-            axios.post(url, { data: values })
+        if (values.pass === values.passagain) {
+            var url = `${ulrAPI}/api/reset_pass`
+            var id = member.IDMember
+            var pass = values.pass
+            axios.post(url, { id: id, pass: pass })
                 .then((res) => {
-                    if (res.data === 'NG')
-                        notification["error"]({
+                    if (res.data.code === 200) {
+                        notification["success"]({
                             message: "Thông báo",
-                            description: "Đã có lỗi sảy ra",
+                            description: res.data.status,
                             duration: 2
                         });
-                    else {
-                        setListmember(listmember => [...listmember, {
-                            FullName: values.name,
-                            IDMember: values.idmember,
-                            dept: '',
-                            function: '',
-                            group: '',
-                            groupuser:'',
-                            idfunction: '',
-                            idgroupuser: '',
-                            key: listmember.length,
-                            ma_nhom: '',
-                            ma_phong_ban:''
-                        }])
-                        setStateModalmember(false)
+                        form.setFieldsValue({
+                            pass:'',
+                            passagain:''
+                          });
+                        setStateModalresetpass(false)
                     }
+                    else notification["error"]({
+                        message: "Thông báo",
+                        description: res.data.status,
+                        duration: 2
+                    });
                 })
                 .catch((error) => {
                     notification["error"]({
@@ -92,46 +84,29 @@ export default function Modalmember() {
                     });
                 })
         }
+        else {
+            notification["error"]({
+                message: "Thông báo",
+                description: "Mật khẩu không đúng",
+                duration: 2
+            });
+        }
     };
 
     return (
         <Modal
-            title="Thêm nhân sự"
+            title={`Đặt lại mật khẩu người dung: ${member.FullName}`}
             centered
-            open={stateModalmember}
+            open={stateModalresetpass}
             okButtonProps={{
                 htmlType: "submit",
             }}
-            onCancel={() => setStateModalmember(false)}
+            onCancel={() => setStateModalresetpass(false)}
             footer={[<p>Vui lòng nhập đầy đủ thông tin</p>]}
         >
             <Form {...layout} form={form} onFinish={onFinish} name="control-hooks">
                 <Row>
                     <Col span={24}>
-                        <Form.Item
-                            name="idmember"
-                            label="Mã số nhân viên"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Vui lòng nhập Mã số nhân viên.",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Nhập mã số nhân viên" />
-                        </Form.Item>
-                        <Form.Item
-                            name="name"
-                            label="Họ và tên"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Vui lòng nhập họ và tên.",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Nhập họ tên nhân viên" />
-                        </Form.Item>
                         <Form.Item
                             name="pass"
                             label="Mật khẩu"
@@ -149,11 +124,28 @@ export default function Modalmember() {
                                 }
                             />
                         </Form.Item>
+                        <Form.Item
+                            name="passagain"
+                            label="Xác nhận"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập lại mật khẩu.",
+                                },
+                            ]}
+                        >
+                            <Input.Password
+                                placeholder="Nhập lại mật khẩu"
+                                iconRender={(visible) =>
+                                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                                }
+                            />
+                        </Form.Item>
                         <Form.Item {...tailLayout}>
                             <Button type="primary" htmlType="submit">
                                 Xác nhận
                             </Button>
-                            <Button htmlType="button" onClick={() => setStateModalmember(false)}>
+                            <Button htmlType="button" onClick={() => setStateModalresetpass(false)}>
                                 Hủy
                             </Button>
                         </Form.Item>

@@ -165,6 +165,7 @@ export default function Modaldept() {
                 placeholder='Vui lòng chọn đơn vị'
                 options={option}
                 onChange={onChange}
+                allowClear
             />
             <CheckboxGroup options={listdept} value={checkedList} onChange={onChangelist} style={{ display: 'flex', flexDirection: 'column' }} />
             {showadd && <Space.Compact

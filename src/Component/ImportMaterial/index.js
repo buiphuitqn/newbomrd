@@ -111,6 +111,34 @@ const ImportMaterial = () => {
 
         fileReader.readAsArrayBuffer(file);
     };
+
+    const handleExportexcel = () => {
+        setLoading(true)
+        var url = `${ulrAPI}/api/exportExcel2`;
+        axios
+            .post(url, {
+                data: datamaster,
+            },
+                {
+                    responseType: "blob",
+                }
+            )
+            .then((res) => {
+                setLoading(false)
+                let url = window.URL.createObjectURL(new Blob([res.data]));
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = `Result_${bom.Namebom}.xlsx`;
+                a.click();
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: "Thông báo",
+                    description: "Không thể truy cập máy chủ",
+                });
+            });
+    }
+
     const exportEbom = () => {
         setHiden(!hiden)
         var url = `${ulrAPI}/api/ImportMasterdata`;

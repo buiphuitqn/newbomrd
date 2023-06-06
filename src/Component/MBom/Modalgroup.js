@@ -23,6 +23,7 @@ export default function Modalgroup() {
         setStateModalgroup,
         bomchild,
         ulrAPI,
+        listBom
     } = React.useContext(Context);
     const [value, setValue] = React.useState(0);
     const [listdept,setListdept] = React.useState([])
@@ -30,6 +31,7 @@ export default function Modalgroup() {
         setValue(e.target.value);
     };
     React.useEffect(() => {
+        setValue(bomchild.ma_nhom)
         if (bomchild) {
             var url = `${ulrAPI}/api/ds_nhom_phong`;
             var id = bomchild.ma_phong_ban;
@@ -45,6 +47,7 @@ export default function Modalgroup() {
                         duration: 2
                     });
                 });
+                
         }
     }, [bomchild]);
     return (
@@ -66,7 +69,15 @@ export default function Modalgroup() {
                         description: "Phân quyền thành công",
                         duration: 2
                     });
+                    
+                    var newlist = [...listBom]
+                        let objectToChange = newlist.find(obj => obj.nobom === bomchild.nobom && obj.Namebom === bomchild.Namebom)
+                            .child.find(childObj => childObj.id === bomchild.idbom).child.find(childObj2 => childObj2.id === bomchild.id);
+                        if (objectToChange) {
+                            objectToChange.ma_nhom = value;
+                        }
                     setStateModalgroup(false)
+
                 }).catch((error) => {
                     console.log(error)
                     notification["error"]({
