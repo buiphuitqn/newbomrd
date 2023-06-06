@@ -47,7 +47,6 @@ export default function Modalresetpass() {
     const [namedept, setNamedept] = React.useState('');
     const [unitchange, setUnitchange] = React.useState('');
     React.useEffect(() => {
-        console.log(member)
     }, [])
 
 

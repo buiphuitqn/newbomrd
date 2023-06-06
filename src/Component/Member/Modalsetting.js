@@ -143,7 +143,6 @@ export default function Modalsetting() {
 
                 setValuefunction(phanquyenuser.function.filter(da => da.trang_thai === 1)[0].id)
             }
-            console.log(checkedList)
             member.idgroupuser && setCheckedList(member.idgroupuser)
         }
     }, [phanquyenuser])
@@ -198,8 +197,6 @@ export default function Modalsetting() {
             .then((res) => {
                 if (res.data === 'OK') {
                     setStateModalsetting(false)
-
-                    console.log(listdept)
                     var newlist = [...listmember]
                     let objectToChange = newlist.find(obj => obj.IDMember === member.IDMember)
                     if (objectToChange) {

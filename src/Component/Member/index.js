@@ -38,7 +38,6 @@ const Member = () => {
         axios.post(url)
             .then((res) => {
                 setListmember(res.data)
-                console.log(res.data)
             })
             .catch((error) => {
                 notification["error"]({

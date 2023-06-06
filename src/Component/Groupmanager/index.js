@@ -57,7 +57,6 @@ const Groupmanager = () => {
                 setDatatable([])
                 if(res.data.length!==0){
                     setDatadept(res.data)
-                    console.log(res.data)
                     res.data.map((da,index)=>{
                         setDatatable(datatable=>[...datatable,{
                             key:index,
@@ -233,7 +232,6 @@ const Groupmanager = () => {
                                     }}
                                     onClick={()=>{
                                         setStateModaladdgroupb(true)
-                                        console.log('da')
                                     }}
                                 >
                                     <div>

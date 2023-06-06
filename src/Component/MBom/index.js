@@ -107,6 +107,7 @@ const MBom = () => {
         if (res.data.length != 0 && phanquyen.length !== 0) {
           var unit = phanquyen.phong_ban.map(e => e.id)
           var data = res.data.filter(da => unit.includes(da.idunit));
+          console.log(data)
           data = data.map((da, index) => {
             return {
               ...da, key: index, status: da.child.filter(ds => ds.status === 0).length === 0 ? <Tag icon={<CheckCircleOutlined />} color="success">
@@ -294,7 +295,6 @@ const MBom = () => {
       }, {
         title: "Phòng quản lý",
         render: (recordp) => {
-          console.log(listdept)
           return recordp.ma_phong_ban === null ? <Tag icon={<CloseCircleOutlined />} color="error">
             Chưa phân quyền
           </Tag> : listdept.filter(da => da.value === recordp.ma_phong_ban)[0].label

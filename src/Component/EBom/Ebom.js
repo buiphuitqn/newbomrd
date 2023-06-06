@@ -4,7 +4,7 @@ import React from "react";
 import logo from "../../Library/images/LOGO THACO AUTO.png";
 import Context from "../../Data/Context";
 import axios from "axios";
-import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined, ClockCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CloseOutlined, EditOutlined, SaveOutlined, SearchOutlined, ClockCircleOutlined, QuestionCircleOutlined, ConsoleSqlOutlined } from "@ant-design/icons";
 import {
   Divider,
   Button,
@@ -141,7 +141,7 @@ export default function Ebomexport() {
     }
     if (dataIndex == 'noi_gia_cong') {
       inputNode = (
-        <Select options={dropnoigiacong}  onChange={(value) => record.noi_gia_cong = value} />
+        <Select options={dropnoigiacong} onChange={(value) => record.noi_gia_cong = value} />
       );
     }
     if (dataIndex == 'dvt') {
@@ -159,7 +159,7 @@ export default function Ebomexport() {
         <Select options={dropdvt} onChange={(value) => record.dvt_phoi = value} />
       );
     }
-    const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt','xuat_xu_phoi','dvt_phoi']
+    const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt', 'xuat_xu_phoi', 'dvt_phoi']
     if (arraydrop.filter(da => da == dataIndex).length == 0)
       if (children[1] != null && children[1] != undefined && children[1] != "0")
         editing = false;
@@ -187,8 +187,7 @@ export default function Ebomexport() {
     axios
       .post(url, { id: id })
       .then((res) => {
-        console.log(res.data)
-        if (res.data.length != 0) {  
+        if (res.data.length != 0) {
           setDataebom([]);
           var data = res.data;
           var lever = exportLevel(data.map((en) => en.level));
@@ -220,10 +219,10 @@ export default function Ebomexport() {
                 thong_so_phoi: item.thong_so_phoi,
                 xuat_xu_phoi: item.xuat_xu_phoi,
                 ban_ve_vat_tu: item.ban_ve_vat_tu,
-                dvt_phoi:item.dvt_phoi,
-                khoi_luong:item.khoi_luong,
-                ghi_chu:item.ghi_chu,
-                idenovia:item.idenovia
+                dvt_phoi: item.dvt_phoi,
+                khoi_luong: item.khoi_luong,
+                ghi_chu: item.ghi_chu,
+                idenovia: item.idenovia
               },
             ]);
           });
@@ -494,7 +493,7 @@ export default function Ebomexport() {
     setSearchedColumn(dataIndex);
   };
 
-  const handleReset = (clearFilters,confirm) => {
+  const handleReset = (clearFilters, confirm) => {
     clearFilters();
     setSearchText("");
     confirm();
@@ -538,7 +537,7 @@ export default function Ebomexport() {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters,confirm)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -620,30 +619,31 @@ export default function Ebomexport() {
       });
   };
 
-  const handleSendApprove = () =>{
+  const handleSendApprove = () => {
     var url = `${ulrAPI}/api/updatestatusbomchild`
     var id = bom.id
     var status = 1
-    axios.post(url,{id:id,status:1})
-    .then((res)=>{
-      if(res.data==='OK')
-      {
-        setBom({...bom,status:1,statuschild:<Tag icon={<ClockCircleOutlined />} color="warning">
-        Đang phê duyệt
-      </Tag>})
-        notification["success"]({
-          message:'Thông báo',
-          description:"Gửi phê duyệt thành công",
-          duration:2
-        })
-      }
-    }).catch((error)=>{
-      notification["error"]({
-        message: "Thông báo",
-        description: "Không thể truy cập máy chủ",
-        duration: 2
-      });
-    })
+    axios.post(url, { id: id, status: 1 })
+      .then((res) => {
+        if (res.data === 'OK') {
+          setBom({
+            ...bom, status: 1, statuschild: <Tag icon={<ClockCircleOutlined />} color="warning">
+              Đang phê duyệt
+            </Tag>
+          })
+          notification["success"]({
+            message: 'Thông báo',
+            description: "Gửi phê duyệt thành công",
+            duration: 2
+          })
+        }
+      }).catch((error) => {
+        notification["error"]({
+          message: "Thông báo",
+          description: "Không thể truy cập máy chủ",
+          duration: 2
+        });
+      })
   }
   const handleSaveEbom = () => {
     //var check = JSON.stringify(dataebom).match(/:null[\},]/) != null;
@@ -662,13 +662,13 @@ export default function Ebomexport() {
             description: "Dữ liệu đã được lưu",
             duration: 2
           });
-          else {
-            notification["warning"]({
-              message: "Thông báo",
-              description: "Có lỗi trong quá trình lưu. Vui lòng thử lại",
-              duration: 2
-            });
-          }
+        else {
+          notification["warning"]({
+            message: "Thông báo",
+            description: "Có lỗi trong quá trình lưu. Vui lòng thử lại",
+            duration: 2
+          });
+        }
       })
       .catch((error) => {
         notification["error"]({
@@ -682,17 +682,43 @@ export default function Ebomexport() {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      const newData = [...dataebom];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataebom(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setDataebom(newData);
-        setEditingKey("");
+      var arr = ['BUS THACO', 'TẢI THACO', 'THACO ROYAL', 'LUXURY CAR']
+      if (arr.includes(row.noi_gia_cong) && row.dvt !== 'Bộ') {
+        if (row.ma_phoi === '0') {
+          notification["error"]({
+            message: "Thông báo",
+            description: "Không để trống thông tin phôi",
+            duration: 2
+          });
+        }
+        else {
+          const newData = [...dataebom];
+          const index = newData.findIndex((item) => key === item.key);
+          if (index > -1) {
+            const item = newData[index];
+            newData.splice(index, 1, { ...item, ...row });
+            setDataebom(newData);
+            setEditingKey("");
+          } else {
+            newData.push(row);
+            setDataebom(newData);
+            setEditingKey("");
+          }
+        }
+      }
+      else {
+        const newData = [...dataebom];
+        const index = newData.findIndex((item) => key === item.key);
+        if (index > -1) {
+          const item = newData[index];
+          newData.splice(index, 1, { ...item, ...row });
+          setDataebom(newData);
+          setEditingKey("");
+        } else {
+          newData.push(row);
+          setDataebom(newData);
+          setEditingKey("");
+        }
       }
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
@@ -904,53 +930,53 @@ export default function Ebomexport() {
   ];
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
-        if (!col.children) return col;
-        else {
-            col.children.map((chil, index) => {
-                if (chil.editable) {
-                    col.children[index] = {
-                        ...chil,
-                        onCell: (record) => ({
-                            record,
-                            dataIndex: chil.dataIndex,
-                            title: chil.title,
-                            editing: isEditing(record),
-                        }),
-                    };
-                    return col;
+      if (!col.children) return col;
+      else {
+        col.children.map((chil, index) => {
+          if (chil.editable) {
+            col.children[index] = {
+              ...chil,
+              onCell: (record) => ({
+                record,
+                dataIndex: chil.dataIndex,
+                title: chil.title,
+                editing: isEditing(record),
+              }),
+            };
+            return col;
+          }
+          else {
+            if (!chil.children) return col
+            else {
+              chil.children.map((chi, index2) => {
+                if (chi.editable) {
+                  col.children[index].children[index2] = {
+                    ...chi,
+                    onCell: (record) => ({
+                      record,
+                      dataIndex: chi.dataIndex,
+                      title: chi.title,
+                      editing: isEditing(record),
+                    }),
+                  };
+                  return col;
                 }
-                else{
-                    if(!chil.children) return col
-                    else{
-                        chil.children.map((chi, index2) => {
-                            if (chi.editable) {
-                                col.children[index].children[index2] = {
-                                    ...chi,
-                                    onCell: (record) => ({
-                                        record,
-                                        dataIndex: chi.dataIndex,
-                                        title: chi.title,
-                                        editing: isEditing(record),
-                                    }),
-                                };
-                                return col;
-                            }
-                        })
-                    }
-                }
-            });
-        }
+              })
+            }
+          }
+        });
+      }
     }
     return {
-        ...col,
-        onCell: (record) => ({
-            record,
-            dataIndex: col.dataIndex,
-            title: col.title,
-            editing: isEditing(record),
-        }),
+      ...col,
+      onCell: (record) => ({
+        record,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
     };
-});
+  });
   return (
     <div
       style={{

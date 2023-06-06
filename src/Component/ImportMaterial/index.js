@@ -48,26 +48,6 @@ const ImportMaterial = () => {
     React.useEffect(() => {
 
     }, []);
-    const readExcel = (file) => {
-        const promise = new Promise((resolve, reject) => {
-            const fileread = new FileReader();
-            fileread.readAsArrayBuffer(file);
-            fileread.onload = (e) => {
-                const buffarray = e.target.result;
-                const wb = XLSX.read(buffarray, { type: "buffer" });
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                const data = XLSX.utils.sheet_to_json(ws);
-                resolve(data);
-            };
-            fileread.onerror = (error) => {
-                reject(error);
-            };
-        });
-        promise.then((d) => {
-            console.log(d)
-        });
-    };
 
     const handleFile = (file) => {
         const fileReader = new FileReader();

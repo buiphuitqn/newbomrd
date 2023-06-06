@@ -47,7 +47,6 @@ const Functionlist = () => {
         },
     ];
     React.useEffect(()=>{
-        console.log(allmenu)
         setLoading(true)
         setTimeout(()=>{
             allmenu.map((da,index)=>{

@@ -47,7 +47,6 @@ export default function Modalsetting() {
     const [checkedValues, setCheckedValues] = React.useState([]);
 
     const handleCheckboxChange = (value) => {
-        console.log(value)
         setCheckedValues(value)
     };
     React.useEffect(() => {
@@ -68,7 +67,6 @@ export default function Modalsetting() {
         })
     }, [groupselect])
     const onFinish = () => {
-        console.log(checkedValues)
         var id=groupselect.id
         var url = `${ulrAPI}/api/cai_dat_menu_vai_tro`
         axios.post(url,{id:id,data:checkedValues})

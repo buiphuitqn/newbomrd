@@ -116,7 +116,7 @@ const Approvebomcum = () => {
     const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
     const [itemcheck, setItemcheck] = React.useState([])
     const [editingKey, setEditingKey] = React.useState("");
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource, dropdvt, dropnoigiacong, dropxuatxu,ulrAPI } = React.useContext(Context);
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, username, dataSource, dropdvt, dropnoigiacong, dropxuatxu, ulrAPI } = React.useContext(Context);
     const EditableCell = ({
         editing,
         dataIndex,
@@ -166,7 +166,6 @@ const Approvebomcum = () => {
     };
     React.useEffect(() => {
         setLoading(true)
-        console.log(bom)
         //Tải dữ liệu từ bảng ebom
         var url = `${ulrAPI}/api/Enovia`;
         var id = bom.id;
@@ -188,7 +187,6 @@ const Approvebomcum = () => {
                             setDataebom([]);
                             if (res2.data.length != 0) {
                                 var data2 = res2.data;
-                                console.log(data2)
                                 data.map((item, index) => {
                                     var dt = data2.filter(da => da.idenovia === item.id2);
                                     var ds = dataSource.filter(da => da.ma_vat_tu === item.ID)
@@ -657,22 +655,48 @@ const Approvebomcum = () => {
     const save = async (key) => {
         try {
             const row = await form.validateFields();
-            const newData = [...dataebom];
-            const index = newData.findIndex((item) => key === item.key);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...row });
-                console.log({ ...item, ...row })
-                setDataebom(newData);
-                setEditingKey("");
-                var url = `${ulrAPI}/api/Insertebomchild`;
-                axios.post(url, { id: bom.id, data: { ...item, ...row } }).then((res) => {
-                    console.log(res.data)
-                })
-            } else {
-                newData.push(row);
-                setDataebom(newData);
-                setEditingKey("");
+            var arr = ['BUS THACO', 'TẢI THACO', 'THACO ROYAL', 'LUXURY CAR']
+            if (arr.includes(row.noi_gia_cong) && row.dvt !== 'Bộ') {
+                if (row.ma_phoi === '0') {
+                    notification["error"]({
+                        message: "Thông báo",
+                        description: "Không để trống thông tin phôi",
+                        duration: 2
+                    });
+                } else {
+                    const newData = [...dataebom];
+                    const index = newData.findIndex((item) => key === item.key);
+                    if (index > -1) {
+                        const item = newData[index];
+                        newData.splice(index, 1, { ...item, ...row });
+                        setDataebom(newData);
+                        setEditingKey("");
+                        var url = `${ulrAPI}/api/Insertebomchild`;
+                        axios.post(url, { id: bom.id, data: { ...item, ...row } }).then((res) => {
+                        })
+                    } else {
+                        newData.push(row);
+                        setDataebom(newData);
+                        setEditingKey("");
+                    }
+                }
+            }
+            else {
+                const newData = [...dataebom];
+                const index = newData.findIndex((item) => key === item.key);
+                if (index > -1) {
+                    const item = newData[index];
+                    newData.splice(index, 1, { ...item, ...row });
+                    setDataebom(newData);
+                    setEditingKey("");
+                    var url = `${ulrAPI}/api/Insertebomchild`;
+                    axios.post(url, { id: bom.id, data: { ...item, ...row } }).then((res) => {
+                    })
+                } else {
+                    newData.push(row);
+                    setDataebom(newData);
+                    setEditingKey("");
+                }
             }
         } catch (errInfo) {
             console.log("Validate Failed:", errInfo);

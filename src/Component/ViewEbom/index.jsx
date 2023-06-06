@@ -106,7 +106,6 @@ const Viewebom = () => {
 
     React.useEffect(() => {
         setLoading(true)
-        bom&&console.log(bom.child.filter(bo => bo.status === 2).length===bom.child.length)
         //Tải dữ liệu từ bảng ebom
         var url = `${ulrAPI}/api/LoadAllebom`;
         var id = bom.id;
@@ -114,7 +113,6 @@ const Viewebom = () => {
             .post(url, { id: id })
             .then((res) => {
                 setDataebom([]);
-                console.log(res.data)
                 if (res.data.filter(da => da.length === 0).length === 0) {
                     var dataenovia = res.data[1]
                     var dataebom = res.data[0]
@@ -123,7 +121,6 @@ const Viewebom = () => {
                         dataenovia.map((en) => en.Level),
                         dataenovia.map((en) => en.Amount)
                     );
-                    console.log(res.data)
                     dataenovia.map((item, index) => {
                         var dt = dataebom.filter(da => da.idenovia === item.id2);
                         var ds = dataSource.filter(da => da.ma_vat_tu === item.ID)
@@ -261,7 +258,6 @@ const Viewebom = () => {
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
-        console.log(dataIndex)
     };
 
     const handleReset = (clearFilters, confirm) => {

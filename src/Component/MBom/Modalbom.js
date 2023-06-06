@@ -53,7 +53,6 @@ export default function Modalbom() {
     axios.post(url)
       .then((res) => {
         setItemcheck([])
-        console.log(res.data.message)
         form.setFieldsValue({ child: res.data.message.map(da=>da.id) });
         res.data.message.map((da,index)=>{
           setItemcheck(itemcheck=>[...itemcheck,{
@@ -73,7 +72,6 @@ export default function Modalbom() {
       })
   }, []);
   const onFinish = (values) => {
-    console.log(values,itemcheck,checkedList)
     const check = listBom.filter((da) => da.nobom == values.no);
     if (check.length == 0) {
       var url = `${ulrAPI}/api/CreateBom`;

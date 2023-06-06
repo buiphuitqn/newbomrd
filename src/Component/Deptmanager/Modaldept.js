@@ -101,7 +101,6 @@ export default function Modaldept() {
     };
 
     const onFinish = () => {
-        console.log('?')
         var url = `${ulrAPI}/api/cai_dat_phong`
         axios.post(url,{idunit:unitchange,dept:checkedList})
         .then((res)=>{

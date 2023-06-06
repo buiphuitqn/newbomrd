@@ -237,7 +237,6 @@ const Deptmanager = () => {
                                     }}
                                     onClick={()=>{
                                         setStateModaldept(true)
-                                        console.log('da')
                                     }}
                                 >
                                     <div>

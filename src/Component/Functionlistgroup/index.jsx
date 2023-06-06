@@ -91,7 +91,6 @@ const Functionlistgroup= () => {
                 setListgroup(listgroup.filter(da=>da.id!==arr.id))
             }
             else {
-                console.log(res.data)
                 notification["error"]({
                     message: "Thông báo",
                     description: "Xoá thất bại",

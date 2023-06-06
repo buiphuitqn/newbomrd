@@ -36,8 +36,9 @@ const tailLayout = {
 export default function Modalmember() {
     const {
         stateModalmember, setStateModalmember,
-        listmember, setListmember,
+        member,
         ulrAPI,
+        listmember,setListmember
     } = React.useContext(Context);
     const [form] = Form.useForm();
     const [option, setOption] = React.useState([])
