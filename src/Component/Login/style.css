@@ -18,6 +18,19 @@
     max-width: 500px;
 }
 
+.div-change-pass{
+    text-align: right;
+    font-family: 'Tahoma';
+}
+
+.div-change-pass > a{
+    color: #fff !important;
+}
+
+.div-change-pass a :hover{
+    color: #fff;
+}
+
 .btnsetting{
     z-index: 3;
     display: flex;

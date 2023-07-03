@@ -324,6 +324,7 @@ export default function () {
   const [stateModalsettinggroup, setStateModalsettinggroup] = React.useState(false);
   const [stateModaladdgroup, setStateModaladdgroup] = React.useState(false);
   const [stateModaladdgroupb, setStateModaladdgroupb] = React.useState(false);
+  const [stateModalexport, setStateModalexport] = React.useState(false);
   const [listBom, setListBom] = React.useState([]);
   const [dataebom, setDataebom] = React.useState([]);
   const [phanquyen, setPhanquyen] = React.useState([]);
@@ -406,7 +407,8 @@ export default function () {
     stateModaladdgroupb, setStateModaladdgroupb,
     datatable,setDatatable,
     deptselect,setDeptselect,
-    stateModalresetpass, setStateModalresetpass
+    stateModalresetpass, setStateModalresetpass,
+    stateModalexport, setStateModalexport
   };
   return { initState };
 }

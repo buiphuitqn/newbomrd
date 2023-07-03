@@ -37,22 +37,22 @@ p {
 }
 
 @media screen and (max-width: 1920px) {
-    .tbebomchild .ant-table-body {
+    .tbebomchild2 .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 62vh !important
+        max-height: 57vh !important
     }
 }
 
 @media screen and (max-width: 1366px) {
-    .tbebomchild .ant-table-body {
+    .tbebomchild2 .ant-table-body {
         height: -webkit-fill-available;
         max-height: 46vh !important
     }
 }
 
 @media screen and (min-width: 1920px) {
-    .tbebomchild .ant-table-body {
+    .tbebomchild2 .ant-table-body {
         height: -webkit-fill-available;
-        max-height: 89vh !important
+        max-height: 70vh !important
     }
 }

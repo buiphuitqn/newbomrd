@@ -115,11 +115,14 @@ export default function Ebomexport() {
     ulrAPI
   } = React.useContext(Context);
   const [searchText, setSearchText] = React.useState("");
+  const [editText, setEditText] = React.useState({});
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef(null);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = React.useState("");
   const [showfinish, setShowfinish] = React.useState(false);
+  const [editingrow, setEditingrow] = React.useState(false);
+  const inputRef = React.useRef([]);
   let navigate = useNavigate();
 
   //hàm tạo dòng edit dữ liệu
@@ -161,7 +164,7 @@ export default function Ebomexport() {
     }
     const arraydrop = ['xuat_xu', 'noi_gia_cong', 'dvt', 'xuat_xu_phoi', 'dvt_phoi']
     if (arraydrop.filter(da => da == dataIndex).length == 0)
-      if (children[1] != null && children[1] != undefined && children[1] != "0")
+      if (children[1] != null && children[1] != undefined && children[1] != "-" && children[1] != "0")
         editing = false;
     return (
       <td {...restProps}>
@@ -233,7 +236,7 @@ export default function Ebomexport() {
           axios
             .post(url, { id: id })
             .then((res2) => {
-
+              console.log(res2)
               setDataebom([]);
               if (res2.data.length != 0) {
                 var data = res2.data;
@@ -262,10 +265,10 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ten_vn
-                            : "0"
+                            : "-"
                           : en.Name != ""
                             ? en.Name
-                            : "0",
+                            : "-",
                       ten_en:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -277,8 +280,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ten_en
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       vat_lieu:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -290,8 +293,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].vat_lieu
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       xuat_xu:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -303,8 +306,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].xuat_xu
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       noi_gia_cong:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -316,8 +319,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].noi_gia_cong
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       ma_ban_ve:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -329,8 +332,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ma_ban_ve
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       thong_so_ky_thuat:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -342,8 +345,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].thong_so_ky_thuat
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       dvt:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -355,8 +358,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].dvt
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       ma_phoi:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -368,8 +371,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ma_phoi
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       slcum: en.Amount,
                       slxe: Slxe[index],
                       ten_phoi:
@@ -383,8 +386,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ten_phoi
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       xuat_xu_phoi:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -396,8 +399,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].xuat_xu_phoi
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       thong_so_phoi:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -409,8 +412,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].thong_so_phoi
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       ban_ve_vat_tu:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -422,8 +425,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ban_ve_vat_tu
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       dvt_phoi:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -435,8 +438,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].dvt_phoi
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       khoi_luong:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -448,8 +451,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].khoi_luong
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       ghi_chu:
                         dataSource.filter((da) => da.ma_vat_tu == en.idmaterial)
                           .length != 0
@@ -461,8 +464,8 @@ export default function Ebomexport() {
                             ? dataSource.filter(
                               (da) => da.ma_vat_tu == en.idmaterial
                             )[0].ghi_chu
-                            : "0"
-                          : "0",
+                            : "-"
+                          : "-",
                       idenovia: en.id,
                     },
                   ]);
@@ -487,6 +490,35 @@ export default function Ebomexport() {
         });
       });
   }, []);
+
+  const listtext = {}
+
+  const handleInputkeyDown = (e, key, dataIndex, ind) => {
+    if (e.keyCode == 13) {
+      const updatedData = [...dataebom];
+      const index = updatedData.findIndex((item) => item.key === key);
+      updatedData[index][dataIndex] = listtext[`${dataIndex}${ind}`];
+      setDataebom(updatedData);
+    }
+  };
+
+  const handleonChangeselect = (value, key, dataIndex, ind) => {
+    const updatedData = [...dataebom];
+      const index = updatedData.findIndex((item) => item.key === key);
+      updatedData[index][dataIndex] = value;
+      setDataebom(updatedData);
+  };
+
+  const handleFocus = (record, dataIndex, ind) => {
+    if (!listtext.hasOwnProperty(`${dataIndex}${ind}`)) {
+      listtext[`${dataIndex}${ind}`] = record[`${dataIndex}`]
+    }
+  }
+
+  const handleOnchange = (e, dataIndex, ind) => {
+    console.log(listtext)
+    listtext[`${dataIndex}${ind}`] = e.target.value
+  }
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -763,6 +795,11 @@ export default function Ebomexport() {
           key: "member",
           width: '150px',
           editable: true,
+          render: (_, record, index) => (editingrow&&(record.ten_en==='0'||record.ten_en==='-'||record.ten_en==='') ?
+            <Input
+              defaultValue={record.ten_en} onFocus={() => handleFocus(record, 'ten_en', index)} onChange={(e) => handleOnchange(e, 'ten_en', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ten_en', index)} /> :
+            record.ten_en
+          ),
         }]
       },
       {
@@ -771,6 +808,11 @@ export default function Ebomexport() {
         key: "vat_lieu",
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&(record.vat_lieu==='0'||record.vat_lieu==='-'||record.vat_lieu==='') ?
+          <Input
+            defaultValue={record.vat_lieu} onFocus={() => handleFocus(record, 'vat_lieu', index)} onChange={(e) => handleOnchange(e, 'vat_lieu', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'vat_lieu', index)} /> :
+          record.vat_lieu
+        ),
       },
       {
         title: "Xuất xứ",
@@ -779,6 +821,10 @@ export default function Ebomexport() {
         width: '150px',
         editable: true,
         ...getColumnSearchProps("xuat_xu"),
+        render: (_, record, index) => (editingrow&&(record.xuat_xu==='0'||record.xuat_xu===''||record.xuat_xu==='-') ?
+        <Select options={dropxuatxu} onChange={(value) =>handleonChangeselect(value, record.key, 'xuat_xu', index)}/>:
+          record.xuat_xu
+        ),
       },
       {
         title: "Nơi gia công thành phẩm",
@@ -787,6 +833,10 @@ export default function Ebomexport() {
         width: '150px',
         editable: true,
         ...getColumnSearchProps("noi_gia_cong"),
+        render: (_, record, index) => (editingrow&&(record.noi_gia_cong==='0'||record.noi_gia_cong==='-'||record.noi_gia_cong==='') ?
+        <Select options={dropnoigiacong} onChange={(value) =>handleonChangeselect(value, record.key, 'noi_gia_cong', index)}/>:
+          record.noi_gia_cong
+        ),
       }, {
         title: 'Thông tin kỹ thuật',
         children: [{
@@ -794,6 +844,11 @@ export default function Ebomexport() {
           dataIndex: 'ma_ban_ve',
           width: '100px',
           ...getColumnSearchProps("ma_ban_ve"),
+          render: (_, record, index) => (editingrow&&(record.ma_ban_ve==='0'||record.ma_ban_ve==='-'||record.ma_ban_ve==='') ?
+            <Input
+              defaultValue={record.ma_ban_ve} onFocus={() => handleFocus(record, 'ma_ban_ve', index)} onChange={(e) => handleOnchange(e, 'ma_ban_ve', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ma_ban_ve', index)} /> :
+            record.ma_ban_ve
+          ),
         },
         {
           title: "Thông số kỹ thuật",
@@ -802,6 +857,11 @@ export default function Ebomexport() {
           width: '100px',
           editable: true,
           ...getColumnSearchProps("thong_so_ky_thuat"),
+          render: (_, record, index) => (editingrow&&(record.thong_so_ky_thuat==='0'||record.thong_so_ky_thuat==='-'||record.thong_so_ky_thuat==='') ?
+            <Input
+              defaultValue={record.thong_so_ky_thuat} onFocus={() => handleFocus(record, 'thong_so_ky_thuat', index)} onChange={(e) => handleOnchange(e, 'thong_so_ky_thuat', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'thong_so_ky_thuat', index)} /> :
+            record.thong_so_ky_thuat
+          ),
         }]
       },
       {
@@ -811,6 +871,10 @@ export default function Ebomexport() {
         key: "dvt",
         editable: true,
         ...getColumnSearchProps("dvt"),
+        render: (_, record, index) => (editingrow&&(record.dvt==='0'||record.dvt==='-'||record.dvt==='') ?
+        <Select options={dropdvt} onChange={(value) =>handleonChangeselect(value, record.key, 'dvt', index)}/>:
+          record.dvt
+        ),
       },
       {
         title: "SL/Cụm",
@@ -832,6 +896,11 @@ export default function Ebomexport() {
         width: '100px',
         editable: true,
         ...getColumnSearchProps("ma_phoi"),
+        render: (_, record, index) => (editingrow&&(record.ma_phoi==='0'||record.ma_phoi==='-'||record.ma_phoi==='') ?
+          <Input
+            defaultValue={record.ma_phoi} onFocus={() => handleFocus(record, 'ma_phoi', index)} onChange={(e) => handleOnchange(e, 'ten_en', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ma_phoi', index)} /> :
+          record.ma_phoi
+        ),
       },
       {
         title: <div><p>Tên phôi</p><p>(Chọn gia công)</p></div>,
@@ -839,46 +908,80 @@ export default function Ebomexport() {
         key: "ten_phoi",
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&(record.ten_phoi==='0'||record.ten_phoi==='-'||record.ten_phoi==='') ?
+          <Input
+            defaultValue={record.ten_phoi} onFocus={() => handleFocus(record, 'ten_phoi', index)} onChange={(e) => handleOnchange(e, 'ten_phoi', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ten_phoi', index)} /> :
+          record.ten_phoi
+        ),
       }, {
         title: 'Thông số kỹ thuật',
         dataIndex: 'thong_so_phoi',
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&(record.thong_so_phoi==='0'||record.thong_so_phoi==='-'||record.thong_so_phoi==='') ?
+          <Input
+            defaultValue={record.thong_so_phoi} onFocus={() => handleFocus(record, 'thong_so_phoi', index)} onChange={(e) => handleOnchange(e, 'thong_so_phoi', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'thong_so_phoi', index)} /> :
+          record.thong_so_phoi
+        ),
       }, {
         title: 'Xuất xứ phôi',
         dataIndex: 'xuat_xu_phoi',
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&record.xuat_xu_phoi==='0' ?
+        <Select options={dropxuatxu} onChange={(value) =>handleonChangeselect(value, record.key, 'xuat_xu_phoi', index)}/>:
+          record.xuat_xu_phoi
+        ),
       }, {
         title: 'Mã số bản vẽ phôi',
         dataIndex: 'ban_ve_vat_tu',
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&(record.ban_ve_vat_tu==='0'||record.ban_ve_vat_tu==='-'||record.ban_ve_vat_tu==='') ?
+          <Input
+            defaultValue={record.ban_ve_vat_tu} onFocus={() => handleFocus(record, 'ban_ve_vat_tu', index)} onChange={(e) => handleOnchange(e, 'ban_ve_vat_tu', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ban_ve_vat_tu', index)} /> :
+          record.ban_ve_vat_tu
+        ),
       }, {
         title: 'ĐVT',
         dataIndex: 'dvt_phoi',
         width: '100px',
         editable: true,
+        ...getColumnSearchProps("dvt_phoi"),
+        render: (_, record, index) => (editingrow&&(record.dvt_phoi==='0'||record.dvt_phoi==='-'||record.dvt_phoi==='') ?
+        <Select options={dropdvt} onChange={(value) =>handleonChangeselect(value, record.key, 'dvt_phoi', index)}/>:
+          record.dvt_phoi
+        ),
       }, {
         title: 'Khôi lượng phôi/xe',
         dataIndex: 'khoi_luong',
         width: '100px',
         editable: true,
+        render: (_, record, index) => (editingrow&&record.khoi_luong==='0' ?
+          <Input
+            defaultValue={record.khoi_luong} onFocus={() => handleFocus(record, 'khoi_luong', index)} onChange={(e) => handleOnchange(e, 'khoi_luong', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'khoi_luong', index)} /> :
+          record.khoi_luong
+        ),
       }]
     }, {
       title: 'Ghi chú',
       dataIndex: 'ghi_chu',
       width: '100px',
       editable: true,
+      render: (_, record, index) => (editingrow&&record.ghi_chu==='0' ?
+        <Input
+          defaultValue={record.ghi_chu} onFocus={() => handleFocus(record, 'ghi_chu', index)} onChange={(e) => handleOnchange(e, 'ghi_chu', index)} onKeyDown={(e) => handleInputkeyDown(e, record.key, 'ghi_chu', index)} /> :
+        record.ghi_chu
+      ),
     },
     {
       title: "Chức năng",
       key: "edit",
       width: '100px',
-      fixed: 'right',
+      fixed: !editingrow?'right':'none',
       render: (_, record) => {
         const editable = isEditing(record);
-        return editable ? (
+        if(!editingrow) return editable ? (
           <span>
             <Typography.Link
               onClick={() => save(record.key)}
@@ -888,9 +991,6 @@ export default function Ebomexport() {
             >
               <SaveOutlined />
             </Typography.Link>
-            <Popconfirm title="Bạn có muốn đóng?" onConfirm={cancel}>
-              <CloseOutlined color="red" />
-            </Popconfirm>
           </span>
         ) : (
           <Typography.Link
@@ -1014,6 +1114,13 @@ export default function Ebomexport() {
             )} */}
             {(bom.status === 0 || bom.status === 2) ? (
               <div>
+                {editingrow ? (
+                  <Button type="primary" onClick={() => setEditingrow(false)}>
+                    Save
+                  </Button>
+                ) : (
+                  <Button onClick={() => setEditingrow(true)}>Edit</Button>
+                )}
                 <Popconfirm
                   title="Bạn có muốn lưu"
                   okText="Có"
@@ -1060,7 +1167,7 @@ export default function Ebomexport() {
         <Col span={24}>
           <Form form={form} component={false}>
             <Table
-              className="tbebomchild"
+              className="tbebomchild2"
               style={{
                 fontFamily: "Tahoma",
                 fontSize: 14

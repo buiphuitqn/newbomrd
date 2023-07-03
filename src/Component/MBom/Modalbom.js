@@ -186,7 +186,7 @@ export default function Modalbom() {
           <Col span={24}>
             <Form.Item
               name="no"
-              label="Số hiệu"
+              label="Mã kiểu loại"
               rules={[
                 {
                   required: true,

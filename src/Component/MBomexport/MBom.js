@@ -196,19 +196,19 @@ export default function MBom() {
                     ? dataSource.filter((da) => da.col1 == item.ID)[0].col11 !=
                       ""
                       ? dataSource.filter((da) => da.col1 == item.ID)[0].col11
-                      : "0"
-                    : "0",
+                      : "-"
+                    : "-",
                 duphoi:
                   dataSource.filter((da) => da.col1 == item.ID).length != 0
                     ? dataSource.filter((da) => da.col1 == item.ID)[0].col12 !=
                       ""
                       ? dataSource.filter((da) => da.col1 == item.ID)[0].col12
-                      : "0"
-                    : "0",
-                khuon: "0",
-                chuakhuon: "0",
-                khuontam: "0",
-                khuonsanxuat: "0",
+                      : "-"
+                    : "-",
+                khuon: "-",
+                chuakhuon: "-",
+                khuontam: "-",
+                khuonsanxuat: "-",
                 idbom: item.idbom,
                 idenovia: item.idenovia,
               },
@@ -258,20 +258,20 @@ export default function MBom() {
                             .col11 != ""
                           ? dataSource.filter((da) => da.col1 == item.ID)[0]
                               .col11
-                          : "0"
-                        : "0",
+                          : "-"
+                        : "-",
                     duphoi:
                       dataSource.filter((da) => da.col1 == item.ID).length != 0
                         ? dataSource.filter((da) => da.col1 == item.ID)[0]
                             .col12 != ""
                           ? dataSource.filter((da) => da.col1 == item.ID)[0]
                               .col12
-                          : "0"
-                        : "0",
-                    khuon: "0",
-                    chuakhuon: "0",
-                    khuontam: "0",
-                    khuonsanxuat: "0",
+                          : "-"
+                        : "-",
+                    khuon: "-",
+                    chuakhuon: "-",
+                    khuontam: "-",
+                    khuonsanxuat: "-",
                     idbom: item.idbom,
                     idenovia: item.idenovia,
                   },

@@ -96,13 +96,14 @@ const Viewebom = () => {
     const searchInput = React.useRef(null);
     const [showfinish, setShowfinish] = React.useState(false);
     const [stateModalbom, setStateModalbom] = React.useState(false)
+    const [stateModalexport, setStateModalexport] = React.useState(false)
     const defaultCheckedList = [];
     const [indeterminate, setIndeterminate] = React.useState(true);
     const [checkAll, setCheckAll] = React.useState(false);
     const [checkedList, setCheckedList] = React.useState(defaultCheckedList);
     const [itemcheck, setItemcheck] = React.useState([])
 
-    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, dataSource,ulrAPI } = React.useContext(Context);
+    const { collapsed, loading, setLoading, dataebom, setDataebom, bom, setBom, dataSource, ulrAPI } = React.useContext(Context);
 
     React.useEffect(() => {
         setLoading(true)
@@ -264,6 +265,15 @@ const Viewebom = () => {
         clearFilters();
         setSearchText("");
         confirm()
+    };
+
+    const handlePaste = (event) => {
+        console.log('paste')
+        const clipboardData = event.clipboardData || window.clipboardData;
+        const pastedData = clipboardData.getData('text/plain');
+        const rows = pastedData.split('\n').map((row) => row.split('\t'));
+
+        console.log(rows);
     };
 
     const handleApprove = () => {
@@ -630,7 +640,7 @@ const Viewebom = () => {
                             <Col span={24}>
                                 <Form form={form} component={false}>
                                     <Table
-                                        className="tbebomchild"
+                                        className="tbebomchild3"
                                         style={{
                                             fontFamily: "Tahoma",
                                             fontSize: 14
@@ -679,6 +689,13 @@ const Viewebom = () => {
                                     <CheckboxGroup options={itemcheck} value={checkedList} onChange={onChange} style={{ display: 'flex', flexDirection: 'column' }} />
                                 </Col>
                             </Row>
+                        </Modal>
+                        <Modal
+                            title="Chọn nơi gia công"
+                            centered
+                            open={stateModalexport}
+                            onCancel={() => setStateModalexport(false)}>
+
                         </Modal>
                     </div>
                 </Content>

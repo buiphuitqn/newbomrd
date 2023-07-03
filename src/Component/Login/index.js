@@ -109,9 +109,12 @@ const Login = () => {
               Đăng nhập
             </Button>
           </Form.Item>
+          <div className="div-change-pass">
+            <a onClick={()=>{setChangepass(true);console.log("AAAAAA")}}>Thay đổi mật khẩu</a></div>
         </Form>
       </div>
       {loading && <Loadding />}
+      <Modalpass/>
     </div>
   );
 };

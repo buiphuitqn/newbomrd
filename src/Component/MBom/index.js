@@ -1,7 +1,7 @@
 // Bảng quản lý danh sách BOM
 
 import React from "react";
-import { DeleteOutlined, SyncOutlined, EyeOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined, ClockCircleOutlined, CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, SyncOutlined, EyeOutlined, FileMarkdownOutlined, FilePdfOutlined, KeyOutlined, SearchOutlined, ClockCircleOutlined, CloseCircleOutlined, CheckCircleOutlined, DownloadOutlined } from "@ant-design/icons";
 import {
   Button,
   Input,
@@ -33,35 +33,35 @@ import Footerpage from "../Footerpage";
 import Modalmentions from "./Modalmentions.js";
 import Loadding from "../Loadding";
 import Modalgroup from "./Modalgroup";
+import Modalnotification from "./Modalnotification";
+import Modalexport from "./Modalexport";
 const { Content } = Layout
 const MBom = () => {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef(null);
   const {
-    dataSource,
     setBom,
     setStateModalbom,
     setStateModalmention,
     listBom,
     setListBom,
-    username,
-    datachild,
     keymenu,
     setParentbom,
     loading,
     setLoading,
-    bom,
     collapsed,
     ulrAPI,
-    bomchild, setBomchild,
+    setBomchild,
     phanquyen,
-    stateModalgroup, setStateModalgroup
+    setStateModalgroup,
+    setStateModalexport
   } = React.useContext(Context);
   let navigate = useNavigate();
   const [listdept, setListdept] = React.useState([])
   const [listgroup, setListgroup] = React.useState([])
   React.useEffect(() => {
+    console.log(phanquyen)
     setLoading(true)
     setListBom([]);
     var url2 = `${ulrAPI}/api/ds_phong`
@@ -107,7 +107,7 @@ const MBom = () => {
         if (res.data.length != 0 && phanquyen.length !== 0) {
           var unit = phanquyen.phong_ban.map(e => e.id)
           var data = res.data.filter(da => unit.includes(da.idunit));
-          console.log(data)
+          console.log(data, phanquyen)
           data = data.map((da, index) => {
             return {
               ...da, key: index, status: da.child.filter(ds => ds.status === 0).length === 0 ? <Tag icon={<CheckCircleOutlined />} color="success">
@@ -298,7 +298,7 @@ const MBom = () => {
           return recordp.ma_phong_ban === null ? <Tag icon={<CloseCircleOutlined />} color="error">
             Chưa phân quyền
           </Tag> : listdept.filter(da => da.value === recordp.ma_phong_ban)[0].label
-          }
+        }
       }, {
         title: "Chức năng",
         render: (recordin) =>
@@ -394,7 +394,7 @@ const MBom = () => {
           title: "Chức năng",
           key: "age",
           render: (record) =>
-            phanquyen.function[1].trang_thai == 1 ? (
+            phanquyen.function[1].trang_thai == 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.map(da => da.id).includes(ma_phong_ban) ? (
               <a onClick={() => {
                 setBomchild({
                   Namebom: Namebom,
@@ -410,7 +410,7 @@ const MBom = () => {
                   <KeyOutlined style={{ fontSize: '18px', color: '#08c' }} />
                 </Tooltip>
               </a>
-            ) : (phanquyen.function[2].trang_thai == 1 &&phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length!==0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) ?
+            ) : (phanquyen.function[2].trang_thai == 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length !== 0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) ?
               (
                 <Space size="middle">
                   <a onClick={() => {
@@ -422,7 +422,7 @@ const MBom = () => {
                     </Tooltip>
                   </a>
                 </Space>
-              ) : (phanquyen.function[3].trang_thai == 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length!==0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) && (
+              ) : (phanquyen.function[3].trang_thai == 1 && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban).length !== 0) && phanquyen.phong_ban.filter(da => da.id === idunit)[0].child.filter(da => da.id === ma_phong_ban)[0].child.filter(da => da.id).map(da => da.id).includes(record.ma_nhom) && (
                 <Space size="middle">
                   <a onClick={() => {
                     setBom(record)
@@ -475,7 +475,7 @@ const MBom = () => {
   };
   const columns = [
     {
-      title: "Số hiệu",
+      title: "Mã kiểu loại",
       dataIndex: "nobom",
       key: "id",
       ...getColumnSearchProps("nobom"),
@@ -503,51 +503,72 @@ const MBom = () => {
       title: "Chức năng",
       key: "address",
       width: "15%",
-      render: (record) =>
-        phanquyen.function[0].trang_thai === 1 && listBom.length >= 1 ? (
-          <Space size="middle">
-            <a
+      render: (record) => (
+        <Space size="middle">
+          {
+            record.DoneEbom === 1 && <a
               onClick={() => {
+                console.log(record)
                 setBom(record);
-                navigate("/BOMManager/BOM/ebom-tong");
+                setStateModalexport(true)
               }}
               style={{
                 color: "blue",
               }}
             >
-              <Tooltip title="E-Bom">
-                <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+              <Tooltip title="Tải DMVT">
+                <DownloadOutlined style={{ fontSize: '18px', color: '#08c' }} />
               </Tooltip>
             </a>
-            <a
-              onClick={() => {
-                setParentbom(record);
-                navigate("/Mbom");
-              }}
-              style={{
-                color: "blue",
-              }}
-            >
-              <Tooltip title="M-Bom">
-                <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
-              </Tooltip>
-            </a>
-            <Popconfirm
-              title="Bạn có muốn xóa không?"
-              onConfirm={() => handleDelete(record)}
-            >
-              <a
-                style={{
-                  color: "red",
-                }}
-              >
-                <Tooltip title="Xoá BOM">
-                  <DeleteOutlined style={{ fontSize: '18px', color: '#08c' }} />
-                </Tooltip>
-              </a>
-            </Popconfirm>
-          </Space>
-        ) : null
+          }
+          {
+            phanquyen.function[0].trang_thai === 1 && listBom.length >= 1 && (
+              <Space size="middle">
+                <a
+                  onClick={() => {
+                    setBom(record);
+                    navigate("/BOMManager/BOM/ebom-tong");
+                  }}
+                  style={{
+                    color: "blue",
+                  }}
+                >
+                  <Tooltip title="E-Bom">
+                    <FilePdfOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                  </Tooltip>
+                </a>
+                <a
+                  onClick={() => {
+                    setParentbom(record);
+                    navigate("/Mbom");
+                  }}
+                  style={{
+                    color: "blue",
+                  }}
+                >
+                  <Tooltip title="M-Bom">
+                    <FileMarkdownOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                  </Tooltip>
+                </a>
+                <Popconfirm
+                  title="Bạn có muốn xóa không?"
+                  onConfirm={() => handleDelete(record)}
+                >
+                  <a
+                    style={{
+                      color: "red",
+                    }}
+                  >
+                    <Tooltip title="Xoá BOM">
+                      <DeleteOutlined style={{ fontSize: '18px', color: '#08c' }} />
+                    </Tooltip>
+                  </a>
+                </Popconfirm>
+              </Space>
+            )
+          }
+        </Space>
+      )
     }
   ];
   if (phanquyen.length === 0) {
@@ -607,13 +628,14 @@ const MBom = () => {
             <Modalbom />
             <Modalmentions />
             <Modalgroup />
+            <Modalnotification />
+            <Modalexport />
           </div>
         </Content>
         <Footerpage />
       </Layout>
       {loading && <Loadding />}
     </Layout>
-
   );
 };
 

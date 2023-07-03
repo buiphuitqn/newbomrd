@@ -57,10 +57,6 @@ export default function Modalpass() {
               description: res.data.status,
             });
             setChangepass(false);
-            if (username) {
-              window.localStorage.setItem("username", JSON.stringify(username));
-              navigate("/Homepage");
-            }
           }
         })
         .catch((error) => {

@@ -199,23 +199,23 @@ const Approvebomcum = () => {
                                             level2: item.Amount,
                                             ma_vat_tu: dt.length != 0 ? dt[0].ma_vat_tu : item.ID,
                                             ten_vn: dt.length != 0 ? dt[0].ten_vn : item.Name,
-                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length != 0 ? ds[0].ten_en : "0",
-                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length != 0 ? ds[0].vat_lieu : "0",
-                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length != 0 ? ds[0].xuat_xu : "0",
-                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length != 0 ? ds[0].noi_gia_cong : "0",
-                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length != 0 ? ds[0].ma_ban_ve : "0",
-                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat : ds.length != 0 ? ds[0].thong_so_ky_thuat : "0",
+                                            ten_en: dt.length != 0 ? dt[0].ten_en : ds.length != 0 ? ds[0].ten_en : "-",
+                                            vat_lieu: dt.length != 0 ? dt[0].vat_lieu : ds.length != 0 ? ds[0].vat_lieu : "-",
+                                            xuat_xu: dt.length != 0 ? dt[0].xuat_xu : ds.length != 0 ? ds[0].xuat_xu : "-",
+                                            noi_gia_cong: dt.length != 0 ? dt[0].noi_gia_cong : ds.length != 0 ? ds[0].noi_gia_cong : "-",
+                                            ma_ban_ve: dt.length != 0 ? dt[0].ma_ban_ve : ds.length != 0 ? ds[0].ma_ban_ve : "-",
+                                            thong_so_ky_thuat: dt.length != 0 ? dt[0].thong_so_ky_thuat : ds.length != 0 ? ds[0].thong_so_ky_thuat : "-",
                                             slcum: dt.length != 0 ? dt[0].slcum : item.Amount,
                                             slxe: Slxe[index],
-                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length != 0 ? ds[0].dvt : "0",
-                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length != 0 ? ds[0].ma_phoi : "0",
-                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length != 0 ? ds[0].ten_phoi : "0",
-                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi : ds.length != 0 ? ds[0].thong_so_phoi : "0",
-                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length != 0 ? ds[0].xuat_xu_phoi : "0",
-                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "0",
-                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "0",
-                                            khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "0",
-                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : "0",
+                                            dvt: dt.length != 0 ? dt[0].dvt : ds.length != 0 ? ds[0].dvt : "-",
+                                            ma_phoi: dt.length != 0 ? dt[0].ma_phoi : ds.length != 0 ? ds[0].ma_phoi : "-",
+                                            ten_phoi: dt.length != 0 ? dt[0].ten_phoi : ds.length != 0 ? ds[0].ten_phoi : "-",
+                                            thong_so_phoi: dt.length != 0 ? dt[0].thong_so_phoi : ds.length != 0 ? ds[0].thong_so_phoi : "-",
+                                            xuat_xu_phoi: dt.length != 0 ? dt[0].xuat_xu_phoi : ds.length != 0 ? ds[0].xuat_xu_phoi : "-",
+                                            ban_ve_vat_tu: dt.length != 0 ? dt[0].ban_ve_vat_tu : ds.length != 0 ? ds[0].ban_ve_vat_tu : "-",
+                                            dvt_phoi: dt.length != 0 ? dt[0].dvt_phoi : ds.length != 0 ? ds[0].dvt_phoi : "-",
+                                            khoi_luong: dt.length != 0 ? dt[0].khoi_luong : ds.length != 0 ? ds[0].khoi_luong : "-",
+                                            ghi_chu: dt.length != 0 ? dt[0].ghi_chu : ds.length != 0 ? ds[0].ghi_chu : "-",
                                             idenovia: item.id2
                                         },
                                     ]);
@@ -801,7 +801,7 @@ const Approvebomcum = () => {
                             <Col span={24}>
                                 <Form form={form} component={false}>
                                     <Table
-                                        className="tbebomchild"
+                                        className="tbebomchild1"
                                         style={{
                                             fontFamily: "Tahoma",
                                             fontSize: 14

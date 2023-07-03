@@ -77,7 +77,7 @@ const BOM = () => {
       const workbook = XLSX.read(data, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: true, defval: null });
+      const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1});
       delete excelData[0]
       excelData.map((da, index) => {
         setEnovia((enovia) => [
@@ -132,6 +132,7 @@ const BOM = () => {
         idmember: idmember,
       })
       .then((res) => {
+        console.log(res.data)
         notification["success"]({
           message: "Thông báo",
           description: "Lưu thành công",
